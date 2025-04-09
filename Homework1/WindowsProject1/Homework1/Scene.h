@@ -3,12 +3,26 @@
 #include "GameObject.h"
 #include "Camera.h"
 
-#define _WITH_DRAW_AXIS
+//#define _WITH_DRAW_AXIS
+
+enum TAG_SCENE_NAME : UINT8 {
+	TAG_SCENE_TITLE = 0,
+	TAG_SCENE_MENU,
+	TAG_SCENE_LEVEL1,
+	TAG_SCENE_LEVEL2,
+
+	TAG_SCENE_COUNT,
+
+	TAG_SCENE_UNDEFINED = 99
+};
 
 class Scene {
 public:
-	Scene(std::shared_ptr<Player> pPlayer) : m_pPlayer{ pPlayer } { };
+	Scene() { };
 	virtual ~Scene() { }
+
+public:
+	TAG_SCENE_NAME GetSceneTag() { return m_eSceneTag; }
 
 public:
 	virtual void BuildObjects();
@@ -17,29 +31,22 @@ public:
 	virtual void Animate(float fElapsedTime);
 	virtual void Render(HDC hDCFrameBuffer, std::shared_ptr<Camera> pCamera);
 	
-	virtual void OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
-	virtual void OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
-	
+	virtual void ProcessMouseInput() { }
+	virtual void ProcessKeyboardInput() { }
+
 	void CheckObjectByObjectCollisions();
-	void CheckObjectByWallCollisions();
-	void CheckPlayerByWallCollisions();
-	void CheckObjectByBulletCollisions();
 
 	std::shared_ptr<GameObject>& PickObjectPointedByCursor(int xClient, int yClient, std::shared_ptr<Camera> pCamera);
 
 
-private:
+protected:
 	std::vector<std::shared_ptr<GameObject>> m_pObjects = {};
-	
-	std::shared_ptr<WallsObject>	m_pWallsObject = nullptr;
-	std::weak_ptr<GameObject>		m_pPlayer;
+	std::shared_ptr<Player>		m_pPlayer;
+
+	TAG_SCENE_NAME m_eSceneTag = TAG_SCENE_UNDEFINED;
 
 #ifdef _WITH_DRAW_AXIS
 	std::shared_ptr<GameObject>		m_pWorldAxis = NULL;
 #endif
 
-
-
-
 };
-

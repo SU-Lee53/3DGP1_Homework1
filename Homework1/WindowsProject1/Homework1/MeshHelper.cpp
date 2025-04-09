@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include <fstream>
 #include "MeshHelper.h"
 #include "Mesh.h"
 
@@ -302,4 +303,133 @@ void MeshHelper::CreateAirplaneMesh(std::shared_ptr<Mesh> pMesh, float fWidth, f
 	pMesh->SetPolygon(i++, pFace);
 
 	pMesh->m_xmOBB = BoundingOrientedBox(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(fx, fy, fz), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
+}
+
+void MeshHelper::AddCircleMeshToPolygonBuffer(std::vector<std::shared_ptr<struct Polygon>> pPolygons, float fRadius, int nVertices, const XMFLOAT2& center)
+{
+	float stride = nVertices / 360;
+
+	for (const int& deg : std::views::iota(1, nVertices) | std::views::transform([stride](int level) {return level * stride; })) {
+
+		float xCircle = fRadius * std::cos(deg);
+		float yCircle = fRadius * std::sin(deg);
+
+
+
+
+	}
+}
+
+BOOL MeshHelper::CreateMeshFromOBJFiles(std::shared_ptr<Mesh> pMesh, std::wstring_view wstrObjPath)
+{
+	std::ifstream in{ wstrObjPath.data()};
+
+	if (!in) return FALSE;
+
+	std::vector<XMFLOAT3> LoadedVertices;
+	std::vector<UINT> LoadedIndices;
+	while (in) {
+
+
+
+
+	}
+
+
+}
+
+void MeshHelper::CreateRollercoasterRailMesh(std::shared_ptr<Mesh> pMesh, float fWidth, float fCourseRadius, int nControlPoints, int nInterpolateBias)
+{
+	assert(nControlPoints != 0);
+
+	std::vector<XMFLOAT3> ControlPoints(nControlPoints);
+	std::vector<XMFLOAT3> Tangents(nControlPoints);
+	
+	// 1. Generate control points
+	auto GenerateControlPoint = [fCourseRadius, nControlPoints](int idx) {
+		XMFLOAT3 v;
+		v.x = fCourseRadius * XMScalarCos(XMConvertToRadians((360.0f / nControlPoints) * idx));
+		v.y = fCourseRadius * XMScalarSin(XMConvertToRadians((360.0f / nControlPoints) * idx));
+		v.z = RandomGenerator::GenerateRandomFloatInRange(5.0f, 30.0f);
+		return v;
+	};
+
+	for (int i = 0; i < nControlPoints; ++i) {
+		ControlPoints[i] = GenerateControlPoint(i);
+	}
+
+
+	// 2. Generate tangent automatically
+	XMStoreFloat3(&Tangents[0], XMVectorZero());
+	XMStoreFloat3(&Tangents[nControlPoints - 1], XMVectorZero());
+
+	int count = 1;
+	for (auto& [v1, v2, v3] : ControlPoints | std::views::adjacent<3>) {
+		// Calculate tangent of v2
+		XMVECTOR xmvCP1 = XMLoadFloat3(&v1);
+		XMVECTOR xmvCP3 = XMLoadFloat3(&v3);
+
+		XMStoreFloat3(&Tangents[count++], XMVectorScale(XMVectorSubtract(xmvCP1, xmvCP3), 0.5f));
+	}
+
+	// 3. Generate spline vertex
+
+	std::vector<Vertex> SplineVertices;
+
+	for (int i = 0; i < nControlPoints - 1; ++i) {
+		XMVECTOR xmvControlPoint1 = XMLoadFloat3(&ControlPoints[i]);
+		XMVECTOR xmvControlPoint2 = XMLoadFloat3(&ControlPoints[i + 1]);
+		XMVECTOR xmvTangent1 = XMLoadFloat3(&Tangents[i]);
+		XMVECTOR xmvTangent2 = XMLoadFloat3(&Tangents[i + 1]);
+
+		for (int j = 0; j < nInterpolateBias; j++) {
+			float t = (float)j / nInterpolateBias;
+			XMVECTOR xmvPoint = XMVectorHermite(xmvControlPoint1, xmvTangent1, xmvControlPoint2, xmvTangent2, t);
+			XMFLOAT3 xmf3Point;
+			XMStoreFloat3(&xmf3Point, xmvPoint);
+			SplineVertices.emplace_back(xmf3Point);
+		}
+	}
+
+	// add last ~ first spline 
+	{
+		XMVECTOR xmvControlPoint1 = XMLoadFloat3(&ControlPoints.back());
+		XMVECTOR xmvControlPoint2 = XMLoadFloat3(&ControlPoints.front());
+		XMVECTOR xmvTangent1 = XMLoadFloat3(&Tangents.back());
+		XMVECTOR xmvTangent2 = XMLoadFloat3(&Tangents.front());
+
+		for (int j = 0; j <= nInterpolateBias; j++) {
+			float t = (float)j / nInterpolateBias;
+			XMVECTOR xmvPoint = XMVectorHermite(xmvControlPoint1, xmvTangent1, xmvControlPoint2, xmvTangent2, t);
+			XMFLOAT3 xmf3Point;
+			XMStoreFloat3(&xmf3Point, xmvPoint);
+			SplineVertices.emplace_back(xmf3Point);
+		}
+	}
+
+	// For test : Draw Spline like line strip
+	std::shared_ptr<struct Polygon> pLineStrip = std::make_shared<struct Polygon>(SplineVertices.size());
+	for (const auto& [index, point] : std::views::enumerate(SplineVertices)) {
+		pLineStrip->SetVertex(index, point);
+	}
+
+	pMesh->SetPolygon(1, pLineStrip);
+
+
+	// 이후 계획
+
+	/*
+
+		  v0 ? ----------- ? v3
+	         |             |    
+		p[i] ? ----------- ? p[i+1]
+	         |             |
+		  v1 ? ----------- ? v2
+
+		  v0, v1 : normalize(cross(p[i+1] - p[i], up)) 하여 방향을 찾고 너비만큼의 간격으로 점을 찾으면 됨 (+- 방향 * (width / 2))
+		  v2, v3 : normalize(cross(p[i+2] - p[i+1], up)) 하여 방향을 찾고 적절한 너비만큼의 간격으로 점을 찾으면 됨 (+- 방향 * (width / 2))
+
+	*/
+
+
 }

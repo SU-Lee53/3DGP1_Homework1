@@ -13,81 +13,171 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="소스 파일\Scenes">
+      <UniqueIdentifier>{2ef02da4-1201-4ff8-894e-a08d732f64b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Scenes\Scene Base">
+      <UniqueIdentifier>{90f41e85-c6a6-416d-be0a-7d77bc5909c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameObject">
+      <UniqueIdentifier>{9142126c-2041-4734-bc6b-b82b95a6899b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameObject\GameObject Base">
+      <UniqueIdentifier>{65a76421-c903-4091-a2bf-5ad5f094f348}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameObject\Player">
+      <UniqueIdentifier>{f872ec49-d98f-4e9a-b7b8-7a1c8bd9a128}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameObject\Player\Player Base">
+      <UniqueIdentifier>{a206fcac-7bf7-4df1-aebe-20f3f743d15d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Camera">
+      <UniqueIdentifier>{02f26f99-ed7b-49e7-9fcc-95c5c927877e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\GameFramework">
+      <UniqueIdentifier>{7b6afe37-e858-4e78-9592-a53ca5bd57e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Graphics Pipeline">
+      <UniqueIdentifier>{fb886d76-6b8b-4a02-b361-2b8d2082b99b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Mesh">
+      <UniqueIdentifier>{b19a0b7b-a522-437e-af23-8c0aeb8cc42f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Main Entry">
+      <UniqueIdentifier>{eb41e47b-9008-4b84-842e-d60597893b83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Utils">
+      <UniqueIdentifier>{859c5cfb-8699-4a21-bbb7-ee307094f607}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\pch">
+      <UniqueIdentifier>{0043c825-4f0b-4f5d-b359-70550679a8e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\etc headers">
+      <UniqueIdentifier>{ddd84b02-6f42-47f1-9807-b60bffd22edf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Managers">
+      <UniqueIdentifier>{c8412dee-6d45-4755-a1d1-a61338fb66a1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="targetver.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Resource.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Homework1.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="GraphicsPipeline.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Mesh.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="MeshHelper.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="stdafx.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="XMMathHelper.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="GameFramework.h">
-      <Filter>헤더 파일</Filter>
+    <ClInclude Include="Scene.h">
+      <Filter>소스 파일\Scenes\Scene Base</Filter>
     </ClInclude>
     <ClInclude Include="GameObject.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>소스 파일\GameObject\GameObject Base</Filter>
+    </ClInclude>
+    <ClInclude Include="GameFramework.h">
+      <Filter>소스 파일\GameFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>소스 파일\Camera</Filter>
     </ClInclude>
     <ClInclude Include="GameTimer.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>소스 파일\GameFramework</Filter>
     </ClInclude>
-    <ClInclude Include="Scene.h">
-      <Filter>헤더 파일</Filter>
+    <ClInclude Include="GraphicsPipeline.h">
+      <Filter>소스 파일\Graphics Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshHelper.h">
+      <Filter>소스 파일\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>소스 파일\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Homework1.h">
+      <Filter>소스 파일\Main Entry</Filter>
     </ClInclude>
     <ClInclude Include="RandomGenerator.h">
+      <Filter>소스 파일\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="XMMathHelper.h">
+      <Filter>소스 파일\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>소스 파일\pch</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>헤더 파일\etc headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>헤더 파일\etc headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Level1Scene.h">
+      <Filter>소스 파일\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Level2Scene.h">
+      <Filter>소스 파일\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuScene.h">
+      <Filter>소스 파일\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleScene.h">
+      <Filter>소스 파일\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>소스 파일\GameObject\Player\Player Base</Filter>
+    </ClInclude>
+    <ClInclude Include="FirstPersonPlayer.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Defines.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="InputManager.h">
+      <Filter>소스 파일\Managers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Homework1.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Mesh.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="MeshHelper.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="GameFramework.cpp">
-      <Filter>소스 파일</Filter>
+    <ClCompile Include="Scene.cpp">
+      <Filter>소스 파일\Scenes\Scene Base</Filter>
     </ClCompile>
     <ClCompile Include="GameObject.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\GameObject\GameObject Base</Filter>
+    </ClCompile>
+    <ClCompile Include="GameFramework.cpp">
+      <Filter>소스 파일\GameFramework</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>소스 파일\Camera</Filter>
     </ClCompile>
     <ClCompile Include="GameTimer.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\GameFramework</Filter>
     </ClCompile>
     <ClCompile Include="GraphicsPipeline.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\Graphics Pipeline</Filter>
     </ClCompile>
-    <ClCompile Include="Scene.cpp">
-      <Filter>소스 파일</Filter>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>소스 파일\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshHelper.cpp">
+      <Filter>소스 파일\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Homework1.cpp">
+      <Filter>소스 파일\Main Entry</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
+      <Filter>소스 파일\pch</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>소스 파일\GameObject\Player\Player Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Level1Scene.cpp">
+      <Filter>소스 파일\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Level2Scene.cpp">
+      <Filter>소스 파일\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="MenuScene.cpp">
+      <Filter>소스 파일\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleScene.cpp">
+      <Filter>소스 파일\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="FirstPersonPlayer.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="InputManager.cpp">
+      <Filter>소스 파일\Managers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -3,6 +3,7 @@
 struct Vertex {
 	Vertex() = default;
 	Vertex(float x, float y, float z) { m_xmf3Position = XMFLOAT3{ x,y,z }; }
+	Vertex(const XMFLOAT3& xmf3Position) { m_xmf3Position = xmf3Position; }
 
 	XMFLOAT3 m_xmf3Position{ 0.f, 0.f, 0.f };
 };
@@ -46,7 +47,10 @@ protected:
 
 	BoundingOrientedBox						m_xmOBB = {};
 
-	friend class MeshHelper;
+	friend void MeshHelper::CreateCubeMesh(std::shared_ptr<Mesh> pMesh, float fWidth, float fHeight, float fDepth);
+	friend void MeshHelper::CreateWallMesh(std::shared_ptr<Mesh> pMesh, float fWidth, float fHeight, float fDepth, int nSubRects);
+	friend void MeshHelper::CreateAirplaneMesh(std::shared_ptr<Mesh> pMesh, float fWidth, float fHeight, float fDepth);
+	friend BOOL MeshHelper::CreateMeshFromOBJFiles(std::shared_ptr<Mesh> pMesh, std::wstring_view wstrObjPath);
 };
 
 // ==========

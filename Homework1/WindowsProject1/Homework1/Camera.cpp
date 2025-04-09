@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Camera.h"
-#include "Player.h"
+//#include "Player.h"
 
 void Camera::SetFOVAngle(float fFOVAngle)
 {

@@ -21,6 +21,7 @@
 // STL
 #include <string>
 #include <vector>
+#include <array>
 #include <algorithm>
 #include <memory>
 #include <ranges>
@@ -56,6 +57,9 @@ inline bool IsEqual(float fA, float fB) { return (::IsZero(fA - fB)); }
 
 
 // Additional Headers
+#include "Defines.h"
+
+#include "InputManager.h"
 #include "RandomGenerator.h"
 #include "XMMathHelper.h"
 #include "MeshHelper.h"

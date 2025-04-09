@@ -2,14 +2,23 @@
 #include "GameFramework.h"
 #include "Mesh.h"
 #include "Camera.h"
-#include "Scene.h"
+#include "Player.h"
+
+#include "TitleScene.h"
+#include "MenuScene.h"
+#include "Level1Scene.h"
+#include "Level2Scene.h"
 
 using namespace std;
+
+std::shared_ptr<Scene> GameFramework::m_pCurrentScene = nullptr;
+std::array<std::shared_ptr<Scene>, TAG_SCENE_COUNT> GameFramework::m_pScenes = {};
 
 void GameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 {
 	m_hInstance = hInstance;
 	m_hWnd = hMainWnd;
+	INPUT.Initialize(m_hWnd);
 
 	BuildFrameBuffer();
 
@@ -30,6 +39,8 @@ void GameFramework::Update()
 {
 	m_GameTimer.Tick(60.0f);
 
+	INPUT.Update();
+
 	ProcessInput();
 	AnimateObjects();
 }
@@ -39,10 +50,9 @@ void GameFramework::Draw()
 	ClearFrameBuffer(RGB(255, 255, 255));
 
 	//std::shared_ptr<Camera> pCamera = m_pPlayer->GetCamera();
-	if (m_pScene) {
-		//m_pScene->Render(m_hDCFrameBuffer, pCamera);
+	if (m_pCurrentScene) {
+		m_pCurrentScene->Render(m_hDCFrameBuffer, nullptr);
 	}
-
 
 	PresentFrameBuffer();
 
@@ -93,9 +103,22 @@ void GameFramework::BuildObjects()
 
 	pCamera->GenerateOrthographicProjectionMatrix(1.01f, 50.0f, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
 
-	m_pScene = make_shared<Scene>(m_pPlayer);
-	m_pScene->BuildObjects();
+	m_pCurrentScene = make_shared<Scene>();
+	m_pCurrentScene->BuildObjects();
+
+	// Build Scenes
+	{
+		m_pScenes[TAG_SCENE_TITLE] = make_shared<TitleScene>();
+		m_pScenes[TAG_SCENE_MENU] = make_shared<MenuScene>();
+		m_pScenes[TAG_SCENE_LEVEL1] = make_shared<Level1Scene>();
+		m_pScenes[TAG_SCENE_LEVEL2] = make_shared<Level2Scene>();
+
+		m_pCurrentScene = m_pScenes[TAG_SCENE_LEVEL1];
+		m_pCurrentScene->BuildObjects();
+	}
+
 }
+
 
 void GameFramework::ReleaseObjects()
 {
@@ -105,16 +128,29 @@ void GameFramework::ReleaseObjects()
 
 void GameFramework::ProcessInput()
 {
+	if (INPUT.GetButtonDown('1')) {
+		ChangeScene(TAG_SCENE_TITLE);
+	}
+
+	if (INPUT.GetButtonDown('2')) {
+		ChangeScene(TAG_SCENE_MENU);
+	}
+	
+	if (INPUT.GetButtonDown('3')) {
+		ChangeScene(TAG_SCENE_LEVEL1);
+	}
+	
+	if (INPUT.GetButtonDown('4')) {
+		ChangeScene(TAG_SCENE_LEVEL2);
+	}
+
 }
 
 void GameFramework::AnimateObjects()
 {
 	float fTimeElapsed = m_GameTimer.GetTimeElapsed();
-	if (m_pPlayer) {
-		//m_pPlayer->Animate(fTimeElapsed);
-	}
-	if (m_pScene) {
-		m_pScene->Animate(fTimeElapsed);
+	if (m_pCurrentScene) {
+		m_pCurrentScene->Animate(fTimeElapsed);
 	}
 }
 
@@ -124,55 +160,15 @@ void GameFramework::FrameAdvance()
 	Draw();
 }
 
-void GameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
+BOOL GameFramework::ChangeScene(TAG_SCENE_NAME eTargetSceneTag)
 {
-	if (m_pScene) m_pScene->OnProcessingMouseMessage(hWnd, nMessageID, wParam, lParam);
+	m_pCurrentScene->ReleaseObjects();
+	m_pCurrentScene.reset();
 
-	switch (nMessageID)
-	{
-	case WM_RBUTTONDOWN:
-	case WM_LBUTTONDOWN:
-		::SetCapture(hWnd);
-		::GetCursorPos(&m_ptOldCursorPos);
-		//if (nMessageID == WM_RBUTTONDOWN) 
-		//	m_pLockedObject = m_pScene->PickObjectPointedByCursor(LOWORD(lParam), HIWORD(lParam), m_pPlayer->GetCamera());
-		break;
-	case WM_LBUTTONUP:
-	case WM_RBUTTONUP:
-		::ReleaseCapture();
-		break;
-	case WM_MOUSEMOVE:
-		break;
-	default:
-		break;
-	}
-}
+	m_pCurrentScene = m_pScenes[eTargetSceneTag];
+	m_pCurrentScene->BuildObjects();
 
-void GameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
-{
-	if (m_pScene) m_pScene->OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
-
-	switch (nMessageID)
-	{
-	case WM_KEYDOWN:
-		switch (wParam)
-		{
-		case VK_ESCAPE:
-			::PostQuitMessage(0);
-			break;
-		case VK_RETURN:
-			break;
-		case VK_CONTROL:
-			m_pLockedObject = NULL;
-			break;
-		default:
-			m_pScene->OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
-			break;
-		}
-		break;
-	default:
-		break;
-	}
+	return TRUE;
 }
 
 LRESULT GameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
@@ -188,17 +184,6 @@ LRESULT GameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMessageID, WPA
 		break;
 	}
 	case WM_SIZE:
-		break;
-	case WM_LBUTTONDOWN:
-	case WM_RBUTTONDOWN:
-	case WM_LBUTTONUP:
-	case WM_RBUTTONUP:
-	case WM_MOUSEMOVE:
-		OnProcessingMouseMessage(hWnd, nMessageID, wParam, lParam);
-		break;
-	case WM_KEYDOWN:
-	case WM_KEYUP:
-		OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
 		break;
 	}
 	return(0);

@@ -1,9 +1,10 @@
 #pragma once
 #include "GameTimer.h"
+#include "Scene.h"
 
 class Player;
-class Scene;
 class GameObject;
+
 
 class GameFramework {
 public:
@@ -29,9 +30,9 @@ private:
 	void AnimateObjects();
 	void FrameAdvance();
 
+	static BOOL ChangeScene(TAG_SCENE_NAME eTargetSceneTag);
+
 public:
-	void OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
-	void OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 	LRESULT CALLBACK OnProcessingWindowMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 
 private:
@@ -52,9 +53,11 @@ private:
 
 	_TCHAR		m_pszFrameRate[50] = {};
 
-	std::shared_ptr<Player>			m_pPlayer = nullptr;
-	std::shared_ptr<Scene>			m_pScene = nullptr;
 	std::shared_ptr<GameObject>		m_pLockedObject = nullptr;	// Lock On'd GameObject
 
-};
 
+private:
+	// Manages Scenes
+	static std::shared_ptr<Scene> m_pCurrentScene;
+	static std::array<std::shared_ptr<Scene>, TAG_SCENE_COUNT> m_pScenes;
+};
