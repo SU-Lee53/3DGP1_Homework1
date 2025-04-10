@@ -9,7 +9,7 @@ void TitleScene::ReleaseObjects()
 {
 }
 
-void TitleScene::Animate(float fTimeElapsed)
+void TitleScene::Update(float fTimeElapsed)
 {
 }
 

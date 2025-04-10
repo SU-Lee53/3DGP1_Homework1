@@ -9,7 +9,7 @@ void Level2Scene::ReleaseObjects()
 {
 }
 
-void Level2Scene::Animate(float fTimeElapsed)
+void Level2Scene::Update(float fTimeElapsed)
 {
 }
 
@@ -25,4 +25,5 @@ void Level2Scene::ProcessMouseInput()
 
 void Level2Scene::ProcessKeyboardInput()
 {
+
 }

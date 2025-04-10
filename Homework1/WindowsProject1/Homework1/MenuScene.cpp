@@ -9,7 +9,7 @@ void MenuScene::ReleaseObjects()
 {
 }
 
-void MenuScene::Animate(float fTimeElapsed)
+void MenuScene::Update(float fTimeElapsed)
 {
 }
 

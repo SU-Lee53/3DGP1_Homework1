@@ -13,7 +13,7 @@ public:
 	virtual void BuildObjects() override;
 	virtual void ReleaseObjects() override;
 
-	virtual void Animate(float fTimeElapsed) override;
+	virtual void Update(float fTimeElapsed) override;
 	virtual void Render(HDC hDCFrameBuffer, std::shared_ptr<Camera> pCamera) override;
 
 public:

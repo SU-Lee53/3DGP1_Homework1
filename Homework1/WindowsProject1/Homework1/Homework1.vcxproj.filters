@@ -58,6 +58,9 @@
     <Filter Include="소스 파일\Managers">
       <UniqueIdentifier>{c8412dee-6d45-4755-a1d1-a61338fb66a1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\GameObject\Object Components">
+      <UniqueIdentifier>{5c48c0ef-bcb5-4e91-b9cb-c9fcafe9d78b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -126,6 +129,9 @@
     <ClInclude Include="InputManager.h">
       <Filter>소스 파일\Managers</Filter>
     </ClInclude>
+    <ClInclude Include="Transform.h">
+      <Filter>소스 파일\GameObject\Object Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Scene.cpp">
@@ -178,6 +184,9 @@
     </ClCompile>
     <ClCompile Include="InputManager.cpp">
       <Filter>소스 파일\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Transform.cpp">
+      <Filter>소스 파일\GameObject\Object Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

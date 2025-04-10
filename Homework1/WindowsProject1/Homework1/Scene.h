@@ -28,7 +28,7 @@ public:
 	virtual void BuildObjects();
 	virtual void ReleaseObjects();
 
-	virtual void Animate(float fElapsedTime);
+	virtual void Update(float fElapsedTime);
 	virtual void Render(HDC hDCFrameBuffer, std::shared_ptr<Camera> pCamera);
 	
 	virtual void ProcessMouseInput() { }

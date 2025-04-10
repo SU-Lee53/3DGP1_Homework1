@@ -150,7 +150,7 @@ void GameFramework::AnimateObjects()
 {
 	float fTimeElapsed = m_GameTimer.GetTimeElapsed();
 	if (m_pCurrentScene) {
-		m_pCurrentScene->Animate(fTimeElapsed);
+		m_pCurrentScene->Update(fTimeElapsed);
 	}
 }
 

@@ -15,9 +15,9 @@ void Scene::ReleaseObjects()
 {
 }
 
-void Scene::Animate(float fElapsedTime)
+void Scene::Update(float fElapsedTime)
 {
-	// Animate
+	// Update
 
 	CheckObjectByObjectCollisions();
 }
@@ -56,7 +56,7 @@ void Scene::CheckObjectByObjectCollisions()
 		}
 	}
 	
-	for (shared_ptr<GameObject>& pObj : m_pObjects) {
+	/*for (shared_ptr<GameObject>& pObj : m_pObjects) {
 		if (pObj->GetCollidedObject()) {
 			XMFLOAT3 xmf3MovingDirection = pObj->GetMovingDirection();
 			float fMovingSpeed = pObj->GetMovingSpeed();
@@ -68,7 +68,7 @@ void Scene::CheckObjectByObjectCollisions()
 			pObj->SetCollidedObject(nullptr);
 		}
 
-	}
+	}*/
 
 }
 
