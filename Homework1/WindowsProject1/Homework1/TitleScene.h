@@ -14,7 +14,7 @@ public:
 	virtual void ReleaseObjects() override;
 
 	virtual void Update(float fTimeElapsed) override;
-	virtual void Render(HDC hDCFrameBuffer, std::shared_ptr<Camera> pCamera) override;
+	virtual void Render(HDC hDCFrameBuffer) override;
 
 public:
 	virtual void ProcessMouseInput() override;

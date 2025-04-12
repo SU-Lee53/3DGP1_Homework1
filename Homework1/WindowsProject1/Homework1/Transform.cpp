@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Transform.h"
 
-void Transform::SetPosition(const XMFLOAT3& xmf3NewPosition)
+BOOL Transform::SetPosition(const XMFLOAT3& xmf3NewPosition)
 {
 	XMVECTOR xmvPosition = XMLoadFloat3(&m_xmf3Position);
 	XMVECTOR xmvNewPosition = XMLoadFloat3(&xmf3NewPosition);
@@ -10,9 +10,11 @@ void Transform::SetPosition(const XMFLOAT3& xmf3NewPosition)
 		XMStoreFloat3(&m_xmf3Position, xmvNewPosition);
 		m_bPositionUpdated = TRUE;
 	}
+
+	return m_bPositionUpdated;
 }
 
-void Transform::SetPosition(const XMVECTOR& xmvNewPosition)
+BOOL Transform::SetPosition(const XMVECTOR& xmvNewPosition)
 {
 	XMVECTOR xmvPosition = XMLoadFloat3(&m_xmf3Position);
 
@@ -20,57 +22,65 @@ void Transform::SetPosition(const XMVECTOR& xmvNewPosition)
 		XMStoreFloat3(&m_xmf3Position, xmvNewPosition);
 		m_bPositionUpdated = TRUE;
 	}
+
+	return m_bPositionUpdated;
 }
 
-void Transform::SetPosition(float fXPos, float fYPos, float fZPos)
+BOOL Transform::SetPosition(float fXPos, float fYPos, float fZPos)
 {
 	XMVECTOR xmvPosition = XMLoadFloat3(&m_xmf3Position);
 	XMVECTOR xmvNewPosition = XMVectorSet(fXPos, fYPos, fZPos, 1.0f);
 
-	if (!XMVector3Equal) {
+	if (!XMVector3Equal(xmvPosition, xmvNewPosition)) {
 		XMStoreFloat3(&m_xmf3Position, xmvNewPosition);
 		m_bPositionUpdated = TRUE;
 	}
+
+	return m_bPositionUpdated;
 }
 
-void Transform::AddPosition(const XMFLOAT3& xmf3AddPosition)
+BOOL Transform::AddPosition(const XMFLOAT3& xmf3AddPosition)
 {
 	XMVECTOR xmvPosition = XMLoadFloat3(&m_xmf3Position);
 	XMVECTOR xmvAddPosition = XMLoadFloat3(&xmf3AddPosition);
 	XMStoreFloat3(&m_xmf3Position, XMVectorAdd(xmvPosition, xmvAddPosition));
 	m_bPositionUpdated = TRUE;
+	return m_bPositionUpdated;
 }
 
-void Transform::AddPosition(const XMVECTOR& xmvAddPosition)
+BOOL Transform::AddPosition(const XMVECTOR& xmvAddPosition)
 {
 	XMVECTOR xmvPosition = XMLoadFloat3(&m_xmf3Position);
 	XMStoreFloat3(&m_xmf3Position, XMVectorAdd(xmvPosition, xmvAddPosition));
 	m_bPositionUpdated = TRUE;
+	return m_bPositionUpdated;
 }
 
-void Transform::AddPosition(float fXPos, float fYPos, float fZPos)
+BOOL Transform::AddPosition(float fXPos, float fYPos, float fZPos)
 {
 	XMVECTOR xmvPosition = XMLoadFloat3(&m_xmf3Position);
 	XMVECTOR xmvAddPosition = XMVectorSet(fXPos, fYPos, fZPos, 1.0f);
 	XMStoreFloat3(&m_xmf3Position, XMVectorAdd(xmvPosition, xmvAddPosition));
 	m_bPositionUpdated = TRUE;
+	return m_bPositionUpdated;
 }
 
-void Transform::SetRotation(const XMFLOAT3& xmf3NewRotation)
+BOOL Transform::SetRotation(const XMFLOAT3& xmf3NewRotation)
 {
 	XMVECTOR xmvRotation = XMLoadFloat3(&m_xmf3Rotation);
 	XMVECTOR xmvNewRotation = XMLoadFloat3(&xmf3NewRotation);
 
 	if (!XMVector3Equal(xmvRotation, xmvNewRotation)) {
-		XMStoreFloat3(&m_xmf3Rotation, xmvNewRotation);
+		m_xmf3Rotation = xmf3NewRotation;
 		m_bRotationUpdated = TRUE;
 
-		UpdateQuaternion();
 		UpdateBasis();
 	}
+
+	return m_bRotationUpdated;
 }
 
-void Transform::SetRotation(const XMVECTOR& xmvNewRotation)
+BOOL Transform::SetRotation(const XMVECTOR& xmvNewRotation)
 {
 	XMVECTOR xmvRotation = XMLoadFloat3(&m_xmf3Rotation);
 
@@ -78,12 +88,13 @@ void Transform::SetRotation(const XMVECTOR& xmvNewRotation)
 		XMStoreFloat3(&m_xmf3Rotation, xmvNewRotation);
 		m_bRotationUpdated = TRUE;
 
-		UpdateQuaternion();
 		UpdateBasis();
 	}
+
+	return m_bRotationUpdated;
 }
 
-void Transform::SetRotation(float fPitch, float fYaw, float fRoll)
+BOOL Transform::SetRotation(float fPitch, float fYaw, float fRoll)
 {
 	XMVECTOR xmvRotation = XMLoadFloat3(&m_xmf3Rotation);
 	XMVECTOR xmvNewRotation = XMVectorSet(fPitch, fYaw, fRoll, 0.f);
@@ -92,45 +103,49 @@ void Transform::SetRotation(float fPitch, float fYaw, float fRoll)
 		XMStoreFloat3(&m_xmf3Rotation, xmvNewRotation);
 		m_bRotationUpdated = TRUE;
 
-		UpdateQuaternion();
 		UpdateBasis();
 	}
+
+	return m_bRotationUpdated;
 }
 
-void Transform::AddRotation(const XMFLOAT3& xmf3AddRotation)
+BOOL Transform::AddRotation(const XMFLOAT3& xmf3AddRotation)
 {
 	XMVECTOR xmvRotation = XMLoadFloat3(&m_xmf3Rotation);
 	XMVECTOR xmvAddRotation = XMLoadFloat3(&xmf3AddRotation);
 	XMStoreFloat3(&m_xmf3Rotation, XMVectorAdd(xmvRotation, xmvAddRotation));
 	m_bRotationUpdated = TRUE;
 
-	UpdateQuaternion();
 	UpdateBasis();
+
+	return m_bRotationUpdated;
 }
 
-void Transform::AddRotation(const XMVECTOR& xmvAddRotation)
+BOOL Transform::AddRotation(const XMVECTOR& xmvAddRotation)
 {
 	XMVECTOR xmvRotation = XMLoadFloat3(&m_xmf3Rotation);
 	XMStoreFloat3(&m_xmf3Rotation, XMVectorAdd(xmvRotation, xmvAddRotation));
 	m_bRotationUpdated = TRUE;
 
-	UpdateQuaternion();
 	UpdateBasis();
+
+	return m_bRotationUpdated;
 }
 
-void Transform::AddRotation(float fPitch, float fYaw, float fRoll)
+BOOL Transform::AddRotation(float fPitch, float fYaw, float fRoll)
 {
 	XMVECTOR xmvRotation = XMLoadFloat3(&m_xmf3Rotation);
 	XMVECTOR xmvAddRotation = XMVectorSet(fPitch, fYaw, fRoll, 0.f);
 	XMStoreFloat3(&m_xmf3Rotation, XMVectorAdd(xmvRotation, xmvAddRotation));
 	m_bRotationUpdated = TRUE;
 
-	UpdateQuaternion();
 	UpdateBasis();
+
+	return m_bRotationUpdated;
 }
 
 void Transform::Update()
-{
+{/*
 	if (m_bPositionUpdated) {
 		m_xmf4x4World._41 = m_xmf3Position.x; m_xmf4x4World._42 = m_xmf3Position.y; m_xmf4x4World._43 = m_xmf3Position.z;
 
@@ -143,19 +158,33 @@ void Transform::Update()
 		m_xmf4x4World._31 = m_xmf3Look.x; m_xmf4x4World._32 = m_xmf3Look.y; m_xmf4x4World._33 = m_xmf3Look.z;
 
 		m_bRotationUpdated = FALSE;
-	}
+	}*/
+
+	//float fPitch = XMConvertToRadians(m_xmf3Rotation.x);
+	//float fYaw = XMConvertToRadians(m_xmf3Rotation.y);
+	//float fRoll = XMConvertToRadians(m_xmf3Rotation.z);
+	//XMMATRIX xmmtxWorld;
+
+	XMMATRIX xmmtxRotX = XMMatrixRotationX(XMConvertToRadians(m_xmf3Rotation.x));
+	XMMATRIX xmmtxRotY = XMMatrixRotationY(XMConvertToRadians(m_xmf3Rotation.y));
+	XMMATRIX xmmtxRotZ = XMMatrixRotationZ(XMConvertToRadians(m_xmf3Rotation.z));
+	XMMATRIX xmmtxRotation = XMMatrixMultiply(XMMatrixMultiply(xmmtxRotX, xmmtxRotY), xmmtxRotZ);
+
+	XMMATRIX xmmtxWorld = XMMatrixMultiply(xmmtxRotation, XMMatrixTranslationFromVector(XMLoadFloat3(&m_xmf3Position)));
+
+	XMStoreFloat4x4(&m_xmf4x4World, xmmtxWorld);
 }
 
-void Transform::UpdateQuaternion()
-{
-	XMStoreFloat4(&m_xmf4RotationQuaternion, XMQuaternionRotationRollPitchYawFromVector(XMLoadFloat3(&m_xmf3Rotation)));
-}
 
 void Transform::UpdateBasis()
 {
-	XMMATRIX xmmtxRotate = XMMatrixRotationRollPitchYawFromVector(XMLoadFloat3(&m_xmf3Rotation));
-	XMVECTOR xmvLook = XMVector3Normalize(XMVector3TransformNormal(XMLoadFloat3(&m_xmf3Look), xmmtxRotate));
-	XMVECTOR xmvUp = XMVector3Normalize(XMVector3TransformNormal(XMLoadFloat3(&m_xmf3Up), xmmtxRotate));
+	float fPitch = XMConvertToRadians(m_xmf3Rotation.x);
+	float fYaw = XMConvertToRadians(m_xmf3Rotation.y);
+	float fRoll = XMConvertToRadians(m_xmf3Rotation.z);
+
+	XMMATRIX xmmtxRotate = XMMatrixRotationRollPitchYaw(fPitch, fYaw, fRoll);
+	XMVECTOR xmvLook = XMVector3Normalize(XMVector3TransformNormal(XMVectorSet(0.f, 0.f, 1.f, 0.f), xmmtxRotate));
+	XMVECTOR xmvUp = XMVector3Normalize(XMVector3TransformNormal(XMVectorSet(0.f, 1.f, 0.f, 0.f), xmmtxRotate));
 	XMVECTOR xmvRight = XMVector3Normalize(XMVector3Cross(xmvUp, xmvLook));
 
 	XMStoreFloat3(&m_xmf3Look, xmvLook);

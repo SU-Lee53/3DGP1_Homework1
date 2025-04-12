@@ -51,7 +51,7 @@ void GameFramework::Draw()
 
 	//std::shared_ptr<Camera> pCamera = m_pPlayer->GetCamera();
 	if (m_pCurrentScene) {
-		m_pCurrentScene->Render(m_hDCFrameBuffer, nullptr);
+		m_pCurrentScene->Render(m_hDCFrameBuffer);
 	}
 
 	PresentFrameBuffer();
@@ -96,16 +96,6 @@ void GameFramework::PresentFrameBuffer()
 
 void GameFramework::BuildObjects()
 {
-	shared_ptr<Camera> pCamera = make_shared<Camera>();
-	pCamera->SetViewport(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
-	pCamera->GeneratePerspectiveProjectionMatrix(1.01f, 500.0f, 60.0f);
-	pCamera->SetFOVAngle(60.0f);
-
-	pCamera->GenerateOrthographicProjectionMatrix(1.01f, 50.0f, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
-
-	m_pCurrentScene = make_shared<Scene>();
-	m_pCurrentScene->BuildObjects();
-
 	// Build Scenes
 	{
 		m_pScenes[TAG_SCENE_TITLE] = make_shared<TitleScene>();

@@ -29,7 +29,7 @@ public:
 	virtual void ReleaseObjects();
 
 	virtual void Update(float fElapsedTime);
-	virtual void Render(HDC hDCFrameBuffer, std::shared_ptr<Camera> pCamera);
+	virtual void Render(HDC hDCFrameBuffer);
 	
 	virtual void ProcessMouseInput() { }
 	virtual void ProcessKeyboardInput() { }
@@ -44,9 +44,5 @@ protected:
 	std::shared_ptr<Player>		m_pPlayer;
 
 	TAG_SCENE_NAME m_eSceneTag = TAG_SCENE_UNDEFINED;
-
-#ifdef _WITH_DRAW_AXIS
-	std::shared_ptr<GameObject>		m_pWorldAxis = NULL;
-#endif
 
 };

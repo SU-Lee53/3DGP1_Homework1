@@ -3,7 +3,7 @@
 
 class GameObject {
 public:
-	GameObject() {}
+	GameObject();
 	virtual ~GameObject() { }
 
 public:
@@ -27,13 +27,15 @@ public:
 
 	void Render(HDC hDCFrameBuffer, XMFLOAT4X4& pxmf4x4World, std::shared_ptr<Mesh> pMesh) const;
 
-	virtual void OnUpdateTransform() {}
+	virtual void Initialize();
 	virtual void Update(float fElapsedTime);
 	virtual void Render(HDC hDCFrameBuffer, std::shared_ptr<class Camera> pCamera);
 
 	void GenerateRayForPicking(XMVECTOR& xmvPickPosition, const XMMATRIX& xmmtxView, XMVECTOR& xmvPickRayOrigin, XMVECTOR& xmvPickRayDirection) const;
 	int PickObjectByRayIntersection(XMVECTOR& xmvPickPosition, const XMMATRIX& xmmtxView, float& fHitDistance) const;
 
+
+	std::shared_ptr<Transform>& GetTransform() { return m_pTransform; }
 
 protected:
 	BOOL							m_bActive = TRUE;

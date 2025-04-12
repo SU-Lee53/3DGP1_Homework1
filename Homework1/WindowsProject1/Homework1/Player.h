@@ -16,8 +16,10 @@ public:
 	void Rotate(float fPitch = 0.0f, float fYaw = 0.0f, float fRoll = 0.0f);
 
 	void SetCameraOffset(const XMFLOAT3& xmf3CameraOffset);
+	XMFLOAT3& GetCameraOffset() { return m_xmf3CameraOffset; }
 
-	virtual void Update(float fTimeElapsed = 0.016f);
+	virtual void Initialize() override;
+	virtual void Update(float fTimeElapsed) override;
 
 	virtual void ProcessMouseInput() {};
 	virtual void ProcessKeyboardInput() {};
@@ -25,8 +27,6 @@ public:
 
 	void SetCamera(std::shared_ptr<Camera> pCamera) { m_pCamera = pCamera; }
 	std::shared_ptr<Camera>& GetCamera() { return m_pCamera; }
-
-	std::shared_ptr<Transform>& GetTransform() { return m_pTransform; }
 
 protected:
 	virtual void UpdatePlayerCamera(float fTimeElapsed);

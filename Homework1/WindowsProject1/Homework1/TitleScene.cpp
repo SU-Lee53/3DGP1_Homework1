@@ -13,7 +13,7 @@ void TitleScene::Update(float fTimeElapsed)
 {
 }
 
-void TitleScene::Render(HDC hDCFrameBuffer, std::shared_ptr<Camera> pCamera)
+void TitleScene::Render(HDC hDCFrameBuffer)
 {
 	std::wstring wstrOutText{ L"TitleScene" };
 	::TextOut(hDCFrameBuffer, 100, 100, wstrOutText.c_str(), wstrOutText.length());

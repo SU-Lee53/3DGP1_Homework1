@@ -24,7 +24,6 @@ void Player::Move(const XMFLOAT3& xmf3Shift, BOOL bUpdateVelocity)
 	}
 	else {
 		m_pTransform->SetPosition(Vector3::Add(xmf3Shift, m_pTransform->GetPosition()));
-		m_pCamera->Move(xmf3Shift);
 	}
 }
 
@@ -41,8 +40,11 @@ void Player::Rotate(float fPitch, float fYaw, float fRoll)
 void Player::SetCameraOffset(const XMFLOAT3& xmf3CameraOffset)
 {
 	m_xmf3CameraOffset = xmf3CameraOffset;
-	m_pCamera->SetLookAt(Vector3::Add(m_pTransform->GetPosition(), m_xmf3CameraOffset), m_pTransform->GetPosition(), m_pTransform->GetUp());
-	m_pCamera->GenerateViewMatrix();
+	//m_pCamera->SetLookAt(Vector3::Add(m_pTransform->GetPosition(), m_xmf3CameraOffset), m_pTransform->GetPosition(), m_pTransform->GetUp());
+}
+
+void Player::Initialize()
+{
 }
 
 void Player::Update(float fElapsedTime)
@@ -50,7 +52,6 @@ void Player::Update(float fElapsedTime)
 	Move(m_xmf3Velocity, FALSE);
 
 	UpdatePlayerCamera(fElapsedTime);
-	m_pCamera->GenerateViewMatrix();
 
 	XMFLOAT3 xmf3Deceleration = Vector3::Normalize(Vector3::ScalarProduct(m_xmf3Velocity, -1.0f));
 	float fLength = Vector3::Length(m_xmf3Velocity);
@@ -68,4 +69,5 @@ void Player::Render(HDC hDCFrameBuffer, std::shared_ptr<Camera> pCamera)
 
 void Player::UpdatePlayerCamera(float fTimeElapsed)
 {
+	m_pCamera->Update();
 }

@@ -15,60 +15,73 @@ struct Viewport {
 };
 
 class Player;
+class Transform;
 
 class Camera {
 public:
-	Viewport& GetViewport() { return m_Viewport; }
-	XMFLOAT4X4& GetViewPerspectiveProjectMatrix() { return m_xmf4x4ViewPerspectiveProject; }
-	XMFLOAT4X4& GetViewOrthographicProjectMatrix() { return m_xmf4x4ViewOrthographicProject; }
-	XMFLOAT4X4& GetPerspectiveProjectMatrix() { return m_xmf4x4PerspectiveProject; }
-	XMFLOAT4X4& GetViewMatrix() { return m_xmf4x4View; }
+	Camera();
+	~Camera();
 
-
-	void SetFOVAngle(float fFOVAngle);
-
-	void SetLookAt(const XMFLOAT3& xmf3LookAt, const XMFLOAT3& xmf3Up);
-	void SetLookAt(const XMFLOAT3& vPosition, const XMFLOAT3& xmf3LookAt, const XMFLOAT3& xmf3Up);
-
+public:
+	void SetFOVAngle(float fAngle = 90.0f);
 	void SetViewport(int xTopLeft, int yTopLeft, int nWidth, int nHeight);
-	void SetPosition(const XMFLOAT3& xmf3Positon) { m_xmf3Position = xmf3Positon; }
-	XMFLOAT3& GetPosition() { return m_xmf3Position; }
+	void SetNearZ(float fNearZ);
+	void SetFarZ(float fFarZ);
 
+	void SetPosition(const XMFLOAT3& xmf3NewPosition);
+	void SetPosition(const XMVECTOR& xmvNewPosition);
+	void SetPosition(float fXPos, float fYPos, float fZPos);
 
-	void GenerateViewMatrix();
-	void GeneratePerspectiveProjectionMatrix(float fNearPlaneDistance, float fFarPlaneDistance, float fFOVAngle);
-	void GenerateOrthographicProjectionMatrix(float fNearPlaneDistance, float fFarPlaneDistance, float fWidth, float fHeight);
-	void Move(const XMFLOAT3& xmf3Shift);
-	void Move(float x, float y, float z);
-	void Rotate(float fPitch = 0.0f, float fYaw = 0.0f, float fRoll = 0.0f);
-	void Update(std::shared_ptr<Player> pPlayer, const XMFLOAT3& xmf3LookAt, float fTimeElapsed = 0.016f);
+	void SetRotation(const XMFLOAT3& xmf3NewRotation);
+	void SetRotation(const XMVECTOR& xmvNewRotation);
+	void SetRotation(float fPitch, float fYaw, float fRoll);
+
+	Viewport& GetViewport() { return m_Viewport; }
+	XMFLOAT4X4& GetViewMatrix() { return m_xmf4x4View; }
+	XMFLOAT4X4& GetInverseViewMatrix() { return m_xmf4x4View; }
+	XMFLOAT4X4& GetPerspectiveProjectMatrix() { return m_xmf4x4PerspectiveProject; }
+	XMFLOAT4X4& GetViewPerspectiveProjectMatrix();
+	XMFLOAT4X4& GetOrthographicProjectMatrix() { return m_xmf4x4OrthographicProject; }
+	XMFLOAT4X4& GetViewOrthographicProjectMatrix();
+	std::shared_ptr<Transform>& GetTransform() { return m_pTransform; }
+
+public:
+	void Initialize(std::shared_ptr<Player> pOwnerPlayer);
+	void Update();
 
 	bool IsInFrustum(const BoundingOrientedBox& xmBoundingBox) const;
 
 private:
-	XMFLOAT3 m_xmf3Position = XMFLOAT3{ 0.f, 0.f, 0.f };
-	XMFLOAT3 m_xmf3Right = XMFLOAT3{ 1.f, 0.f, 0.f };
-	XMFLOAT3 m_xmf3Up = XMFLOAT3{ 0.f, 1.f, 0.f };
-	XMFLOAT3 m_xmf3Look = XMFLOAT3{ 0.f ,0.f, 1.f };
-
-	float m_fFOVAngle = 90.0f;
-	float m_fProjectRectDistance = 1.0f;
-
-	float m_fAspectRatio = float(FRAME_BUFFER_WIDTH) / float(FRAME_BUFFER_HEIGHT);
-
-	BoundingFrustum		m_xmFrustumView = {};
-	BoundingFrustum		m_xmFrustumWorld = {};
-	XMFLOAT4X4			m_xmf4x4InverseView = Matrix4x4::Identity();
+	void GenerateViewMatrix();
+	void GeneratePerspectiveProjectionMatrix();
+	void GenerateOrthographicProjectionMatrix();
 
 private:
-	XMFLOAT4X4			m_xmf4x4View = Matrix4x4::Identity();
-	XMFLOAT4X4			m_xmf4x4PerspectiveProject = Matrix4x4::Identity();
-	XMFLOAT4X4			m_xmf4x4ViewPerspectiveProject = Matrix4x4::Identity();
+	std::shared_ptr<Transform> m_pTransform = nullptr;
 
-	XMFLOAT4X4			m_xmf4x4OrthographicProject = Matrix4x4::Identity();
-	XMFLOAT4X4			m_xmf4x4ViewOrthographicProject = Matrix4x4::Identity();
+	// Y angle
+	float m_fFOVAngle = 0.f;
+	float m_fAspectRatio = 0.f;
+	float m_fProjectPlaneDistance = 0.f;
+	float m_fNearZ = 0.f;
+	float m_fFarZ = 0.f;
 
-	Viewport			m_Viewport = {};
+	BoundingFrustum m_xmFrustumView = {};
+	BoundingFrustum m_xmFrustumWorld = {};
+
+	XMFLOAT4X4 m_xmf4x4View = Matrix4x4::Identity();
+	XMFLOAT4X4 m_xmf4x4InverseView = Matrix4x4::Identity();
+	XMFLOAT4X4 m_xmf4x4PerspectiveProject = Matrix4x4::Identity();
+	XMFLOAT4X4 m_xmf4x4ViewPerspectiveProject = Matrix4x4::Identity();
+	XMFLOAT4X4 m_xmf4x4OrthographicProject = Matrix4x4::Identity(); 
+	XMFLOAT4X4 m_xmf4x4ViewOrthographicProject = Matrix4x4::Identity(); 
+
+	Viewport m_Viewport = {};
+
+	std::weak_ptr<Player> m_wpOwner;
+
+	BOOL m_bViewUpdated = FALSE;
+	BOOL m_bProjectionUpdated = FALSE;
 
 };
 

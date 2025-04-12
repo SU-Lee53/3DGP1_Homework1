@@ -4,6 +4,11 @@
 #include "Camera.h"
 #include "GraphicsPipeline.h"
 
+GameObject::GameObject()
+{
+	m_pTransform = std::make_shared<Transform>();
+}
+
 void GameObject::LookTo(const XMFLOAT3& xmf3LookTo, const XMFLOAT3& xmf3Up)
 {
 	/*XMFLOAT4X4 xmf4x4View = Matrix4x4::LookToLH(GetPosition(), xmf3LookTo, xmf3Up);
@@ -35,6 +40,10 @@ void GameObject::Render(HDC hDCFrameBuffer, XMFLOAT4X4& pxmf4x4World, std::share
 		::SelectObject(hDCFrameBuffer, hOldPen);
 		::DeleteObject(hPen);
 	}
+}
+
+void GameObject::Initialize()
+{
 }
 
 void GameObject::Update(float fElapsedTime)

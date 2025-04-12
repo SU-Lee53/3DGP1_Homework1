@@ -13,7 +13,7 @@ void MenuScene::Update(float fTimeElapsed)
 {
 }
 
-void MenuScene::Render(HDC hDCFrameBuffer, std::shared_ptr<Camera> pCamera)
+void MenuScene::Render(HDC hDCFrameBuffer)
 {
 	std::wstring wstrOutText{ L"MenuScene" };
 	::TextOut(hDCFrameBuffer, 100, 100, wstrOutText.c_str(), wstrOutText.length());

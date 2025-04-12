@@ -19,29 +19,26 @@ void Scene::Update(float fElapsedTime)
 {
 	// Update
 
+	std::for_each(m_pObjects.begin(), m_pObjects.end(), [fElapsedTime](std::shared_ptr<GameObject> pObj) { pObj->Update(fElapsedTime); });
+	m_pPlayer->Update(fElapsedTime);
+
 	CheckObjectByObjectCollisions();
 }
 
-void Scene::Render(HDC hDCFrameBuffer, std::shared_ptr<Camera> pCamera)
+void Scene::Render(HDC hDCFrameBuffer)
 {
-	GraphicsPipeline::SetViewport(&pCamera->GetViewport());
-	GraphicsPipeline::SetViewPerspectiveProjectTransform(pCamera->GetViewPerspectiveProjectMatrix());
+	GraphicsPipeline::SetViewport(&m_pPlayer->GetCamera()->GetViewport());
+	GraphicsPipeline::SetViewPerspectiveProjectTransform(m_pPlayer->GetCamera()->GetViewPerspectiveProjectMatrix());
+
 	for (auto& pObj : m_pObjects) {
-		pObj->Render(hDCFrameBuffer, pCamera);
+		pObj->Render(hDCFrameBuffer, m_pPlayer->GetCamera());
 	}
 
 	if (m_pPlayer) {
-		m_pPlayer->Render(hDCFrameBuffer, pCamera);
+		m_pPlayer->Render(hDCFrameBuffer, m_pPlayer->GetCamera());
 	}
 
-#ifdef _WITH_DRAW_AXIS
-	GraphicsPipeline::SetViewOrthographicProjectTransform(pCamera->GetViewOrthographicProjectMatrix());
-	m_pWorldAxis->SetRotationTransform(m_pPlayer.lock()->GetWorldMatrix());
-	m_pWorldAxis->Render(hDCFrameBuffer, pCamera);
-#endif
-
 }
-
 
 void Scene::CheckObjectByObjectCollisions()
 {

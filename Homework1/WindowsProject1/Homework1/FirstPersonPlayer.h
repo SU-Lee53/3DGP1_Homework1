@@ -7,7 +7,8 @@ public:
 	virtual ~FirstPersonPlayer();
 
 public:
-	virtual void Update(float fTimeElapsed = 0.016f);
+	virtual void Initialize() override;
+	virtual void Update(float fTimeElapsed) override;
 
 public:
 	virtual void ProcessKeyboardInput() override;

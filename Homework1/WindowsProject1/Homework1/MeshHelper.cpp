@@ -349,8 +349,8 @@ void MeshHelper::CreateRollercoasterRailMesh(std::shared_ptr<Mesh> pMesh, float 
 	auto GenerateControlPoint = [fCourseRadius, nControlPoints](int idx) {
 		XMFLOAT3 v;
 		v.x = fCourseRadius * XMScalarCos(XMConvertToRadians((360.0f / nControlPoints) * idx));
-		v.y = fCourseRadius * XMScalarSin(XMConvertToRadians((360.0f / nControlPoints) * idx));
-		v.z = RandomGenerator::GenerateRandomFloatInRange(5.0f, 30.0f);
+		v.y = RandomGenerator::GenerateRandomFloatInRange(5.0f, 30.0f);
+		v.z = fCourseRadius * XMScalarSin(XMConvertToRadians((360.0f / nControlPoints) * idx));
 		return v;
 	};
 
@@ -413,8 +413,10 @@ void MeshHelper::CreateRollercoasterRailMesh(std::shared_ptr<Mesh> pMesh, float 
 		pLineStrip->SetVertex(index, point);
 	}
 
-	pMesh->SetPolygon(1, pLineStrip);
+	pMesh->m_pPolygons.resize(1);
+	pMesh->SetPolygon(0, pLineStrip);
 
+	pMesh->m_xmOBB = BoundingOrientedBox(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(fCourseRadius, fCourseRadius, fCourseRadius), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
 
 	// ¿Ã»ƒ ∞Ë»π
 

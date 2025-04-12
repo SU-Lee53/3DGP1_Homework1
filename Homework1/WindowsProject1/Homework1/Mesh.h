@@ -51,6 +51,7 @@ protected:
 	friend void MeshHelper::CreateWallMesh(std::shared_ptr<Mesh> pMesh, float fWidth, float fHeight, float fDepth, int nSubRects);
 	friend void MeshHelper::CreateAirplaneMesh(std::shared_ptr<Mesh> pMesh, float fWidth, float fHeight, float fDepth);
 	friend BOOL MeshHelper::CreateMeshFromOBJFiles(std::shared_ptr<Mesh> pMesh, std::wstring_view wstrObjPath);
+	friend void MeshHelper::CreateRollercoasterRailMesh(std::shared_ptr<Mesh> pMesh, float fWidth, float fCourseRadius, int nControlPoints, int nInterpolateBias);
 };
 
 // ==========
