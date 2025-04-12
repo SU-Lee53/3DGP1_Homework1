@@ -369,7 +369,7 @@ void MeshHelper::CreateRollercoasterRailMesh(std::shared_ptr<Mesh> pMesh, float 
 		XMVECTOR xmvCP1 = XMLoadFloat3(&v1);
 		XMVECTOR xmvCP3 = XMLoadFloat3(&v3);
 
-		XMStoreFloat3(&Tangents[count++], XMVectorScale(XMVectorSubtract(xmvCP1, xmvCP3), 0.5f));
+		XMStoreFloat3(&Tangents[count++], XMVectorScale(XMVectorSubtract(xmvCP3, xmvCP1), 0.5f));
 	}
 
 	// 3. Generate spline vertex
