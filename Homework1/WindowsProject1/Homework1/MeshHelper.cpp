@@ -349,7 +349,7 @@ void MeshHelper::CreateRollercoasterRailMesh(std::shared_ptr<Mesh> pMesh, float 
 	auto GenerateControlPoint = [fCourseRadius, nControlPoints](int idx) {
 		XMFLOAT3 v;
 		v.x = fCourseRadius * XMScalarCos(XMConvertToRadians((360.0f / nControlPoints) * idx));
-		v.y = RandomGenerator::GenerateRandomFloatInRange(5.0f, 30.0f);
+		v.y = RandomGenerator::GenerateRandomFloatInRange(0.0f, 100.0f);
 		v.z = fCourseRadius * XMScalarSin(XMConvertToRadians((360.0f / nControlPoints) * idx));
 		return v;
 	};
@@ -372,9 +372,26 @@ void MeshHelper::CreateRollercoasterRailMesh(std::shared_ptr<Mesh> pMesh, float 
 		XMStoreFloat3(&Tangents[count++], XMVectorScale(XMVectorSubtract(xmvCP3, xmvCP1), 0.5f));
 	}
 
-	// 3. Generate spline vertex
+	// Tangent of first and last points
+	// First
+	{
+		XMVECTOR xmvCP1 = XMLoadFloat3(&ControlPoints[nControlPoints - 1]);
+		XMVECTOR xmvCP3 = XMLoadFloat3(&ControlPoints[1]);
 
-	std::vector<Vertex> SplineVertices;
+		XMStoreFloat3(&Tangents[0], XMVectorScale(XMVectorSubtract(xmvCP3, xmvCP1), 0.5f));
+	}
+
+	// Last
+	{
+		XMVECTOR xmvCP1 = XMLoadFloat3(&ControlPoints[nControlPoints - 2]);
+		XMVECTOR xmvCP3 = XMLoadFloat3(&ControlPoints[0]);
+
+		XMStoreFloat3(&Tangents[nControlPoints - 1], XMVectorScale(XMVectorSubtract(xmvCP3, xmvCP1), 0.5f));
+	}
+
+	// 3. Generate spline points
+
+	std::vector<XMFLOAT3> SplinePoints;
 
 	for (int i = 0; i < nControlPoints - 1; ++i) {
 		XMVECTOR xmvControlPoint1 = XMLoadFloat3(&ControlPoints[i]);
@@ -387,7 +404,7 @@ void MeshHelper::CreateRollercoasterRailMesh(std::shared_ptr<Mesh> pMesh, float 
 			XMVECTOR xmvPoint = XMVectorHermite(xmvControlPoint1, xmvTangent1, xmvControlPoint2, xmvTangent2, t);
 			XMFLOAT3 xmf3Point;
 			XMStoreFloat3(&xmf3Point, xmvPoint);
-			SplineVertices.emplace_back(xmf3Point);
+			SplinePoints.push_back(xmf3Point);
 		}
 	}
 
@@ -403,18 +420,72 @@ void MeshHelper::CreateRollercoasterRailMesh(std::shared_ptr<Mesh> pMesh, float 
 			XMVECTOR xmvPoint = XMVectorHermite(xmvControlPoint1, xmvTangent1, xmvControlPoint2, xmvTangent2, t);
 			XMFLOAT3 xmf3Point;
 			XMStoreFloat3(&xmf3Point, xmvPoint);
-			SplineVertices.emplace_back(xmf3Point);
+			SplinePoints.push_back(xmf3Point);
 		}
 	}
 
 	// For test : Draw Spline like line strip
-	std::shared_ptr<struct Polygon> pLineStrip = std::make_shared<struct Polygon>(SplineVertices.size());
-	for (const auto& [index, point] : std::views::enumerate(SplineVertices)) {
-		pLineStrip->SetVertex(index, point);
+//	std::shared_ptr<struct Polygon> pLineStrip = std::make_shared<struct Polygon>(SplinePoints.size());
+//	for (const auto& [index, point] : std::views::enumerate(SplinePoints)) {
+//		pLineStrip->SetVertex(index, point);
+//	}
+//
+//	pMesh->m_pPolygons.resize(1);
+//	pMesh->SetPolygon(0, pLineStrip);
+
+
+	/*
+		SP : SplinePoints
+		         SP[0]                      SP[1]                      SP[2]        
+		  --------------------------------------------------------------------------
+		           |                          |                          |
+				   |                          |                          |
+		  --------------------------------------------------------------------------
+		  
+	*/
+
+	pMesh->m_pPolygons.resize((SplinePoints.size() - 2));
+	for (int i = 1; i < SplinePoints.size() - 1; ++i) {
+		std::shared_ptr<struct Polygon> pRail = std::make_shared<struct Polygon>(4);
+		XMVECTOR xmvCurPoint = XMLoadFloat3(&SplinePoints[i]);
+		XMVECTOR xmvNextPoint = XMLoadFloat3(&SplinePoints[i + 1]);
+		XMVECTOR xmvPrevPoint = XMLoadFloat3(&SplinePoints[i - 1]);
+
+		// Left - Right from current spline point
+		XMVECTOR xmvCurRailDirection = XMVectorSubtract(xmvCurPoint, xmvPrevPoint);
+		XMVECTOR xmvCurRailUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+		XMVECTOR xmvCurRailLeft = XMVector3Cross(xmvCurRailDirection, xmvCurRailUp);
+		XMVECTOR xmvCurRailRight = XMVectorScale(xmvCurRailLeft, -1.f);
+
+		XMVECTOR xmvVertex1 = XMVector3TransformCoord(xmvCurPoint, XMMatrixTranslationFromVector(XMVectorScale(xmvCurRailLeft, fWidth / 2)));
+		XMVECTOR xmvVertex2 = XMVector3TransformCoord(xmvCurPoint, XMMatrixTranslationFromVector(XMVectorScale(xmvCurRailRight, fWidth / 2)));
+
+		// Right - Left from next spline point
+		XMVECTOR xmvNextRailDirection = XMVectorSubtract(xmvNextPoint, xmvCurPoint);
+		XMVECTOR xmvNextRailUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+		XMVECTOR xmvNextRailLeft = XMVector3Cross(xmvNextRailDirection, xmvNextRailUp);
+		XMVECTOR xmvNextRailRight = XMVectorScale(xmvNextRailLeft, -1.f);
+
+		XMVECTOR xmvVertex3 = XMVector3TransformCoord(xmvNextPoint, XMMatrixTranslationFromVector(XMVectorScale(xmvNextRailRight, fWidth / 2)));
+		XMVECTOR xmvVertex4 = XMVector3TransformCoord(xmvNextPoint, XMMatrixTranslationFromVector(XMVectorScale(xmvNextRailLeft, fWidth / 2)));
+
+		XMFLOAT3 xmf3Vertex1;
+		XMFLOAT3 xmf3Vertex2;
+		XMFLOAT3 xmf3Vertex3;
+		XMFLOAT3 xmf3Vertex4;
+		XMStoreFloat3(&xmf3Vertex1, xmvVertex1);
+		XMStoreFloat3(&xmf3Vertex2, xmvVertex2);
+		XMStoreFloat3(&xmf3Vertex3, xmvVertex3);
+		XMStoreFloat3(&xmf3Vertex4, xmvVertex4);
+
+		pRail->SetVertex(0, Vertex{ xmf3Vertex1 });
+		pRail->SetVertex(1, Vertex{ xmf3Vertex2 });
+		pRail->SetVertex(2, Vertex{ xmf3Vertex3 });
+		pRail->SetVertex(3, Vertex{ xmf3Vertex4 });
+
+		pMesh->SetPolygon(i - 1, pRail);
 	}
 
-	pMesh->m_pPolygons.resize(1);
-	pMesh->SetPolygon(0, pLineStrip);
 
 	pMesh->m_xmOBB = BoundingOrientedBox(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(fCourseRadius, fCourseRadius, fCourseRadius), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
 

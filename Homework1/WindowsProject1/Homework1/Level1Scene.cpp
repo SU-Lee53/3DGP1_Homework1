@@ -8,7 +8,7 @@ using namespace std;
 void Level1Scene::BuildObjects()
 {
 	shared_ptr<Mesh> pRollercoasterMesh = make_shared<Mesh>();
-	MeshHelper::CreateRollercoasterRailMesh(pRollercoasterMesh, 20.0f, 30.0f, 10, 30);
+	MeshHelper::CreateRollercoasterRailMesh(pRollercoasterMesh, 3.0f, 150.0f, 20, 5);
 
 	shared_ptr<Mesh> pCubeMesh = make_shared<Mesh>();
 	MeshHelper::CreateCubeMesh(pCubeMesh);
