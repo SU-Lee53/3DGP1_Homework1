@@ -5,7 +5,7 @@
 
 using namespace std;
 
-void MeshHelper::CreateCubeMesh(std::shared_ptr<Mesh> pMesh, float fWidth, float fHeight, float fDepth)
+void MeshHelper::CreateCubeMesh(shared_ptr<Mesh> pMesh, float fWidth, float fHeight, float fDepth)
 {
 	pMesh->m_pPolygons.resize(6);
 
@@ -13,42 +13,42 @@ void MeshHelper::CreateCubeMesh(std::shared_ptr<Mesh> pMesh, float fWidth, float
 	float fHalfHeight = fHeight * 0.5f;
 	float fHalfDepth = fDepth * 0.5f;
 
-	std::shared_ptr<struct Polygon> pFrontFace = std::make_shared<struct Polygon>(4);
+	shared_ptr<struct Polygon> pFrontFace = make_shared<struct Polygon>(4);
 	pFrontFace->SetVertex(0, Vertex(-fHalfWidth, +fHalfHeight, -fHalfDepth));
 	pFrontFace->SetVertex(1, Vertex(+fHalfWidth, +fHalfHeight, -fHalfDepth));
 	pFrontFace->SetVertex(2, Vertex(+fHalfWidth, -fHalfHeight, -fHalfDepth));
 	pFrontFace->SetVertex(3, Vertex(-fHalfWidth, -fHalfHeight, -fHalfDepth));
 	pMesh->SetPolygon(0, pFrontFace);
 
-	std::shared_ptr<struct Polygon> pTopFace = std::make_shared<struct Polygon>(4);
+	shared_ptr<struct Polygon> pTopFace = make_shared<struct Polygon>(4);
 	pTopFace->SetVertex(0, Vertex(-fHalfWidth, +fHalfHeight, +fHalfDepth));
 	pTopFace->SetVertex(1, Vertex(+fHalfWidth, +fHalfHeight, +fHalfDepth));
 	pTopFace->SetVertex(2, Vertex(+fHalfWidth, +fHalfHeight, -fHalfDepth));
 	pTopFace->SetVertex(3, Vertex(-fHalfWidth, +fHalfHeight, -fHalfDepth));
 	pMesh->SetPolygon(1, pTopFace);
 
-	std::shared_ptr<struct Polygon> pBackFace = std::make_shared<struct Polygon>(4);
+	shared_ptr<struct Polygon> pBackFace = make_shared<struct Polygon>(4);
 	pBackFace->SetVertex(0, Vertex(-fHalfWidth, -fHalfHeight, +fHalfDepth));
 	pBackFace->SetVertex(1, Vertex(+fHalfWidth, -fHalfHeight, +fHalfDepth));
 	pBackFace->SetVertex(2, Vertex(+fHalfWidth, +fHalfHeight, +fHalfDepth));
 	pBackFace->SetVertex(3, Vertex(-fHalfWidth, +fHalfHeight, +fHalfDepth));
 	pMesh->SetPolygon(2, pBackFace);
 
-	std::shared_ptr<struct Polygon> pBottomFace = std::make_shared<struct Polygon>(4);
+	shared_ptr<struct Polygon> pBottomFace = make_shared<struct Polygon>(4);
 	pBottomFace->SetVertex(0, Vertex(-fHalfWidth, -fHalfHeight, -fHalfDepth));
 	pBottomFace->SetVertex(1, Vertex(+fHalfWidth, -fHalfHeight, -fHalfDepth));
 	pBottomFace->SetVertex(2, Vertex(+fHalfWidth, -fHalfHeight, +fHalfDepth));
 	pBottomFace->SetVertex(3, Vertex(-fHalfWidth, -fHalfHeight, +fHalfDepth));
 	pMesh->SetPolygon(3, pBottomFace);
 
-	std::shared_ptr<struct Polygon> pLeftFace = std::make_shared<struct Polygon>(4);
+	shared_ptr<struct Polygon> pLeftFace = make_shared<struct Polygon>(4);
 	pLeftFace->SetVertex(0, Vertex(-fHalfWidth, +fHalfHeight, +fHalfDepth));
 	pLeftFace->SetVertex(1, Vertex(-fHalfWidth, +fHalfHeight, -fHalfDepth));
 	pLeftFace->SetVertex(2, Vertex(-fHalfWidth, -fHalfHeight, -fHalfDepth));
 	pLeftFace->SetVertex(3, Vertex(-fHalfWidth, -fHalfHeight, +fHalfDepth));
 	pMesh->SetPolygon(4, pLeftFace);
 
-	std::shared_ptr<struct Polygon> pRightFace = std::make_shared<struct Polygon>(4);
+	shared_ptr<struct Polygon> pRightFace = make_shared<struct Polygon>(4);
 	pRightFace->SetVertex(0, Vertex(+fHalfWidth, +fHalfHeight, -fHalfDepth));
 	pRightFace->SetVertex(1, Vertex(+fHalfWidth, +fHalfHeight, +fHalfDepth));
 	pRightFace->SetVertex(2, Vertex(+fHalfWidth, -fHalfHeight, +fHalfDepth));
@@ -58,7 +58,7 @@ void MeshHelper::CreateCubeMesh(std::shared_ptr<Mesh> pMesh, float fWidth, float
 	pMesh->m_xmOBB = BoundingOrientedBox(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(fHalfWidth, fHalfHeight, fHalfDepth), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
 }
 
-void MeshHelper::CreateWallMesh(std::shared_ptr<Mesh> pMesh, float fWidth, float fHeight, float fDepth, int nSubRects)
+void MeshHelper::CreateWallMesh(shared_ptr<Mesh> pMesh, float fWidth, float fHeight, float fDepth, int nSubRects)
 {
 	pMesh->m_pPolygons.resize((4 * nSubRects * nSubRects) + 2);
 
@@ -143,7 +143,7 @@ void MeshHelper::CreateWallMesh(std::shared_ptr<Mesh> pMesh, float fWidth, float
 	pMesh->m_xmOBB = BoundingOrientedBox(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(fHalfWidth, fHalfHeight, fHalfDepth), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
 }
 
-void MeshHelper::CreateAirplaneMesh(std::shared_ptr<Mesh> pMesh, float fWidth, float fHeight, float fDepth)
+void MeshHelper::CreateAirplaneMesh(shared_ptr<Mesh> pMesh, float fWidth, float fHeight, float fDepth)
 {
 	pMesh->m_pPolygons.resize(24);
 
@@ -305,29 +305,14 @@ void MeshHelper::CreateAirplaneMesh(std::shared_ptr<Mesh> pMesh, float fWidth, f
 	pMesh->m_xmOBB = BoundingOrientedBox(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(fx, fy, fz), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
 }
 
-void MeshHelper::AddCircleMeshToPolygonBuffer(std::vector<std::shared_ptr<struct Polygon>> pPolygons, float fRadius, int nVertices, const XMFLOAT2& center)
+BOOL MeshHelper::CreateMeshFromOBJFiles(shared_ptr<Mesh> pMesh, wstring_view wstrObjPath)
 {
-	float stride = nVertices / 360;
-
-	for (const int& deg : std::views::iota(1, nVertices) | std::views::transform([stride](int level) {return level * stride; })) {
-
-		float xCircle = fRadius * std::cos(deg);
-		float yCircle = fRadius * std::sin(deg);
-
-
-
-
-	}
-}
-
-BOOL MeshHelper::CreateMeshFromOBJFiles(std::shared_ptr<Mesh> pMesh, std::wstring_view wstrObjPath)
-{
-	std::ifstream in{ wstrObjPath.data()};
+	ifstream in{ wstrObjPath.data()};
 
 	if (!in) return FALSE;
 
-	std::vector<XMFLOAT3> LoadedVertices;
-	std::vector<UINT> LoadedIndices;
+	vector<XMFLOAT3> LoadedVertices;
+	vector<UINT> LoadedIndices;
 	while (in) {
 
 
@@ -338,12 +323,65 @@ BOOL MeshHelper::CreateMeshFromOBJFiles(std::shared_ptr<Mesh> pMesh, std::wstrin
 
 }
 
-void MeshHelper::CreateRollercoasterRailMesh(std::shared_ptr<Mesh> pMesh, float fWidth, float fCourseRadius, int nControlPoints, int nInterpolateBias)
+void GenerateRollercoasterPillarPolygon(shared_ptr<Mesh> pMesh, XMFLOAT3 xmf3TopPosition, float fWidth, float fDepth)
+{
+	XMFLOAT3 xmf3PillarCenter;
+	XMStoreFloat3(&xmf3PillarCenter, XMVectorMultiply(XMLoadFloat3(&xmf3TopPosition), XMVectorSet(1.0f, 0.5f, 1.0f, 0.0f)));
+
+	float fHalfWidth = fWidth * 0.5f;
+	float fHalfHeight = xmf3PillarCenter.y;
+	float fHalfDepth = fDepth * 0.5f;
+
+	shared_ptr<struct Polygon> pFrontFace = make_shared<struct Polygon>(4);
+	pFrontFace->SetVertex(0, Vertex(xmf3PillarCenter.x - fHalfWidth, xmf3PillarCenter.y + fHalfHeight, xmf3PillarCenter.z - fHalfDepth));
+	pFrontFace->SetVertex(1, Vertex(xmf3PillarCenter.x + fHalfWidth, xmf3PillarCenter.y + fHalfHeight, xmf3PillarCenter.z - fHalfDepth));
+	pFrontFace->SetVertex(2, Vertex(xmf3PillarCenter.x + fHalfWidth, xmf3PillarCenter.y - fHalfHeight, xmf3PillarCenter.z - fHalfDepth));
+	pFrontFace->SetVertex(3, Vertex(xmf3PillarCenter.x - fHalfWidth, xmf3PillarCenter.y - fHalfHeight, xmf3PillarCenter.z - fHalfDepth));
+	pMesh->AddPolygon(pFrontFace);
+
+	shared_ptr<struct Polygon> pTopFace = make_shared<struct Polygon>(4);
+	pTopFace->SetVertex(0, Vertex(xmf3PillarCenter.x - fHalfWidth, xmf3PillarCenter.y + fHalfHeight, xmf3PillarCenter.z + fHalfDepth));
+	pTopFace->SetVertex(1, Vertex(xmf3PillarCenter.x + fHalfWidth, xmf3PillarCenter.y + fHalfHeight, xmf3PillarCenter.z + fHalfDepth));
+	pTopFace->SetVertex(2, Vertex(xmf3PillarCenter.x + fHalfWidth, xmf3PillarCenter.y + fHalfHeight, xmf3PillarCenter.z - fHalfDepth));
+	pTopFace->SetVertex(3, Vertex(xmf3PillarCenter.x - fHalfWidth, xmf3PillarCenter.y + fHalfHeight, xmf3PillarCenter.z - fHalfDepth));
+	pMesh->AddPolygon(pTopFace);
+
+	shared_ptr<struct Polygon> pBackFace = make_shared<struct Polygon>(4);
+	pBackFace->SetVertex(0, Vertex(xmf3PillarCenter.x - fHalfWidth, xmf3PillarCenter.y - fHalfHeight, xmf3PillarCenter.z + fHalfDepth));
+	pBackFace->SetVertex(1, Vertex(xmf3PillarCenter.x + fHalfWidth, xmf3PillarCenter.y - fHalfHeight, xmf3PillarCenter.z + fHalfDepth));
+	pBackFace->SetVertex(2, Vertex(xmf3PillarCenter.x + fHalfWidth, xmf3PillarCenter.y + fHalfHeight, xmf3PillarCenter.z + fHalfDepth));
+	pBackFace->SetVertex(3, Vertex(xmf3PillarCenter.x - fHalfWidth, xmf3PillarCenter.y + fHalfHeight, xmf3PillarCenter.z + fHalfDepth));
+	pMesh->AddPolygon(pBackFace);
+
+	shared_ptr<struct Polygon> pBottomFace = make_shared<struct Polygon>(4);
+	pBottomFace->SetVertex(0, Vertex(xmf3PillarCenter.x - fHalfWidth, xmf3PillarCenter.y - fHalfHeight, xmf3PillarCenter.z - fHalfDepth));
+	pBottomFace->SetVertex(1, Vertex(xmf3PillarCenter.x + fHalfWidth, xmf3PillarCenter.y - fHalfHeight, xmf3PillarCenter.z - fHalfDepth));
+	pBottomFace->SetVertex(2, Vertex(xmf3PillarCenter.x + fHalfWidth, xmf3PillarCenter.y - fHalfHeight, xmf3PillarCenter.z + fHalfDepth));
+	pBottomFace->SetVertex(3, Vertex(xmf3PillarCenter.x - fHalfWidth, xmf3PillarCenter.y - fHalfHeight, xmf3PillarCenter.z + fHalfDepth));
+	pMesh->AddPolygon(pBottomFace);
+
+	shared_ptr<struct Polygon> pLeftFace = make_shared<struct Polygon>(4);
+	pLeftFace->SetVertex(0, Vertex(xmf3PillarCenter.x - fHalfWidth, xmf3PillarCenter.y + fHalfHeight, xmf3PillarCenter.z + fHalfDepth));
+	pLeftFace->SetVertex(1, Vertex(xmf3PillarCenter.x - fHalfWidth, xmf3PillarCenter.y + fHalfHeight, xmf3PillarCenter.z - fHalfDepth));
+	pLeftFace->SetVertex(2, Vertex(xmf3PillarCenter.x - fHalfWidth, xmf3PillarCenter.y - fHalfHeight, xmf3PillarCenter.z - fHalfDepth));
+	pLeftFace->SetVertex(3, Vertex(xmf3PillarCenter.x - fHalfWidth, xmf3PillarCenter.y - fHalfHeight, xmf3PillarCenter.z + fHalfDepth));
+	pMesh->AddPolygon(pLeftFace);
+
+	shared_ptr<struct Polygon> pRightFace = make_shared<struct Polygon>(4);
+	pRightFace->SetVertex(0, Vertex(xmf3PillarCenter.x + fHalfWidth, xmf3PillarCenter.y + fHalfHeight, xmf3PillarCenter.z - fHalfDepth));
+	pRightFace->SetVertex(1, Vertex(xmf3PillarCenter.x + fHalfWidth, xmf3PillarCenter.y + fHalfHeight, xmf3PillarCenter.z + fHalfDepth));
+	pRightFace->SetVertex(2, Vertex(xmf3PillarCenter.x + fHalfWidth, xmf3PillarCenter.y - fHalfHeight, xmf3PillarCenter.z + fHalfDepth));
+	pRightFace->SetVertex(3, Vertex(xmf3PillarCenter.x + fHalfWidth, xmf3PillarCenter.y - fHalfHeight, xmf3PillarCenter.z - fHalfDepth));
+	pMesh->AddPolygon(pRightFace);
+
+}
+
+void MeshHelper::CreateRollercoasterRailMesh(shared_ptr<Mesh> pMesh, float fWidth, float fCourseRadius, int nControlPoints, int nInterpolateBias)
 {
 	assert(nControlPoints != 0);
 
-	std::vector<XMFLOAT3> ControlPoints(nControlPoints);
-	std::vector<XMFLOAT3> Tangents(nControlPoints);
+	vector<XMFLOAT3> ControlPoints(nControlPoints);
+	vector<XMFLOAT3> Tangents(nControlPoints);
 	
 	// 1. Generate control points
 	auto GenerateControlPoint = [fCourseRadius, nControlPoints](int idx) {
@@ -364,7 +402,7 @@ void MeshHelper::CreateRollercoasterRailMesh(std::shared_ptr<Mesh> pMesh, float 
 	XMStoreFloat3(&Tangents[nControlPoints - 1], XMVectorZero());
 
 	int count = 1;
-	for (auto& [v1, v2, v3] : ControlPoints | std::views::adjacent<3>) {
+	for (auto& [v1, v2, v3] : ControlPoints | views::adjacent<3>) {
 		// Calculate tangent of v2
 		XMVECTOR xmvCP1 = XMLoadFloat3(&v1);
 		XMVECTOR xmvCP3 = XMLoadFloat3(&v3);
@@ -391,7 +429,7 @@ void MeshHelper::CreateRollercoasterRailMesh(std::shared_ptr<Mesh> pMesh, float 
 
 	// 3. Generate spline points
 
-	std::vector<XMFLOAT3> SplinePoints;
+	vector<XMFLOAT3> SplinePoints;
 
 	for (int i = 0; i < nControlPoints - 1; ++i) {
 		XMVECTOR xmvControlPoint1 = XMLoadFloat3(&ControlPoints[i]);
@@ -424,29 +462,32 @@ void MeshHelper::CreateRollercoasterRailMesh(std::shared_ptr<Mesh> pMesh, float 
 		}
 	}
 
-	// For test : Draw Spline like line strip
-//	std::shared_ptr<struct Polygon> pLineStrip = std::make_shared<struct Polygon>(SplinePoints.size());
-//	for (const auto& [index, point] : std::views::enumerate(SplinePoints)) {
-//		pLineStrip->SetVertex(index, point);
-//	}
-//
-//	pMesh->m_pPolygons.resize(1);
-//	pMesh->SetPolygon(0, pLineStrip);
-
-
 	/*
 		SP : SplinePoints
 		         SP[0]                      SP[1]                      SP[2]        
-		  --------------------------------------------------------------------------
-		           |                          |                          |
-				   |                          |                          |
-		  --------------------------------------------------------------------------
-		  
-	*/
+		  ---------+--------------------------+--------------------------+----------
+		           |0                        3|0                        3|
+				   |1                        2|1                        2|
+		  ---------+--------------------------+--------------------------+----------
 
-	pMesh->m_pPolygons.resize((SplinePoints.size() - 2));
+
+
+		  v0 ? ----------- ? v3
+			 |             |
+		p[i] ? ----------- ? p[i+1]
+			 |             |
+		  v1 ? ----------- ? v2
+
+		  v0, v1 : normalize(cross(p[i] - p[i-1]), up)) 하여 방향을 찾고 너비만큼의 간격으로 점을 찾으면 됨 (+- 방향 * (width / 2))
+		  v2, v3 : normalize(cross(p[i+1] - p[i]), up)) 하여 방향을 찾고 적절한 너비만큼의 간격으로 점을 찾으면 됨 (+- 방향 * (width / 2))
+
+	*/
+		  
+
+	vector<shared_ptr<struct Polygon>> pPolygons;
+
 	for (int i = 1; i < SplinePoints.size() - 1; ++i) {
-		std::shared_ptr<struct Polygon> pRail = std::make_shared<struct Polygon>(4);
+		shared_ptr<struct Polygon> pRail = make_shared<struct Polygon>(4);
 		XMVECTOR xmvCurPoint = XMLoadFloat3(&SplinePoints[i]);
 		XMVECTOR xmvNextPoint = XMLoadFloat3(&SplinePoints[i + 1]);
 		XMVECTOR xmvPrevPoint = XMLoadFloat3(&SplinePoints[i - 1]);
@@ -483,26 +524,23 @@ void MeshHelper::CreateRollercoasterRailMesh(std::shared_ptr<Mesh> pMesh, float 
 		pRail->SetVertex(2, Vertex{ xmf3Vertex3 });
 		pRail->SetVertex(3, Vertex{ xmf3Vertex4 });
 
-		pMesh->SetPolygon(i - 1, pRail);
+		pPolygons.push_back(pRail);
 	}
 
+	pMesh->m_pPolygons.resize((SplinePoints.size() - 2));
+	for (const auto& [index, pPolygon] : views::enumerate(pPolygons)) {
+		pMesh->SetPolygon(index, pPolygon);
+	}
+
+	// Pillar..??
+	for (int i = 1; i < nControlPoints; ++i) {
+		int nPillarIndex = i * nInterpolateBias;
+		GenerateRollercoasterPillarPolygon(pMesh, pPolygons[nPillarIndex]->m_Vertices[0], 0.5f, 0.5f);
+		GenerateRollercoasterPillarPolygon(pMesh, pPolygons[nPillarIndex]->m_Vertices[1], 0.5f, 0.5f);
+	}
 
 	pMesh->m_xmOBB = BoundingOrientedBox(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(fCourseRadius, fCourseRadius, fCourseRadius), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
 
-	// 이후 계획
-
-	/*
-
-		  v0 ? ----------- ? v3
-	         |             |    
-		p[i] ? ----------- ? p[i+1]
-	         |             |
-		  v1 ? ----------- ? v2
-
-		  v0, v1 : normalize(cross(p[i+1] - p[i], up)) 하여 방향을 찾고 너비만큼의 간격으로 점을 찾으면 됨 (+- 방향 * (width / 2))
-		  v2, v3 : normalize(cross(p[i+2] - p[i+1], up)) 하여 방향을 찾고 적절한 너비만큼의 간격으로 점을 찾으면 됨 (+- 방향 * (width / 2))
-
-	*/
 
 
 }

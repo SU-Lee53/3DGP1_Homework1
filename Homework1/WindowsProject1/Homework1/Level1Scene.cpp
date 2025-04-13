@@ -74,9 +74,7 @@ void Level1Scene::Render(HDC hDCFrameBuffer)
 	::TextOut(hDCFrameBuffer, 20, 90, wstrPlayerRight.c_str(), wstrPlayerRight.length());
 	::TextOut(hDCFrameBuffer, 20, 110, wstrPlayerUp.c_str(), wstrPlayerUp.length());
 	::TextOut(hDCFrameBuffer, 20, 130, wstrPlayerLook.c_str(), wstrPlayerLook.length());
-				
-
-
+	
 	Scene::Render(hDCFrameBuffer);
 }
 

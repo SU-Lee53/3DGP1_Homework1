@@ -5,6 +5,10 @@ struct Vertex {
 	Vertex(float x, float y, float z) { m_xmf3Position = XMFLOAT3{ x,y,z }; }
 	Vertex(const XMFLOAT3& xmf3Position) { m_xmf3Position = xmf3Position; }
 
+	operator XMFLOAT3(){
+		return m_xmf3Position;
+	}
+
 	XMFLOAT3 m_xmf3Position{ 0.f, 0.f, 0.f };
 };
 
@@ -31,6 +35,10 @@ public:
 		if ((0 <= nIndex) && (nIndex < m_pPolygons.size())) {
 			m_pPolygons[nIndex] = pPolygon;
 		}
+	}
+
+	void AddPolygon(std::shared_ptr<struct Polygon> pPolygon) {
+		m_pPolygons.push_back(pPolygon);
 	}
 
 	virtual void Render(HDC hDCFrameBuffer);
