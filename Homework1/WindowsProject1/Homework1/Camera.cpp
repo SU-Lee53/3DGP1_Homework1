@@ -39,64 +39,65 @@ void Camera::SetFarZ(float fFarZ)
 	m_bProjectionUpdated = TRUE;
 }
 
-void Camera::SetPosition(const XMFLOAT3& xmf3NewPosition)
+BOOL Camera::SetPosition(const XMFLOAT3& xmf3NewPosition)
 {
-	XMVECTOR xmvNewPos = XMLoadFloat3(&xmf3NewPosition);
-	if (!m_wpOwner.expired()) {
-		XMVECTOR xmvOffset = XMLoadFloat3(&m_wpOwner.lock()->GetCameraOffset());
-		xmvNewPos = XMVectorAdd(xmvNewPos, xmvOffset);
-	}
-
-	if (m_pTransform->SetPosition(xmvNewPos)){
-		m_bViewUpdated = TRUE;
-	};
+	return SetPosition(XMLoadFloat3(&xmf3NewPosition));
 }
 
-void Camera::SetPosition(const XMVECTOR& xmvNewPosition)
+BOOL Camera::SetPosition(const XMVECTOR& xmvNewPosition)
 {
-	XMVECTOR xmvNewPos = xmvNewPosition;
-	if (!m_wpOwner.expired()) {
-		XMVECTOR xmvOffset = XMLoadFloat3(&m_wpOwner.lock()->GetCameraOffset());
-		xmvNewPos = XMVectorAdd(xmvNewPos, xmvOffset);
-	}
+	XMVECTOR xmvPosition = XMLoadFloat3(&m_xmf3Position);
 
-	if (m_pTransform->SetPosition(xmvNewPos)){
+	if (!XMVector3Equal(xmvPosition, xmvNewPosition)) {
+		XMStoreFloat3(&m_xmf3Position, xmvNewPosition);
 		m_bViewUpdated = TRUE;
 	}
+
+	return m_bViewUpdated;
 }
 
-void Camera::SetPosition(float fXPos, float fYPos, float fZPos)
+BOOL Camera::SetPosition(float fXPos, float fYPos, float fZPos)
 {
-	XMVECTOR xmvNewPos = XMVectorSet(fXPos, fYPos, fZPos, 1.f);
-	if (!m_wpOwner.expired()) {
-		XMVECTOR xmvOffset = XMLoadFloat3(&m_wpOwner.lock()->GetCameraOffset());
-		xmvNewPos = XMVectorAdd(xmvNewPos, xmvOffset);
-	}
-
-	if (m_pTransform->SetPosition(xmvNewPos)){
-		m_bViewUpdated = TRUE;
-	};
+	return SetPosition(XMVectorSet(fXPos, fYPos, fZPos, 0.f));
 }
 
-void Camera::SetRotation(const XMFLOAT3& xmf3NewRotation)
+BOOL Camera::Rotate(const XMFLOAT3& xmf3NewRotation)
 {
-	if (m_pTransform->SetRotation(xmf3NewRotation)) {
-		m_bViewUpdated = TRUE;
-	}
+	return Rotate(xmf3NewRotation.x, xmf3NewRotation.y, xmf3NewRotation.z);
 }
 
-void Camera::SetRotation(const XMVECTOR& xmvNewRotation)
+BOOL Camera::Rotate(const XMVECTOR& xmvNewRotation)
 {
-	if (m_pTransform->SetRotation(xmvNewRotation)) {
-		m_bViewUpdated = TRUE;
-	}
+	XMFLOAT3 xmf3NewRotation;
+	XMStoreFloat3(&xmf3NewRotation, xmvNewRotation);
+	return Rotate(xmf3NewRotation.x, xmf3NewRotation.y, xmf3NewRotation.z);
 }
 
-void Camera::SetRotation(float fPitch, float fYaw, float fRoll)
+BOOL Camera::Rotate(float fPitch, float fYaw, float fRoll)
 {
-	if (m_pTransform->SetRotation(fPitch, fYaw, fRoll)) {
+	if (fPitch != 0.0f)
+	{
+		XMMATRIX mtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_xmf3Right), XMConvertToRadians(fPitch));
+		m_xmf3Look = Vector3::TransformNormal(m_xmf3Look, mtxRotate);
+		m_xmf3Up = Vector3::TransformNormal(m_xmf3Up, mtxRotate);
 		m_bViewUpdated = TRUE;
 	}
+	if (fYaw != 0.0f)
+	{
+		XMMATRIX mtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_xmf3Up), XMConvertToRadians(fYaw));
+		m_xmf3Look = Vector3::TransformNormal(m_xmf3Look, mtxRotate);
+		m_xmf3Right = Vector3::TransformNormal(m_xmf3Right, mtxRotate);
+		m_bViewUpdated = TRUE;
+	}
+	if (fRoll != 0.0f)
+	{
+		XMMATRIX mtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_xmf3Look), XMConvertToRadians(fRoll));
+		m_xmf3Up = Vector3::TransformNormal(m_xmf3Up, mtxRotate);
+		m_xmf3Right = Vector3::TransformNormal(m_xmf3Right, mtxRotate);
+		m_bViewUpdated = TRUE;
+	}
+
+	return m_bViewUpdated;
 }
 
 XMFLOAT4X4& Camera::GetViewPerspectiveProjectMatrix()
@@ -118,7 +119,6 @@ XMFLOAT4X4& Camera::GetViewOrthographicProjectMatrix()
 void Camera::Initialize(shared_ptr<Player> pOwnerPlayer)
 {
 	m_wpOwner = pOwnerPlayer;
-	m_pTransform = make_shared<Transform>();
 }
 
 void Camera::Update()
@@ -151,15 +151,15 @@ void Camera::Update()
 
 void Camera::GenerateViewMatrix()
 {
-	XMFLOAT3 xmf3Look = Vector3::Normalize(m_pTransform->GetLook());
-	XMFLOAT3 xmf3Right = Vector3::Normalize(Vector3::CrossProduct(m_pTransform->GetUp(), xmf3Look));
+	XMFLOAT3 xmf3Look = Vector3::Normalize(m_xmf3Look);
+	XMFLOAT3 xmf3Right = Vector3::Normalize(Vector3::CrossProduct(m_xmf3Up, xmf3Look));
 	XMFLOAT3 xmf3Up = Vector3::Normalize(Vector3::CrossProduct(xmf3Look, xmf3Right));
 	m_xmf4x4View._11 = xmf3Right.x; m_xmf4x4View._12 = xmf3Up.x; m_xmf4x4View._13 = xmf3Look.x;
 	m_xmf4x4View._21 = xmf3Right.y; m_xmf4x4View._22 = xmf3Up.y; m_xmf4x4View._23 = xmf3Look.y;
 	m_xmf4x4View._31 = xmf3Right.z; m_xmf4x4View._32 = xmf3Up.z; m_xmf4x4View._33 = xmf3Look.z;
-	m_xmf4x4View._41 = -Vector3::DotProduct(m_pTransform->GetPosition(), xmf3Right);
-	m_xmf4x4View._42 = -Vector3::DotProduct(m_pTransform->GetPosition(), xmf3Up);
-	m_xmf4x4View._43 = -Vector3::DotProduct(m_pTransform->GetPosition(), xmf3Look);
+	m_xmf4x4View._41 = -Vector3::DotProduct(m_xmf3Position, xmf3Right);
+	m_xmf4x4View._42 = -Vector3::DotProduct(m_xmf3Position, xmf3Up);
+	m_xmf4x4View._43 = -Vector3::DotProduct(m_xmf3Position, xmf3Look);
 
 	m_xmf4x4ViewPerspectiveProject = Matrix4x4::Multiply(m_xmf4x4View, m_xmf4x4PerspectiveProject);
 	m_xmf4x4OrthographicProject = Matrix4x4::Multiply(m_xmf4x4View, m_xmf4x4OrthographicProject);
@@ -167,9 +167,9 @@ void Camera::GenerateViewMatrix()
 	m_xmf4x4InverseView._11 = xmf3Right.x;			m_xmf4x4InverseView._12 = xmf3Right.y;			m_xmf4x4InverseView._13 = xmf3Right.z;
 	m_xmf4x4InverseView._21 = xmf3Up.x;				m_xmf4x4InverseView._22 = xmf3Up.y;				m_xmf4x4InverseView._23 = xmf3Up.z;
 	m_xmf4x4InverseView._31 = xmf3Look.x;			m_xmf4x4InverseView._32 = xmf3Look.y;			m_xmf4x4InverseView._33 = xmf3Look.z;
-	m_xmf4x4InverseView._41 = m_pTransform->GetPosition().x;		
-	m_xmf4x4InverseView._42 = m_pTransform->GetPosition().y;		
-	m_xmf4x4InverseView._43 = m_pTransform->GetPosition().z;
+	m_xmf4x4InverseView._41 = m_xmf3Position.x;		
+	m_xmf4x4InverseView._42 = m_xmf3Position.y;		
+	m_xmf4x4InverseView._43 = m_xmf3Position.z;
 
 	m_xmFrustumView.Transform(m_xmFrustumWorld, XMLoadFloat4x4(&m_xmf4x4InverseView));
 }

@@ -30,6 +30,7 @@ private:
 	void AnimateObjects();
 	void FrameAdvance();
 
+public:
 	static BOOL ChangeScene(TAG_SCENE_NAME eTargetSceneTag);
 
 public:

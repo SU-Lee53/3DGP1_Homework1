@@ -34,7 +34,6 @@ void Player::Move(float x, float y, float z)
 
 void Player::Rotate(float fPitch, float fYaw, float fRoll)
 {
-	m_pTransform->SetRotation(fPitch, fYaw, fRoll);
 }
 
 void Player::SetCameraOffset(const XMFLOAT3& xmf3CameraOffset)
@@ -50,7 +49,6 @@ void Player::Initialize()
 void Player::Update(float fElapsedTime)
 {
 	Move(m_xmf3Velocity, FALSE);
-
 	UpdatePlayerCamera(fElapsedTime);
 
 	XMFLOAT3 xmf3Deceleration = Vector3::Normalize(Vector3::ScalarProduct(m_xmf3Velocity, -1.0f));

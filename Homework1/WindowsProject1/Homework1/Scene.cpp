@@ -53,7 +53,8 @@ void Scene::CheckObjectByObjectCollisions()
 		}
 	}
 	
-	/*for (shared_ptr<GameObject>& pObj : m_pObjects) {
+	/*
+	for (shared_ptr<GameObject>& pObj : m_pObjects) {
 		if (pObj->GetCollidedObject()) {
 			XMFLOAT3 xmf3MovingDirection = pObj->GetMovingDirection();
 			float fMovingSpeed = pObj->GetMovingSpeed();

@@ -64,5 +64,8 @@ inline bool IsEqual(float fA, float fB) { return (::IsZero(fA - fB)); }
 #include "XMMathHelper.h"
 #include "MeshHelper.h"
 
+// Game Framework
+#include "GameFramework.h"
+
 #undef min
 #undef max

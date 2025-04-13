@@ -376,7 +376,7 @@ void GenerateRollercoasterPillarPolygon(shared_ptr<Mesh> pMesh, XMFLOAT3 xmf3Top
 
 }
 
-void MeshHelper::CreateRollercoasterRailMesh(shared_ptr<Mesh> pMesh, float fWidth, float fCourseRadius, int nControlPoints, int nInterpolateBias)
+void MeshHelper::CreateRollercoasterRailMesh(shared_ptr<Mesh> pMesh, OUT std::vector<XMFLOAT3>& RollercoasterRoute, float fWidth, float fCourseRadius, int nControlPoints, int nInterpolateBias)
 {
 	assert(nControlPoints != 0);
 
@@ -387,10 +387,11 @@ void MeshHelper::CreateRollercoasterRailMesh(shared_ptr<Mesh> pMesh, float fWidt
 	auto GenerateControlPoint = [fCourseRadius, nControlPoints](int idx) {
 		XMFLOAT3 v;
 		v.x = fCourseRadius * XMScalarCos(XMConvertToRadians((360.0f / nControlPoints) * idx));
-		v.y = RandomGenerator::GenerateRandomFloatInRange(0.0f, 100.0f);
+		v.y = RandomGenerator::GenerateRandomFloatInRange(5.0f, 150.0f);
 		v.z = fCourseRadius * XMScalarSin(XMConvertToRadians((360.0f / nControlPoints) * idx));
 		return v;
 	};
+
 
 	for (int i = 0; i < nControlPoints; ++i) {
 		ControlPoints[i] = GenerateControlPoint(i);
@@ -495,8 +496,8 @@ void MeshHelper::CreateRollercoasterRailMesh(shared_ptr<Mesh> pMesh, float fWidt
 		// Left - Right from current spline point
 		XMVECTOR xmvCurRailDirection = XMVectorSubtract(xmvCurPoint, xmvPrevPoint);
 		XMVECTOR xmvCurRailUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
-		XMVECTOR xmvCurRailLeft = XMVector3Cross(xmvCurRailDirection, xmvCurRailUp);
-		XMVECTOR xmvCurRailRight = XMVectorScale(xmvCurRailLeft, -1.f);
+		XMVECTOR xmvCurRailLeft = XMVector3Normalize(XMVector3Cross(xmvCurRailDirection, xmvCurRailUp));
+		XMVECTOR xmvCurRailRight = XMVector3Normalize(XMVectorScale(xmvCurRailLeft, -1.f));
 
 		XMVECTOR xmvVertex1 = XMVector3TransformCoord(xmvCurPoint, XMMatrixTranslationFromVector(XMVectorScale(xmvCurRailLeft, fWidth / 2)));
 		XMVECTOR xmvVertex2 = XMVector3TransformCoord(xmvCurPoint, XMMatrixTranslationFromVector(XMVectorScale(xmvCurRailRight, fWidth / 2)));
@@ -504,8 +505,8 @@ void MeshHelper::CreateRollercoasterRailMesh(shared_ptr<Mesh> pMesh, float fWidt
 		// Right - Left from next spline point
 		XMVECTOR xmvNextRailDirection = XMVectorSubtract(xmvNextPoint, xmvCurPoint);
 		XMVECTOR xmvNextRailUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
-		XMVECTOR xmvNextRailLeft = XMVector3Cross(xmvNextRailDirection, xmvNextRailUp);
-		XMVECTOR xmvNextRailRight = XMVectorScale(xmvNextRailLeft, -1.f);
+		XMVECTOR xmvNextRailLeft = XMVector3Normalize(XMVector3Cross(xmvNextRailDirection, xmvNextRailUp));
+		XMVECTOR xmvNextRailRight = XMVector3Normalize(XMVectorScale(xmvNextRailLeft, -1.f));
 
 		XMVECTOR xmvVertex3 = XMVector3TransformCoord(xmvNextPoint, XMMatrixTranslationFromVector(XMVectorScale(xmvNextRailRight, fWidth / 2)));
 		XMVECTOR xmvVertex4 = XMVector3TransformCoord(xmvNextPoint, XMMatrixTranslationFromVector(XMVectorScale(xmvNextRailLeft, fWidth / 2)));
@@ -541,6 +542,7 @@ void MeshHelper::CreateRollercoasterRailMesh(shared_ptr<Mesh> pMesh, float fWidt
 
 	pMesh->m_xmOBB = BoundingOrientedBox(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(fCourseRadius, fCourseRadius, fCourseRadius), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
 
+	RollercoasterRoute.assign(SplinePoints.begin(), SplinePoints.end());
 
 
 }

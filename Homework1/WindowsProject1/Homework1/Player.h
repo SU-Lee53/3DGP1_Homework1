@@ -13,7 +13,7 @@ public:
 	void Move(const XMFLOAT3& xmf3Shift, BOOL bUpdateVelocity);
 	void Move(float x, float y, float z);
 
-	void Rotate(float fPitch = 0.0f, float fYaw = 0.0f, float fRoll = 0.0f);
+	virtual void Rotate(float fPitch = 0.0f, float fYaw = 0.0f, float fRoll = 0.0f);
 
 	void SetCameraOffset(const XMFLOAT3& xmf3CameraOffset);
 	XMFLOAT3& GetCameraOffset() { return m_xmf3CameraOffset; }

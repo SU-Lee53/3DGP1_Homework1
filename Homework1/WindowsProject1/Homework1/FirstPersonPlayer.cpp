@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "FirstPersonPlayer.h"
-#include "Camera.h"
+#include "FirstPersonCamera.h"
 
 using namespace std;
 
@@ -14,7 +14,7 @@ FirstPersonPlayer::~FirstPersonPlayer()
 
 void FirstPersonPlayer::Initialize()
 {
-	m_pCamera = make_shared<Camera>();
+	m_pCamera = make_shared<FirstPersonCamera>();
 	m_pCamera->Initialize(shared_from_this());
 	m_pCamera->SetViewport(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
 	m_pCamera->SetFOVAngle(60.0f);
@@ -74,21 +74,20 @@ void FirstPersonPlayer::ProcessMouseInput()
 
 		POINT ptDelta{ (ptCursorPos.x - nScreenCenterX), (ptCursorPos.y - nScreenCenterY) };
 
-		XMVECTOR xmvRotation = XMLoadFloat3(&m_pTransform->GetRotation());
-		xmvRotation = XMVectorAdd(xmvRotation, XMVectorSet(ptDelta.y * 0.10f, ptDelta.x * 0.10f, 0.f, 0.f));
-		XMFLOAT3 xmf3Rotation;
-		XMStoreFloat3(&xmf3Rotation, xmvRotation);
-		Player::Rotate(xmf3Rotation.x ,xmf3Rotation.y, xmf3Rotation.z);
+		Rotate(ptDelta.y * 0.10f, ptDelta.x * 0.10f, 0.f);
 
 		::SetCursorPos(nScreenCenterX, nScreenCenterY);
 	}
 }
 
+void FirstPersonPlayer::Rotate(float fPitch, float fYaw, float fRoll)
+{
+	m_pTransform->AddRotation(fPitch, fYaw, fRoll);
+	m_pCamera->Rotate(fPitch, fYaw, fRoll);
+}
+
 void FirstPersonPlayer::UpdatePlayerCamera(float fTimeElapsed)
 {
-	// Sync with player
 	m_pCamera->SetPosition(m_pTransform->GetPosition());
-	//m_pCamera->SetLookAt(m_pTransform->GetPosition(), m_pTransform->GetLook(), m_pTransform->GetUp());
-	m_pCamera->SetRotation(m_pTransform->GetRotation());
 	m_pCamera->Update();
 }

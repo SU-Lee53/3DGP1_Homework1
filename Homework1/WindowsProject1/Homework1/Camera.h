@@ -20,21 +20,22 @@ class Transform;
 class Camera {
 public:
 	Camera();
-	~Camera();
+	virtual ~Camera();
 
 public:
+	// Projection parameters Setter
 	void SetFOVAngle(float fAngle = 90.0f);
 	void SetViewport(int xTopLeft, int yTopLeft, int nWidth, int nHeight);
 	void SetNearZ(float fNearZ);
 	void SetFarZ(float fFarZ);
 
-	void SetPosition(const XMFLOAT3& xmf3NewPosition);
-	void SetPosition(const XMVECTOR& xmvNewPosition);
-	void SetPosition(float fXPos, float fYPos, float fZPos);
+	BOOL SetPosition(const XMFLOAT3& xmf3NewPosition);
+	BOOL SetPosition(const XMVECTOR& xmvNewPosition);
+	BOOL SetPosition(float fXPos, float fYPos, float fZPos);
 
-	void SetRotation(const XMFLOAT3& xmf3NewRotation);
-	void SetRotation(const XMVECTOR& xmvNewRotation);
-	void SetRotation(float fPitch, float fYaw, float fRoll);
+	virtual BOOL Rotate(const XMFLOAT3& xmf3NewRotation);
+	virtual BOOL Rotate(const XMVECTOR& xmvNewRotation);
+	virtual BOOL Rotate(float fPitch, float fYaw, float fRoll);
 
 	Viewport& GetViewport() { return m_Viewport; }
 	XMFLOAT4X4& GetViewMatrix() { return m_xmf4x4View; }
@@ -43,21 +44,24 @@ public:
 	XMFLOAT4X4& GetViewPerspectiveProjectMatrix();
 	XMFLOAT4X4& GetOrthographicProjectMatrix() { return m_xmf4x4OrthographicProject; }
 	XMFLOAT4X4& GetViewOrthographicProjectMatrix();
-	std::shared_ptr<Transform>& GetTransform() { return m_pTransform; }
 
 public:
-	void Initialize(std::shared_ptr<Player> pOwnerPlayer);
-	void Update();
+	virtual void Initialize(std::shared_ptr<Player> pOwnerPlayer);
+	virtual void Update();
 
 	bool IsInFrustum(const BoundingOrientedBox& xmBoundingBox) const;
 
-private:
-	void GenerateViewMatrix();
+protected:
+	virtual void GenerateViewMatrix();
 	void GeneratePerspectiveProjectionMatrix();
 	void GenerateOrthographicProjectionMatrix();
 
-private:
-	std::shared_ptr<Transform> m_pTransform = nullptr;
+protected:
+	XMFLOAT3 m_xmf3Position = {};
+	
+	XMFLOAT3 m_xmf3Right	= XMFLOAT3{ 1.f, 0.f, 0.f };
+	XMFLOAT3 m_xmf3Up		= XMFLOAT3{ 0.f, 1.f, 0.f };
+	XMFLOAT3 m_xmf3Look		= XMFLOAT3{ 0.f, 0.f, 1.f };
 
 	// Y angle
 	float m_fFOVAngle = 0.f;

@@ -120,9 +120,6 @@
     <ClInclude Include="Player.h">
       <Filter>소스 파일\GameObject\Player\Player Base</Filter>
     </ClInclude>
-    <ClInclude Include="FirstPersonPlayer.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="Defines.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -131,6 +128,15 @@
     </ClInclude>
     <ClInclude Include="Transform.h">
       <Filter>소스 파일\GameObject\Object Components</Filter>
+    </ClInclude>
+    <ClInclude Include="FirstPersonPlayer.h">
+      <Filter>소스 파일\GameObject\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="FirstPersonCamera.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPersonCamera.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -179,14 +185,20 @@
     <ClCompile Include="TitleScene.cpp">
       <Filter>소스 파일\Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="FirstPersonPlayer.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="InputManager.cpp">
       <Filter>소스 파일\Managers</Filter>
     </ClCompile>
     <ClCompile Include="Transform.cpp">
       <Filter>소스 파일\GameObject\Object Components</Filter>
+    </ClCompile>
+    <ClCompile Include="FirstPersonPlayer.cpp">
+      <Filter>소스 파일\GameObject\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="FirstPersonCamera.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdPersonCamera.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

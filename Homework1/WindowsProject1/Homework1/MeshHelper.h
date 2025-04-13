@@ -19,7 +19,7 @@ namespace MeshHelper {
 
 	BOOL CreateMeshFromOBJFiles(std::shared_ptr<Mesh> pMesh, std::wstring_view wstrObjPath);
 
-	void CreateRollercoasterRailMesh(std::shared_ptr<Mesh> pMesh,
+	void CreateRollercoasterRailMesh(std::shared_ptr<Mesh> pMesh, OUT std::vector<XMFLOAT3>& RollercoasterRoute,
 		float fWidth = 20.0f, float fCourseRadius = 90.0f, int nControlPoints = 5, int nInterpolateBias = 10);
 
 };
