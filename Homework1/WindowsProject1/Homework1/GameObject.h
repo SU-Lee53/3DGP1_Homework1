@@ -1,6 +1,17 @@
 #pragma once
 #include "Transform.h"
 
+enum TAG_GAMEOBJECT_TYPE : UINT8 {
+	TAG_GAMEOBJECT_TYPE_DEFAULT = 0,
+	TAG_GAMEOBJECT_TYPE_PLAYER = 0,
+	TAG_GAMEOBJECT_TYPE_EXPLOSIVE,
+	TAG_GAMEOBJECT_TYPE_TANK,
+	TAG_GAMEOBJECT_TYPE_OBSTACLE,
+	TAG_GAMEOBJECT_TYPE_COUNT,
+
+	TAG_GAMEOBJECT_TYPE_UNDEFINED = 99
+};
+
 class GameObject {
 public:
 	GameObject();
@@ -15,10 +26,17 @@ public:
 
 	void SetCollidedObject(const std::shared_ptr<GameObject>& pObjectCollided) { m_pObjectCollided = pObjectCollided; }
 	void SetCollidedObject(nullptr_t) { m_pObjectCollided.reset(); }
+	
+	void SetName(std::string_view svName) { m_strObjectName = svName; }
 
 	std::shared_ptr<GameObject>& GetCollidedObject() { return m_pObjectCollided; }
 
 	BoundingOrientedBox& GetOBB() { return m_xmOBB; }
+
+	TAG_GAMEOBJECT_TYPE GetObjectType() { return m_eObjectType; }
+
+	std::string_view GetName() { return m_strObjectName; }
+
 
 	void LookTo(const XMFLOAT3& xmf3LookTo, const XMFLOAT3& xmf3Up);
 	void LookAt(const XMFLOAT3& xmf3LookAt, const XMFLOAT3& xmf3Up);
@@ -31,9 +49,10 @@ public:
 	virtual void Update(float fElapsedTime);
 	virtual void Render(HDC hDCFrameBuffer, std::shared_ptr<class Camera> pCamera);
 
+	virtual void OnPicked() { }
+
 	void GenerateRayForPicking(XMVECTOR& xmvPickPosition, const XMMATRIX& xmmtxView, XMVECTOR& xmvPickRayOrigin, XMVECTOR& xmvPickRayDirection) const;
 	int PickObjectByRayIntersection(XMVECTOR& xmvPickPosition, const XMMATRIX& xmmtxView, float& fHitDistance) const;
-
 
 	std::shared_ptr<Transform>& GetTransform() { return m_pTransform; }
 
@@ -48,5 +67,7 @@ protected:
 	std::shared_ptr<GameObject>		m_pObjectCollided = nullptr;
 	COLORREF						m_Color = RGB(255, 0, 0);
 
+	TAG_GAMEOBJECT_TYPE				m_eObjectType = TAG_GAMEOBJECT_TYPE_DEFAULT;
+	std::string						m_strObjectName = "";
 };
 

@@ -71,4 +71,5 @@ void InputManager::UpdateMouse()
 {
 	m_ptOldCursorPos = m_ptCurrentCursorPos;
 	::GetCursorPos(&m_ptCurrentCursorPos);
+	::ScreenToClient(m_hWnd, &m_ptCurrentCursorPos);
 }

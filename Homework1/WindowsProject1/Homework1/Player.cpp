@@ -4,6 +4,7 @@
 
 Player::Player()
 {
+	m_eObjectType = TAG_GAMEOBJECT_TYPE_PLAYER;
 }
 
 Player::~Player()

@@ -35,14 +35,17 @@ public:
 	virtual void ProcessKeyboardInput() { }
 
 	void CheckObjectByObjectCollisions();
-
 	std::shared_ptr<GameObject>& PickObjectPointedByCursor(int xClient, int yClient, std::shared_ptr<Camera> pCamera);
+
+	std::shared_ptr<GameObject> FindObjectInScene(std::string_view svName);
 
 
 protected:
-	std::vector<std::shared_ptr<GameObject>> m_pObjects = {};
-	std::shared_ptr<Player>		m_pPlayer;
+	std::vector<std::shared_ptr<GameObject>>	m_pObjects = {};
+	std::shared_ptr<Player>						m_pPlayer;
 
-	TAG_SCENE_NAME m_eSceneTag = TAG_SCENE_UNDEFINED;
+	std::shared_ptr<GameObject>					m_pPickedObject = nullptr;
+
+	TAG_SCENE_NAME								m_eSceneTag = TAG_SCENE_UNDEFINED;
 
 };

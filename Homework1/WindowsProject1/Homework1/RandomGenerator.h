@@ -20,16 +20,12 @@ public:
 
 	static XMVECTOR GenerateRandomUnitVectorOnSphere() {
 		XMVECTOR xmvOne = XMVectorReplicate(1.0f);
-		XMVECTOR xmvZero = XMVectorZero();	// ??
+		XMVECTOR xmvZero = XMVectorZero();
 
-		// 나중에 수정 필요할듯?
-		while (true) {	// ?????
+		while (true) {
 			XMVECTOR v = XMVectorSet(GenerateRandomFloatInRange(-1.f, 1.f), GenerateRandomFloatInRange(-1.f, 1.f), GenerateRandomFloatInRange(-1.f, 1.f), 0.0f);
 			if (!XMVector3Greater(XMVector3LengthSq(v), xmvOne)) {
 				return XMVector3Normalize(v);
-			}
-			else {
-				//__debugbreak();	// 테스트
 			}
 		}
 

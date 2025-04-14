@@ -27,8 +27,9 @@ public:
 private:
 	BOOL m_bPlayerRide = FALSE;
 	BOOL m_bRollercoasterEnd = FALSE;
-	std::vector<XMFLOAT3> m_xmf3MoveRoutes = {};
-	int m_nCurrentRoute = 1;
-	float m_fInterpolationFactor = 0.f;
+
+	std::vector<XMFLOAT3>	m_xmf3MoveRoutes = {};
+	int						m_nCurrentRoute = 1;
+	float					m_fInterpolationFactor = 0.f;
 };
 

@@ -1,25 +1,36 @@
 #include "stdafx.h"
 #include "TitleScene.h"
 #include "FirstPersonPlayer.h"
+#include "ExplosiveObject.h"
 
 using namespace std;
 
 void TitleScene::BuildObjects()
 {
+	shared_ptr<Mesh> p3DGPMesh = make_shared<Mesh>();
+	MeshHelper::CreateMeshFromOBJFiles(p3DGPMesh, L"../3D_Game_Programming.obj");
+
 	shared_ptr<Mesh> pNameMesh = make_shared<Mesh>();
 	MeshHelper::CreateMeshFromOBJFiles(pNameMesh, L"../name.obj");
 
-	m_pObjects.resize(1);
+	m_pObjects.resize(2);
 	m_pObjects[0] = make_shared<GameObject>();
-	m_pObjects[0]->SetColor(RGB(0, 0, 0));
-	m_pObjects[0]->SetMesh(pNameMesh);
-	m_pObjects[0]->GetTransform()->SetPosition(0.f, 0.f, 150.f);
+	m_pObjects[0]->SetColor(RGB(0, 255, 0));
+	m_pObjects[0]->SetMesh(p3DGPMesh);
+	m_pObjects[0]->GetTransform()->SetPosition(0.f, 10.f, 70.f);
 	m_pObjects[0]->GetTransform()->SetRotation(90.f, 0.f, 0.f);
 
+	m_pObjects[1] = make_shared<ExplosiveObject>();
+	m_pObjects[1]->SetColor(RGB(255, 0, 0));
+	m_pObjects[1]->SetMesh(pNameMesh);
+	m_pObjects[1]->GetTransform()->SetPosition(0.f, -15.f, 70.f);
+	m_pObjects[1]->GetTransform()->SetRotation(90.f, 0.f, 0.f);
+	
 	m_pPlayer = make_shared<FirstPersonPlayer>();
 	m_pPlayer->Initialize();
 	m_pPlayer->GetTransform()->SetPosition(0.f, 0.f, 0.f);
 
+	ExplosiveObject::PrepareExplosion();
 }
 
 void TitleScene::ReleaseObjects()
@@ -29,6 +40,15 @@ void TitleScene::ReleaseObjects()
 
 void TitleScene::Update(float fTimeElapsed)
 {
+	if (static_pointer_cast<ExplosiveObject>(m_pObjects[1])->IsExploded()) {
+		GameFramework::ChangeScene(TAG_SCENE_MENU);
+		return;
+	}
+
+	m_fRunningTime += fTimeElapsed;
+	float fRot = std::cos(XMConvertToRadians(m_fRunningTime * 100)) * 45;
+	m_pObjects[1]->GetTransform()->SetRotation(90.f, 0.f, fRot);
+
 	ProcessMouseInput();
 	ProcessKeyboardInput();
 
@@ -50,6 +70,14 @@ void TitleScene::Render(HDC hDCFrameBuffer)
 
 void TitleScene::ProcessMouseInput()
 {
+	if (INPUT.GetButtonDown(VK_LBUTTON)) {
+		POINT ptCursorPos = INPUT.GetCurrentCursorPos();
+		std::shared_ptr<GameObject> pPickedObj = PickObjectPointedByCursor(ptCursorPos.x, ptCursorPos.y, m_pPlayer->GetCamera());
+		if (pPickedObj) {
+			pPickedObj->OnPicked();
+		}
+	}
+
 //	m_pPlayer->ProcessMouseInput();
 }
 

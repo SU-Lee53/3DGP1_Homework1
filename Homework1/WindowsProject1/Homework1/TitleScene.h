@@ -21,5 +21,9 @@ public:
 	virtual void ProcessKeyboardInput() override;
 
 
+public:
+	float m_fRunningTime = 0.f;
+	float m_fRotationSpeed = 20.f;
+
 };
 

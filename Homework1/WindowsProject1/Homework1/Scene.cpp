@@ -56,22 +56,6 @@ void Scene::CheckObjectByObjectCollisions()
 			}
 		}
 	}
-	
-	/*
-	for (shared_ptr<GameObject>& pObj : m_pObjects) {
-		if (pObj->GetCollidedObject()) {
-			XMFLOAT3 xmf3MovingDirection = pObj->GetMovingDirection();
-			float fMovingSpeed = pObj->GetMovingSpeed();
-
-			pObj->SetMovingDirection(pObj->GetCollidedObject()->GetMovingDirection());
-			pObj->SetMovingSpeed(pObj->GetCollidedObject()->GetMovingSpeed());
-			pObj->GetCollidedObject()->SetMovingSpeed(fMovingSpeed);
-			pObj->GetCollidedObject()->SetCollidedObject(nullptr);
-			pObj->SetCollidedObject(nullptr);
-		}
-
-	}*/
-
 }
 
 std::shared_ptr<GameObject>& Scene::PickObjectPointedByCursor(int xClient, int yClient, std::shared_ptr<Camera> pCamera)
@@ -98,4 +82,16 @@ std::shared_ptr<GameObject>& Scene::PickObjectPointedByCursor(int xClient, int y
 
 	return pNearestObject;
 
+}
+
+std::shared_ptr<GameObject> Scene::FindObjectInScene(std::string_view svName)
+{
+	auto it = std::find_if(m_pObjects.begin(), m_pObjects.end(), [&svName](std::shared_ptr<GameObject>& pObj) {
+		return pObj->GetName() == svName;
+	});
+
+	if (it == m_pObjects.end()) return nullptr;
+	
+
+	return *it;
 }

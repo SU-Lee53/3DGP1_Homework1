@@ -61,6 +61,9 @@
     <Filter Include="소스 파일\GameObject\Object Components">
       <UniqueIdentifier>{5c48c0ef-bcb5-4e91-b9cb-c9fcafe9d78b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Camera\Camera Base">
+      <UniqueIdentifier>{f11203d3-92de-4792-9fcf-00682b19b048}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -71,9 +74,6 @@
     </ClInclude>
     <ClInclude Include="GameFramework.h">
       <Filter>소스 파일\GameFramework</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>소스 파일\Camera</Filter>
     </ClInclude>
     <ClInclude Include="GameTimer.h">
       <Filter>소스 파일\GameFramework</Filter>
@@ -133,9 +133,15 @@
       <Filter>소스 파일\GameObject\Player</Filter>
     </ClInclude>
     <ClInclude Include="FirstPersonCamera.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>소스 파일\Camera</Filter>
     </ClInclude>
     <ClInclude Include="ThirdPersonCamera.h">
+      <Filter>소스 파일\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>소스 파일\Camera\Camera Base</Filter>
+    </ClInclude>
+    <ClInclude Include="ExplosiveObject.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -148,9 +154,6 @@
     </ClCompile>
     <ClCompile Include="GameFramework.cpp">
       <Filter>소스 파일\GameFramework</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>소스 파일\Camera</Filter>
     </ClCompile>
     <ClCompile Include="GameTimer.cpp">
       <Filter>소스 파일\GameFramework</Filter>
@@ -195,9 +198,15 @@
       <Filter>소스 파일\GameObject\Player</Filter>
     </ClCompile>
     <ClCompile Include="FirstPersonCamera.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\Camera</Filter>
     </ClCompile>
     <ClCompile Include="ThirdPersonCamera.cpp">
+      <Filter>소스 파일\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>소스 파일\Camera\Camera Base</Filter>
+    </ClCompile>
+    <ClCompile Include="ExplosiveObject.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

@@ -131,6 +131,7 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Defines.h" />
+    <ClInclude Include="ExplosiveObject.h" />
     <ClInclude Include="FirstPersonCamera.h" />
     <ClInclude Include="FirstPersonPlayer.h" />
     <ClInclude Include="GameFramework.h" />
@@ -157,6 +158,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="ExplosiveObject.cpp" />
     <ClCompile Include="FirstPersonCamera.cpp" />
     <ClCompile Include="FirstPersonPlayer.cpp" />
     <ClCompile Include="GameFramework.cpp" />

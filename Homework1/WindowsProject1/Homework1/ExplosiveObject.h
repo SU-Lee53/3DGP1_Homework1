@@ -1,0 +1,42 @@
+#pragma once
+#include "GameObject.h"
+class ExplosiveObject : public GameObject {
+public:
+	ExplosiveObject();
+	virtual ~ExplosiveObject();
+
+public:
+	BOOL IsBlowingUp() const { return m_bBlowingUp; }
+	BOOL IsExploded() const { return m_bExplosionCompleted; }
+	void Reset() {
+		m_bBlowingUp = FALSE;
+		m_bExplosionCompleted = FALSE;
+	}
+
+public:
+	virtual void Initialize() override;
+	virtual void Update(float fTimeElapsed) override;
+	virtual void Render(HDC hDCFrameBuffer, std::shared_ptr<Camera> pCamera);
+	virtual void OnPicked() override;
+
+public:
+	static void PrepareExplosion();
+
+private:
+	BOOL										m_bBlowingUp = FALSE;
+	BOOL										m_bExplosionCompleted = FALSE;
+	std::array<XMFLOAT4X4, EXPLOSION_DEBRISES>	m_xmf4x4Transforms = {};
+
+	float m_fElapsedTimes = 0.f;
+	float m_fDuration = 2.0f;
+	float m_fExplosionSpeed = 10.0f;
+	float m_fExplosionRotation = 720.0f;
+	
+private:
+	static std::shared_ptr<Mesh>					m_pExplosionMesh;
+	static std::array<XMFLOAT3, EXPLOSION_DEBRISES> m_xmf3SphereVectors;
+
+
+
+};
+

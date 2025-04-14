@@ -43,7 +43,10 @@ void Level1Scene::Update(float fTimeElapsed)
 	ProcessKeyboardInput();
 
 	if (m_bPlayerRide) UpdatePlayerRide(fTimeElapsed);
-	if (m_bRollercoasterEnd) GameFramework::ChangeScene(TAG_SCENE_LEVEL2);
+	if (m_bRollercoasterEnd) {
+		GameFramework::ChangeScene(TAG_SCENE_LEVEL2);
+		return;
+	}
 
 	if(m_pPlayer)
 		m_pPlayer->Update(fTimeElapsed);
@@ -76,6 +79,10 @@ void Level1Scene::ProcessKeyboardInput()
 	if (INPUT.GetButtonDown('R')) {
 		m_bPlayerRide = !m_bPlayerRide;
 		if (!m_bPlayerRide) ResetPlayerRide();
+	}
+	
+	if (INPUT.GetButtonDown('N')) {
+		GameFramework::ChangeScene(TAG_SCENE_LEVEL2);
 	}
 
 	if (!m_bPlayerRide) {
