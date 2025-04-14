@@ -138,5 +138,6 @@ void Transform::Update()
 		m_xmf4x4World._43 = m_xmf3Position.z;
 	}
 
+	// TODO : need to update OBB
 
 }

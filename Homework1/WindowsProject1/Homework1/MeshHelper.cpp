@@ -337,6 +337,18 @@ BOOL MeshHelper::CreateMeshFromOBJFiles(shared_ptr<Mesh> pMesh, wstring_view wst
 		pPolygon->SetVertex(2, Vertex{ LoadedVertices[xmi3Indices.z - 1] });
 		pMesh->SetPolygon(index, pPolygon);
 	}
+
+	// TODO : Initialize BoundingBox
+
+	auto [itMinX, itMaxX] = std::minmax_element(LoadedVertices.begin(), LoadedVertices.end(), [](const XMFLOAT3& xmf3_1, const XMFLOAT3& xmf3_2) { return xmf3_1.x < xmf3_2.x; });
+	auto [itMinY, itMaxY] = std::minmax_element(LoadedVertices.begin(), LoadedVertices.end(), [](const XMFLOAT3& xmf3_1, const XMFLOAT3& xmf3_2) { return xmf3_1.y < xmf3_2.y; });
+	auto [itMinZ, itMaxZ] = std::minmax_element(LoadedVertices.begin(), LoadedVertices.end(), [](const XMFLOAT3& xmf3_1, const XMFLOAT3& xmf3_2) { return xmf3_1.z < xmf3_2.z; });
+
+
+	XMFLOAT3 xmf3ObbCenter = { (itMaxX->x + itMinX->x) / 2, (itMaxY->y + itMinY->y) / 2, (itMaxZ->z + itMinZ->z) / 2 };
+	XMFLOAT3 xmf3ObbExtent = Vector3::Subtract(XMFLOAT3{ itMaxX->x, itMaxY->y, itMaxZ->z }, xmf3ObbCenter);
+
+	pMesh->m_xmOBB = BoundingOrientedBox(xmf3ObbCenter, xmf3ObbExtent, XMFLOAT4{0.f, 0.f, 0.f, 1.f});
 }
 
 void GenerateRollercoasterPillarPolygon(shared_ptr<Mesh> pMesh, XMFLOAT3 xmf3TopPosition, float fWidth, float fDepth)

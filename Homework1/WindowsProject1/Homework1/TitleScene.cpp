@@ -13,7 +13,7 @@ void TitleScene::BuildObjects()
 	m_pObjects[0] = make_shared<GameObject>();
 	m_pObjects[0]->SetColor(RGB(0, 0, 0));
 	m_pObjects[0]->SetMesh(pNameMesh);
-	m_pObjects[0]->GetTransform()->SetPosition(0.f, 0.f, 300.f);
+	m_pObjects[0]->GetTransform()->SetPosition(0.f, 0.f, 150.f);
 	m_pObjects[0]->GetTransform()->SetRotation(90.f, 0.f, 0.f);
 
 	m_pPlayer = make_shared<FirstPersonPlayer>();
@@ -36,7 +36,7 @@ void TitleScene::Update(float fTimeElapsed)
 		m_pPlayer->Update(fTimeElapsed);
 
 	if (!m_pObjects.empty()) {
-		std::for_each(m_pObjects.begin(), m_pObjects.end(), [fTimeElapsed](std::shared_ptr<GameObject>& p) {p->Update(fTimeElapsed); });
+		std::for_each(m_pObjects.begin(), m_pObjects.end(), [fTimeElapsed](std::shared_ptr<GameObject>& p) { p->Update(fTimeElapsed); });
 	}
 }
 
@@ -50,7 +50,7 @@ void TitleScene::Render(HDC hDCFrameBuffer)
 
 void TitleScene::ProcessMouseInput()
 {
-	m_pPlayer->ProcessMouseInput();
+//	m_pPlayer->ProcessMouseInput();
 }
 
 void TitleScene::ProcessKeyboardInput()

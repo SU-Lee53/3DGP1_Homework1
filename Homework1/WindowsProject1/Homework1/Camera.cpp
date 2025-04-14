@@ -124,27 +124,27 @@ void Camera::Initialize(shared_ptr<Player> pOwnerPlayer)
 void Camera::Update()
 {
 	if (!m_wpOwner.expired()) { // If camera owned by someone(Player)
-		if (m_bViewUpdated) {
-			GenerateViewMatrix();
-			m_bViewUpdated = FALSE;
-		}
-
 		if (m_bProjectionUpdated) {
 			GeneratePerspectiveProjectionMatrix();
 			GenerateOrthographicProjectionMatrix();
 			m_bProjectionUpdated = FALSE;
+		}
+
+		if (m_bViewUpdated) {
+			GenerateViewMatrix();
+			m_bViewUpdated = FALSE;
 		}
 	}
 	else {	// If camera stands only
-		if (m_bViewUpdated) {
-			GenerateViewMatrix();
-			m_bViewUpdated = FALSE;
-		}
-		
 		if (m_bProjectionUpdated) {
 			GeneratePerspectiveProjectionMatrix();
 			GenerateOrthographicProjectionMatrix();
 			m_bProjectionUpdated = FALSE;
+		}
+
+		if (m_bViewUpdated) {
+			GenerateViewMatrix();
+			m_bViewUpdated = FALSE;
 		}
 	}
 }
