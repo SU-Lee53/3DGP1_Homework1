@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Level1Scene.h"
-#include "Mesh.h"
 #include "FirstPersonPlayer.h"
 
 using namespace std;
@@ -35,6 +34,7 @@ void Level1Scene::BuildObjects()
 
 void Level1Scene::ReleaseObjects()
 {
+	Scene::ReleaseObjects();
 }
 
 void Level1Scene::Update(float fTimeElapsed)
@@ -49,7 +49,7 @@ void Level1Scene::Update(float fTimeElapsed)
 		m_pPlayer->Update(fTimeElapsed);
 	
 	if (!m_pObjects.empty()) {
-		std::for_each(m_pObjects.begin(), m_pObjects.end(), [fTimeElapsed](std::shared_ptr<GameObject>& p) {p->Update(fTimeElapsed); });
+		std::for_each(m_pObjects.begin(), m_pObjects.end(), [fTimeElapsed](std::shared_ptr<GameObject>& p) { p->Update(fTimeElapsed); });
 	}
 
 }

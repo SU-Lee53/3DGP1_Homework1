@@ -84,8 +84,8 @@ protected:
 
 	std::weak_ptr<Player> m_wpOwner;
 
-	BOOL m_bViewUpdated = FALSE;
-	BOOL m_bProjectionUpdated = FALSE;
+	BOOL m_bViewUpdated = TRUE;
+	BOOL m_bProjectionUpdated = TRUE;
 
 };
 

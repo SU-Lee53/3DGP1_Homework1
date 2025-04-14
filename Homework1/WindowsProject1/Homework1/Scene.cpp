@@ -13,6 +13,10 @@ void Scene::BuildObjects()
 
 void Scene::ReleaseObjects()
 {
+	m_pPlayer.reset();
+	for (auto& pObj : m_pObjects) {
+		pObj.reset();
+	}
 }
 
 void Scene::Update(float fElapsedTime)

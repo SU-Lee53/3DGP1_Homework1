@@ -307,20 +307,36 @@ void MeshHelper::CreateAirplaneMesh(shared_ptr<Mesh> pMesh, float fWidth, float 
 
 BOOL MeshHelper::CreateMeshFromOBJFiles(shared_ptr<Mesh> pMesh, wstring_view wstrObjPath)
 {
-	ifstream in{ wstrObjPath.data()};
+	ifstream in{ wstrObjPath.data() };
 
 	if (!in) return FALSE;
 
 	vector<XMFLOAT3> LoadedVertices;
-	vector<UINT> LoadedIndices;
-	while (in) {
+	vector<XMINT3> LoadedIndices;
+	std::string strRead{};
+	while (in >> strRead) {
+		if (strRead == "v") {
+			float fX, fY, fZ;
+			in >> fX >> fY >> fZ;
+			LoadedVertices.emplace_back(fX, fY, fZ);
+		}
 
-
-
-
+		if (strRead == "f") {
+			float n1, n2, n3;
+			in >> n1 >> n2 >> n3;
+			LoadedIndices.emplace_back(n1, n2, n3);
+		}
 	}
 
 
+	pMesh->m_pPolygons.resize(LoadedIndices.size());
+	for (const auto& [index, xmi3Indices]: std::views::enumerate(LoadedIndices)) {
+		shared_ptr<struct Polygon> pPolygon = make_shared<struct Polygon>(3);
+		pPolygon->SetVertex(0, Vertex{ LoadedVertices[xmi3Indices.x - 1] });
+		pPolygon->SetVertex(1, Vertex{ LoadedVertices[xmi3Indices.y - 1] });
+		pPolygon->SetVertex(2, Vertex{ LoadedVertices[xmi3Indices.z - 1] });
+		pMesh->SetPolygon(index, pPolygon);
+	}
 }
 
 void GenerateRollercoasterPillarPolygon(shared_ptr<Mesh> pMesh, XMFLOAT3 xmf3TopPosition, float fWidth, float fDepth)
