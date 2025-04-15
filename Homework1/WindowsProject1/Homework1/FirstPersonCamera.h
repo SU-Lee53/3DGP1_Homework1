@@ -14,6 +14,10 @@ public:
 	BOOL SetRotation(const XMVECTOR& xmvNewRotation);
 	BOOL SetRotation(float fPitch, float fYaw, float fRoll);
 
+	XMFLOAT3& GetRotation() {
+		return m_xmf3RotationEuler;
+	}
+
 public:
 	virtual void GenerateViewMatrix() override;
 

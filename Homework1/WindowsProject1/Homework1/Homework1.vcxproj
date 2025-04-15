@@ -129,6 +129,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="BulletObject.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="ExplosiveObject.h" />
@@ -150,6 +151,8 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="TankObject.h" />
+    <ClInclude Include="TankPlayer.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="ThirdPersonCamera.h" />
     <ClInclude Include="TitleScene.h" />
@@ -157,6 +160,7 @@
     <ClInclude Include="XMMathHelper.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BulletObject.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="ExplosiveObject.cpp" />
     <ClCompile Include="FirstPersonCamera.cpp" />
@@ -177,6 +181,8 @@
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="TankObject.cpp" />
+    <ClCompile Include="TankPlayer.cpp" />
     <ClCompile Include="ThirdPersonCamera.cpp" />
     <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="Transform.cpp" />

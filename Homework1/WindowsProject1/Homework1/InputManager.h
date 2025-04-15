@@ -33,6 +33,20 @@ public:
 	const POINT& GetOldCursorPos() { return m_ptOldCursorPos; }
 	POINT GetCursorDeltaPos() { return POINT{ m_ptCurrentCursorPos.x - m_ptOldCursorPos.x, m_ptCurrentCursorPos.y - m_ptOldCursorPos.y }; }
 
+	void ShowCursor() {
+		if (!m_bShowCursor) {
+			m_bShowCursor = TRUE;
+			::ShowCursor(TRUE);
+		}
+	}
+
+	void HideCursor() {
+		if (m_bShowCursor) {
+			m_bShowCursor = FALSE;
+			::ShowCursor(FALSE);
+		}
+	}
+
 private:
 	inline KEY_STATE GetState(UCHAR key) { return m_eKeyStates[key]; }
 
@@ -43,5 +57,7 @@ private:
 
 	POINT m_ptCurrentCursorPos = {};
 	POINT m_ptOldCursorPos = {};
+
+	BOOL		m_bShowCursor = TRUE;
 };
 

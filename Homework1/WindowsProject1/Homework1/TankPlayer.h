@@ -1,11 +1,9 @@
 #pragma once
 #include "Player.h"
-#include "FirstPersonCamera.h"
-
-class FirstPersonPlayer : public Player {
+class TankPlayer : public Player{
 public:
-	FirstPersonPlayer();
-	virtual ~FirstPersonPlayer();
+	TankPlayer();
+	virtual ~TankPlayer();
 
 public:
 	virtual void Initialize() override;
@@ -18,9 +16,15 @@ public:
 public:
 	virtual void Rotate(float fPitch = 0.0f, float fYaw = 0.0f, float fRoll = 0.0f) override;
 
+public:
+	void FireBullet(std::shared_ptr<GameObject> pLockedObject);
+
 private:
 	virtual void UpdatePlayerCamera(float fTimeElapsed) override;
 
+
+private:
+	float m_fBulletEffectiveRange = 150.f;
 
 };
 

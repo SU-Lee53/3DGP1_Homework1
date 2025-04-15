@@ -47,7 +47,7 @@ void TitleScene::Update(float fTimeElapsed)
 
 	m_fRunningTime += fTimeElapsed;
 	float fRot = std::cos(XMConvertToRadians(m_fRunningTime * 100)) * 45;
-	m_pObjects[1]->GetTransform()->SetRotation(90.f, 0.f, fRot);
+	m_pObjects[1]->GetTransform()->SetRotation(90.f, 0.0f, 0.0f);
 
 	ProcessMouseInput();
 	ProcessKeyboardInput();

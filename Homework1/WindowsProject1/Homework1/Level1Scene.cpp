@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Level1Scene.h"
 #include "FirstPersonPlayer.h"
+#include "GraphicsPipeline.h"
 
 using namespace std;
 
@@ -15,6 +16,9 @@ void Level1Scene::BuildObjects()
 	
 	shared_ptr<Mesh> pCarMesh = make_shared<Mesh>();
 	MeshHelper::CreateCubeMesh(pCarMesh, 12.0f, 5.0f, 15.0f);
+	
+	shared_ptr<Mesh> pAxis = make_shared<AxisMesh>();
+	MeshHelper::CreateCubeMesh(pCarMesh, 12.0f, 5.0f, 15.0f);
 
 	m_pObjects.resize(2);
 	m_pObjects[0] = make_shared<GameObject>();
@@ -24,12 +28,13 @@ void Level1Scene::BuildObjects()
 
 	m_pObjects[1] = make_shared<GameObject>();
 	m_pObjects[1]->SetColor(RGB(255, 0, 0));
-	m_pObjects[1]->SetMesh(pCubeMesh);
-	m_pObjects[1]->GetTransform()->SetPosition(0.f, 0.f, 0.0f);
+	m_pObjects[1]->SetMesh(pAxis);
+	m_pObjects[1]->GetTransform()->SetPosition(0.f, 0.f, 10.0f);
 	
 	m_pPlayer = make_shared<FirstPersonPlayer>();
 	m_pPlayer->Initialize();
 	m_pPlayer->GetTransform()->SetPosition(0.f, 0.f, 0.f);
+
 }
 
 void Level1Scene::ReleaseObjects()
@@ -57,15 +62,23 @@ void Level1Scene::Update(float fTimeElapsed)
 
 }
 
+void QuaternionToEuler(const XMVECTOR& quat, float& pitch, float& yaw, float& roll)
+{
+	XMFLOAT4 q;
+	XMStoreFloat4(&q, quat);
+
+	// Pitch (X축 회전)
+	pitch = asinf(2.0f * (q.w * q.y - q.x * q.z));
+
+	// Yaw (Y축 회전)
+	yaw = atan2f(2.0f * (q.w * q.z + q.x * q.y), 1.0f - 2.0f * (q.x * q.x + q.y * q.y));
+
+	// Roll (Z축 회전)
+	roll = atan2f(2.0f * (q.w * q.x + q.y * q.z), 1.0f - 2.0f * (q.x * q.x + q.z * q.z));
+}
+
 void Level1Scene::Render(HDC hDCFrameBuffer)
 {
-	XMFLOAT3 xmf3PlayerRotation = m_pPlayer->GetTransform()->GetRotation();
-	std::wstring wstrPlayerRotate = L"Player Rotation { Pitch, Yaw, Roll } : { " + to_wstring(xmf3PlayerRotation.x) + L", " + to_wstring(xmf3PlayerRotation.y) + L" , " + to_wstring(xmf3PlayerRotation.z) + L" }";
-
-	std::wstring wstrOutText{ L"Level1Scene" };
-	::TextOut(hDCFrameBuffer, 0, 0, wstrOutText.c_str(), wstrOutText.length());
-	::TextOut(hDCFrameBuffer, 50, 50, wstrPlayerRotate.c_str(), wstrPlayerRotate.length());
-
 	Scene::Render(hDCFrameBuffer);
 }
 
@@ -87,6 +100,23 @@ void Level1Scene::ProcessKeyboardInput()
 
 	if (!m_bPlayerRide) {
 		m_pPlayer->ProcessKeyboardInput();
+	}
+
+
+	if (INPUT.GetButtonPressed(VK_UP)) {
+		m_pObjects[1]->GetTransform()->AddRotation(-1.5f, 0.f, 0.f);
+	}
+
+	if (INPUT.GetButtonPressed(VK_DOWN)) {
+		m_pObjects[1]->GetTransform()->AddRotation(1.5f, 0.f, 0.f);
+	}
+
+	if (INPUT.GetButtonPressed(VK_RIGHT)) {
+		m_pObjects[1]->GetTransform()->AddRotation(0.0f, 1.5f, 0.f);
+	}
+
+	if (INPUT.GetButtonPressed(VK_LEFT)) {
+		m_pObjects[1]->GetTransform()->AddRotation(0.0f, -1.5f, 0.f);
 	}
 }
 

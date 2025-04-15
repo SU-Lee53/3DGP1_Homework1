@@ -27,6 +27,7 @@ void Scene::Update(float fElapsedTime)
 	m_pPlayer->Update(fElapsedTime);
 
 	CheckObjectByObjectCollisions();
+
 }
 
 void Scene::Render(HDC hDCFrameBuffer)

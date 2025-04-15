@@ -34,9 +34,10 @@ public:
 	void Update();
 
 private:
-	XMFLOAT3 m_xmf3Position = XMFLOAT3{ 0.f, 0.f, 0.f };
-	XMFLOAT3 m_xmf3Rotation = XMFLOAT3{ 0.f, 0.f, 0.f };
-	XMFLOAT4X4 m_xmf4x4World = Matrix4x4::Identity();
+	XMFLOAT3	m_xmf3Position = XMFLOAT3{ 0.f, 0.f, 0.f };
+	XMFLOAT3	m_xmf3Rotation = XMFLOAT3{ 0.f, 0.f, 0.f };
+
+	XMFLOAT4X4	m_xmf4x4World = Matrix4x4::Identity();
 
 	BOOL m_bUpdated = TRUE;
 

@@ -142,6 +142,15 @@
       <Filter>소스 파일\Camera\Camera Base</Filter>
     </ClInclude>
     <ClInclude Include="ExplosiveObject.h">
+      <Filter>소스 파일\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="TankPlayer.h">
+      <Filter>소스 파일\GameObject\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="BulletObject.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="TankObject.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -207,6 +216,15 @@
       <Filter>소스 파일\Camera\Camera Base</Filter>
     </ClCompile>
     <ClCompile Include="ExplosiveObject.cpp">
+      <Filter>소스 파일\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="TankPlayer.cpp">
+      <Filter>소스 파일\GameObject\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="BulletObject.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="TankObject.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

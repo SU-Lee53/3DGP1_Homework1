@@ -1,32 +1,36 @@
 #include "stdafx.h"
-#include "FirstPersonPlayer.h"
+#include "TankPlayer.h"
+#include "ThirdPersonCamera.h"
 
 using namespace std;
 
-FirstPersonPlayer::FirstPersonPlayer()
+TankPlayer::TankPlayer()
 {
 }
 
-FirstPersonPlayer::~FirstPersonPlayer()
+TankPlayer::~TankPlayer()
 {
 }
 
-void FirstPersonPlayer::Initialize()
+void TankPlayer::Initialize()
 {
-	m_pCamera = make_shared<FirstPersonCamera>();
+	m_pCamera = make_shared<ThirdPersonCamera>();
 	m_pCamera->Initialize(shared_from_this());
 	m_pCamera->SetViewport(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
 	m_pCamera->SetFOVAngle(60.0f);
 	m_pCamera->SetNearZ(1.01f);
 	m_pCamera->SetFarZ(500.0f);
+
+	MeshHelper::CreateMeshFromOBJFiles(m_pMesh, L"../Tank.obj");
+
 }
 
-void FirstPersonPlayer::Update(float fTimeElapsed)
+void TankPlayer::Update(float fTimeElapsed)
 {
 	Player::Update(fTimeElapsed);
 }
 
-void FirstPersonPlayer::ProcessKeyboardInput()
+void TankPlayer::ProcessKeyboardInput()
 {
 	if (INPUT.GetButtonPressed('W')) {
 		Player::Move(m_pTransform->GetLook(), 0.5f);
@@ -43,37 +47,22 @@ void FirstPersonPlayer::ProcessKeyboardInput()
 	if (INPUT.GetButtonPressed('A')) {
 		Player::Move(m_pTransform->GetRight(), -0.5f);
 	}
-	
+
 	if (INPUT.GetButtonPressed('E')) {
 		Player::Move(m_pTransform->GetUp(), 0.5f);
 	}
-	
+
 	if (INPUT.GetButtonPressed('Q')) {
 		Player::Move(m_pTransform->GetUp(), -0.5f);
 	}
-	
-	if (INPUT.GetButtonPressed(VK_UP)) {
-		Rotate(-0.5f, 0.f, 0.f);
-	}
-	
-	if (INPUT.GetButtonPressed(VK_DOWN)) {
-		Rotate(0.5f, 0.f, 0.f);
-	}
-	
-	if (INPUT.GetButtonPressed(VK_RIGHT)) {
-		Rotate(0.0f, 0.5f, 0.f);
-	}
-	
-	if (INPUT.GetButtonPressed(VK_LEFT)) {
-		Rotate(0.0f, -0.5f, 0.f);
-	}
-
 }
 
-void FirstPersonPlayer::ProcessMouseInput()
+void TankPlayer::ProcessMouseInput()
 {
 	if (INPUT.GetButtonPressed(VK_LBUTTON)) {
 		HWND hWnd = ::GetActiveWindow();
+
+		::SetCursor(NULL);
 
 		RECT rtClientRect;
 		::GetClientRect(hWnd, &rtClientRect);
@@ -92,24 +81,13 @@ void FirstPersonPlayer::ProcessMouseInput()
 		Rotate(ptDelta.y * 0.10f, ptDelta.x * 0.10f, 0.f);
 
 		::SetCursorPos(nScreenCenterX, nScreenCenterY);
-
-		INPUT.HideCursor();
 	}
-
-	if (INPUT.GetButtonUp(VK_LBUTTON)) {
-		INPUT.ShowCursor();
-	}
-
 }
 
-void FirstPersonPlayer::Rotate(float fPitch, float fYaw, float fRoll)
+void TankPlayer::Rotate(float fPitch, float fYaw, float fRoll)
 {
-	m_pTransform->AddRotation(fPitch, fYaw, fRoll);
-	m_pCamera->Rotate(fPitch, fYaw, fRoll);
 }
 
-void FirstPersonPlayer::UpdatePlayerCamera(float fTimeElapsed)
+void TankPlayer::UpdatePlayerCamera(float fTimeElapsed)
 {
-	m_pCamera->SetPosition(m_pTransform->GetPosition());
-	m_pCamera->Update();
 }
