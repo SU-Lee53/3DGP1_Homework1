@@ -33,6 +33,9 @@ public:
 	BOOL SetPosition(const XMVECTOR& xmvNewPosition);
 	BOOL SetPosition(float fXPos, float fYPos, float fZPos);
 
+	void SetLookAt(const XMFLOAT3& xmf3Position, const XMFLOAT3& xmf3LookAt, const XMFLOAT3& xmf3Up);
+	void SetLookAt(const XMFLOAT3& xmf3LookAt, const XMFLOAT3& xmf3Up);
+
 	virtual BOOL Rotate(const XMFLOAT3& xmf3NewRotation);
 	virtual BOOL Rotate(const XMVECTOR& xmvNewRotation);
 	virtual BOOL Rotate(float fPitch, float fYaw, float fRoll);
@@ -47,7 +50,7 @@ public:
 
 public:
 	virtual void Initialize(std::shared_ptr<Player> pOwnerPlayer);
-	virtual void Update();
+	virtual void Update(float fElapsedTime);
 
 	bool IsInFrustum(const BoundingOrientedBox& xmBoundingBox) const;
 

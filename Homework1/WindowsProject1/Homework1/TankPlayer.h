@@ -1,5 +1,8 @@
 #pragma once
 #include "Player.h"
+
+constexpr static int BULLET_COUNT = 50;
+
 class TankPlayer : public Player{
 public:
 	TankPlayer();
@@ -8,6 +11,7 @@ public:
 public:
 	virtual void Initialize() override;
 	virtual void Update(float fTimeElapsed) override;
+	virtual void Render(HDC hDCFrameBuffer, std::shared_ptr<Camera> pCamera);
 
 public:
 	virtual void ProcessKeyboardInput() override;
@@ -24,7 +28,9 @@ private:
 
 
 private:
+	XMFLOAT3 m_xmf3DefaultRotation = XMFLOAT3{ -90.f, 180.f, 0.f };
 	float m_fBulletEffectiveRange = 150.f;
 
+	std::array<std::shared_ptr<class BulletObject>, BULLET_COUNT> m_pBullets = {};
 };
 

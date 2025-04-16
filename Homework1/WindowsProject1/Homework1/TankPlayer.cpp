@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "TankPlayer.h"
 #include "ThirdPersonCamera.h"
+#include "BulletObject.h"
 
 using namespace std;
 
@@ -20,14 +21,52 @@ void TankPlayer::Initialize()
 	m_pCamera->SetFOVAngle(60.0f);
 	m_pCamera->SetNearZ(1.01f);
 	m_pCamera->SetFarZ(500.0f);
+	SetCameraOffset(XMFLOAT3{ 0.f, 5.0f, -8.0f });
 
+
+	m_pMesh = make_shared<Mesh>();
 	MeshHelper::CreateMeshFromOBJFiles(m_pMesh, L"../Tank.obj");
 
+	shared_ptr<Mesh> pBulletMesh = make_shared<Mesh>();
+	MeshHelper::CreateCubeMesh(pBulletMesh);
+	std::generate_n(m_pBullets.begin(), BULLET_COUNT, [this, &pBulletMesh]()->std::shared_ptr<BulletObject> {
+		shared_ptr<BulletObject> pBullet = make_shared<BulletObject>(m_fBulletEffectiveRange);
+		pBullet->SetMesh(pBulletMesh);
+		pBullet->SetRotationAxis(XMFLOAT3{ 0.f, 1.f, 0.f });
+		pBullet->SetRotationSpeed(360.f);
+		pBullet->SetMovingSpeed(120.0f);
+		pBullet->SetActive(FALSE);
+		return pBullet;
+	});
 }
 
 void TankPlayer::Update(float fTimeElapsed)
 {
+//	m_pTransform->SetRotationEuler(m_xmf3DefaultRotation);
 	Player::Update(fTimeElapsed);
+}
+
+void TankPlayer::Render(HDC hDCFrameBuffer, std::shared_ptr<Camera> pCamera)
+{
+	if (m_pMesh && m_bActive) {
+		XMMATRIX xmmtxCurrentWorld = XMLoadFloat4x4(&m_pTransform->GetWorldMatrix());
+		XMMATRIX xmmtxAdditionalRotation = XMMatrixRotationRollPitchYaw(
+			XMConvertToRadians(m_xmf3DefaultRotation.x),
+			XMConvertToRadians(m_xmf3DefaultRotation.y),
+			XMConvertToRadians(m_xmf3DefaultRotation.z)
+		);
+		
+		XMFLOAT4X4 xmf4x4FinalWorld;
+		XMStoreFloat4x4(&xmf4x4FinalWorld, XMMatrixMultiply(xmmtxAdditionalRotation, xmmtxCurrentWorld));
+
+		GraphicsPipeline::SetWorldTransform(xmf4x4FinalWorld);
+
+		HPEN hPen = ::CreatePen(PS_SOLID, 0, m_Color);
+		HPEN hOldPen = (HPEN)::SelectObject(hDCFrameBuffer, hPen);
+		m_pMesh->Render(hDCFrameBuffer);
+		::SelectObject(hDCFrameBuffer, hOldPen);
+		::DeleteObject(hPen);
+	}
 }
 
 void TankPlayer::ProcessKeyboardInput()
@@ -86,8 +125,11 @@ void TankPlayer::ProcessMouseInput()
 
 void TankPlayer::Rotate(float fPitch, float fYaw, float fRoll)
 {
+	m_pTransform->AddRotationEuler(0.f, fYaw, 0.f);
+	m_pCamera->Rotate(fPitch, fYaw, fRoll);
 }
 
 void TankPlayer::UpdatePlayerCamera(float fTimeElapsed)
 {
+	m_pCamera->Update(fTimeElapsed);
 }

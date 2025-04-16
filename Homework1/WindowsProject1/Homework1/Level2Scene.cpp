@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Level2Scene.h"
-#include "FirstPersonPlayer.h"
+#include "TankPlayer.h"
 #include "ExplosiveObject.h"
 
 using namespace std;
@@ -15,11 +15,12 @@ void Level2Scene::BuildObjects()
 	m_pObjects[0]->SetColor(RGB(0, 150, 0));
 	m_pObjects[0]->SetMesh(pTankMesh);
 	m_pObjects[0]->GetTransform()->SetPosition(0.f, 0.f, 5.f);
-	m_pObjects[0]->GetTransform()->SetRotation(-90.f, 180.f, 0.f);
+	m_pObjects[0]->GetTransform()->SetRotationEuler(-90.f, 180.f, 0.f);
+	//m_pObjects[0]->SetActive(FALSE);
 
-	m_pPlayer = make_shared<FirstPersonPlayer>();
+	m_pPlayer = make_shared<TankPlayer>();
 	m_pPlayer->Initialize();
-	m_pPlayer->GetTransform()->SetPosition(0.f, 0.f, 0.f);
+	m_pPlayer->GetTransform()->SetPosition(0.f, 0.f, 15.f);
 }
 
 void Level2Scene::ReleaseObjects()

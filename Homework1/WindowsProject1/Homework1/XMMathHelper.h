@@ -160,7 +160,7 @@ namespace Matrix4x4 {
 		return XMMatrixToFloat4x4(XMMatrixPerspectiveFovLH(fFOVAngleY, fAspectRatio, fNearZ, fFarZ));
 	}
 
-	inline XMFLOAT4X4 LookAtLH(const XMFLOAT3& xmf3EyePosition, const XMFLOAT3 xmf3LookAtPosition, const XMFLOAT3 xmf3UpDirection) {
+	inline XMFLOAT4X4 LookAtLH(const XMFLOAT3& xmf3EyePosition, const XMFLOAT3& xmf3LookAtPosition, const XMFLOAT3& xmf3UpDirection) {
 		return XMMatrixToFloat4x4(XMMatrixLookAtLH(XMLoadFloat3(&xmf3EyePosition), XMLoadFloat3(&xmf3LookAtPosition), XMLoadFloat3(&xmf3UpDirection)));
 	}
 
@@ -185,35 +185,35 @@ namespace Plane {
 	}
 
 }
-
-namespace Quaternion {
-
-	inline void ExtractEulerAnglesFromQuaternion(OUT XMFLOAT3& xmf3Euler, IN const XMFLOAT4& xmf4Quaternion, BOOL bToDegree = TRUE) {
-		XMMATRIX xmmtxRotationFromQuat = XMMatrixRotationQuaternion(XMLoadFloat4(&xmf4Quaternion));
-		XMFLOAT4X4 xmf4x4RotationFromQuat;
-		XMStoreFloat4x4(&xmf4x4RotationFromQuat, xmmtxRotationFromQuat);
-
-		float fPitch, fYaw, fRoll;
-		
-		fPitch = std::asinf(-xmf4x4RotationFromQuat._32);
-		
-		if (std::cosf(fPitch) > 1e-6f) {
-			fYaw = atan2f(xmf4x4RotationFromQuat._31, xmf4x4RotationFromQuat._33);
-			fRoll = atan2f(xmf4x4RotationFromQuat._12, xmf4x4RotationFromQuat._22);
-		}
-		else {
-			fYaw = atan2f(-xmf4x4RotationFromQuat._21, xmf4x4RotationFromQuat._11);
-			fRoll = 0.f;
-		}
-
-		if (bToDegree){
-			fPitch = XMConvertToDegrees(fPitch);
-			fYaw = XMConvertToDegrees(fYaw);
-			fRoll = XMConvertToDegrees(fRoll);
-		}
-
-		xmf3Euler = XMFLOAT3{ fPitch, fYaw, fRoll };
-
-	}
-
-}
+//
+//namespace Quaternion {
+//
+//	inline void ExtractEulerAnglesFromQuaternion(OUT XMFLOAT3& xmf3Euler, IN const XMFLOAT4& xmf4Quaternion, BOOL bToDegree = TRUE) {
+//		XMMATRIX xmmtxRotationFromQuat = XMMatrixRotationQuaternion(XMLoadFloat4(&xmf4Quaternion));
+//		XMFLOAT4X4 xmf4x4RotationFromQuat;
+//		XMStoreFloat4x4(&xmf4x4RotationFromQuat, xmmtxRotationFromQuat);
+//
+//		float fPitch, fYaw, fRoll;
+//		
+//		fPitch = std::asinf(-xmf4x4RotationFromQuat._32);
+//		
+//		if (std::cosf(fPitch) > 1e-6f) {
+//			fYaw = atan2f(xmf4x4RotationFromQuat._31, xmf4x4RotationFromQuat._33);
+//			fRoll = atan2f(xmf4x4RotationFromQuat._12, xmf4x4RotationFromQuat._22);
+//		}
+//		else {
+//			fYaw = atan2f(-xmf4x4RotationFromQuat._21, xmf4x4RotationFromQuat._11);
+//			fRoll = 0.f;
+//		}
+//
+//		if (bToDegree){
+//			fPitch = XMConvertToDegrees(fPitch);
+//			fYaw = XMConvertToDegrees(fYaw);
+//			fRoll = XMConvertToDegrees(fRoll);
+//		}
+//
+//		xmf3Euler = XMFLOAT3{ fPitch, fYaw, fRoll };
+//
+//	}
+//
+//}

@@ -1,5 +1,18 @@
 #pragma once
 
+struct AxisAngle {
+	XMFLOAT3	m_xmf3Axis = XMFLOAT3{ 1.f,1.f,1.f };
+	float		m_fAngle;
+
+	XMMATRIX GenerateRotationMatrix() {
+		XMVECTOR xmvAxis = XMLoadFloat3(&m_xmf3Axis);
+		if (m_fAngle == 0 || XMVector3Equal(xmvAxis, XMVectorZero())) {
+			return XMMatrixIdentity();
+		}
+		return XMMatrixRotationAxis(XMLoadFloat3(&m_xmf3Axis), XMConvertToRadians(m_fAngle));
+	}
+};
+
 class Transform
 {
 public:
@@ -12,17 +25,19 @@ public:
 	BOOL AddPosition(const XMVECTOR& xmvAddPosition);
 	BOOL AddPosition(float fXPos, float fYPos, float fZPos);
 	
-	BOOL SetRotation(const XMFLOAT3& xmf3NewRotation);
-	BOOL SetRotation(const XMVECTOR& xmvNewRotation);
-	BOOL SetRotation(float fPitch/* x */, float fYaw/* y */, float fRoll/* z */);
+	BOOL SetRotationEuler(const XMFLOAT3& xmf3NewRotation);
+	BOOL SetRotationEuler(const XMVECTOR& xmvNewRotation);
+	BOOL SetRotationEuler(float fPitch/* x */, float fYaw/* y */, float fRoll/* z */);
+	BOOL SetRotationAxisAngle(const XMFLOAT3& xmf3Axis, float fAngle);
+	BOOL SetRotationAxisAngle(const XMVECTOR& xmvAxis, float fAngle);
 
-	BOOL AddRotation(const XMFLOAT3& xmf3AddRotation);
-	BOOL AddRotation(const XMVECTOR& xmvAddRotation);
-	BOOL AddRotation(float fPitch/* x */, float fYaw/* y */, float fRoll/* z */);
+	BOOL AddRotationEuler(const XMFLOAT3& xmf3AddRotation);
+	BOOL AddRotationEuler(const XMVECTOR& xmvAddRotation);
+	BOOL AddRotationEuler(float fPitch/* x */, float fYaw/* y */, float fRoll/* z */);
 
 	// Getter
 	XMFLOAT3& GetPosition() { return m_xmf3Position; }
-	XMFLOAT3& GetRotation() { return m_xmf3Rotation; }
+	XMFLOAT3& GetRotation() { return m_xmf3RotationEuler; }
 
 	XMFLOAT4X4& GetWorldMatrix() { return m_xmf4x4World; }
 
@@ -35,7 +50,9 @@ public:
 
 private:
 	XMFLOAT3	m_xmf3Position = XMFLOAT3{ 0.f, 0.f, 0.f };
-	XMFLOAT3	m_xmf3Rotation = XMFLOAT3{ 0.f, 0.f, 0.f };
+
+	XMFLOAT3	m_xmf3RotationEuler = XMFLOAT3{ 0.f, 0.f, 0.f };
+	AxisAngle	m_AxisAngle = {};
 
 	XMFLOAT4X4	m_xmf4x4World = Matrix4x4::Identity();
 

@@ -18,13 +18,13 @@ void TitleScene::BuildObjects()
 	m_pObjects[0]->SetColor(RGB(0, 255, 0));
 	m_pObjects[0]->SetMesh(p3DGPMesh);
 	m_pObjects[0]->GetTransform()->SetPosition(0.f, 10.f, 70.f);
-	m_pObjects[0]->GetTransform()->SetRotation(90.f, 0.f, 0.f);
+	m_pObjects[0]->GetTransform()->SetRotationEuler(90.f, 0.f, 0.f);
 
 	m_pObjects[1] = make_shared<ExplosiveObject>();
 	m_pObjects[1]->SetColor(RGB(255, 0, 0));
 	m_pObjects[1]->SetMesh(pNameMesh);
 	m_pObjects[1]->GetTransform()->SetPosition(0.f, -15.f, 70.f);
-	m_pObjects[1]->GetTransform()->SetRotation(90.f, 0.f, 0.f);
+	m_pObjects[1]->GetTransform()->SetRotationEuler(90.f, 0.f, 0.f);
 	
 	m_pPlayer = make_shared<FirstPersonPlayer>();
 	m_pPlayer->Initialize();
@@ -46,8 +46,7 @@ void TitleScene::Update(float fTimeElapsed)
 	}
 
 	m_fRunningTime += fTimeElapsed;
-	float fRot = std::cos(XMConvertToRadians(m_fRunningTime * 100)) * 45;
-	m_pObjects[1]->GetTransform()->SetRotation(90.f, 0.0f, 0.0f);
+	m_pObjects[1]->GetTransform()->AddRotationEuler(0.f, XMConvertToRadians(m_fRotationSpeed * fTimeElapsed), 0.0f);
 
 	ProcessMouseInput();
 	ProcessKeyboardInput();

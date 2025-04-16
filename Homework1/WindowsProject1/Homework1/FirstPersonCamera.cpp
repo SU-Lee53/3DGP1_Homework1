@@ -88,7 +88,7 @@ void FirstPersonCamera::Initialize(std::shared_ptr<Player> pOwnerPlayer)
 	Camera::Initialize(pOwnerPlayer);
 }
 
-void FirstPersonCamera::Update()
+void FirstPersonCamera::Update(float fElapsedTime)
 {
-	Camera::Update();
+	Camera::Update(fElapsedTime);
 }

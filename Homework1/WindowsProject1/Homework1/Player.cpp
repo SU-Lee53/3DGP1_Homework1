@@ -40,7 +40,7 @@ void Player::Rotate(float fPitch, float fYaw, float fRoll)
 void Player::SetCameraOffset(const XMFLOAT3& xmf3CameraOffset)
 {
 	m_xmf3CameraOffset = xmf3CameraOffset;
-	//m_pCamera->SetLookAt(Vector3::Add(m_pTransform->GetPosition(), m_xmf3CameraOffset), m_pTransform->GetPosition(), m_pTransform->GetUp());
+	m_pCamera->SetLookAt(Vector3::Add(m_pTransform->GetPosition(), m_xmf3CameraOffset), m_pTransform->GetPosition(), m_pTransform->GetUp());
 }
 
 void Player::Initialize()
@@ -68,5 +68,5 @@ void Player::Render(HDC hDCFrameBuffer, std::shared_ptr<Camera> pCamera)
 
 void Player::UpdatePlayerCamera(float fTimeElapsed)
 {
-	m_pCamera->Update();
+	m_pCamera->Update(fTimeElapsed);
 }

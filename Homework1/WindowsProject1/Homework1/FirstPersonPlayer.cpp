@@ -104,12 +104,12 @@ void FirstPersonPlayer::ProcessMouseInput()
 
 void FirstPersonPlayer::Rotate(float fPitch, float fYaw, float fRoll)
 {
-	m_pTransform->AddRotation(fPitch, fYaw, fRoll);
+	m_pTransform->AddRotationEuler(fPitch, fYaw, fRoll);
 	m_pCamera->Rotate(fPitch, fYaw, fRoll);
 }
 
 void FirstPersonPlayer::UpdatePlayerCamera(float fTimeElapsed)
 {
 	m_pCamera->SetPosition(m_pTransform->GetPosition());
-	m_pCamera->Update();
+	m_pCamera->Update(fTimeElapsed);
 }

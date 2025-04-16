@@ -103,7 +103,7 @@ void GameFramework::BuildObjects()
 		m_pScenes[TAG_SCENE_LEVEL1] = make_shared<Level1Scene>();
 		m_pScenes[TAG_SCENE_LEVEL2] = make_shared<Level2Scene>();
 
-		m_pCurrentScene = m_pScenes[TAG_SCENE_TITLE];
+		m_pCurrentScene = m_pScenes[TAG_SCENE_LEVEL2];
 		m_pCurrentScene->BuildObjects();
 	}
 

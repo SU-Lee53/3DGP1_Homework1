@@ -23,7 +23,7 @@ public:
 
 public:
 	float m_fRunningTime = 0.f;
-	float m_fRotationSpeed = 20.f;
+	float m_fRotationSpeed = 1000.f;
 
 };
 

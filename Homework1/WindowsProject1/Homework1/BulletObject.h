@@ -1,11 +1,16 @@
 #pragma once
 #include "GameObject.h"
+
 class BulletObject : public GameObject {
 public:
 	BulletObject(float fEffectiveRange) : m_fBulletEffectiveRange{ fEffectiveRange } {}
 	virtual ~BulletObject() {}
 
 public:
+	void SetRotationAxis(const XMFLOAT3& xmf3RotationAxis) { m_xmf3RotationAxis = xmf3RotationAxis; }
+	void SetRotationSpeed(float fSpeed) { m_fRotationSpeed = fSpeed; }
+	void SetMovingSpeed(float fSpeed) { m_fMovingSpeed = fSpeed; }
+
 	void SetFirePosition(XMFLOAT3 xmf3FirePosition) {
 		m_xmf3FirePosition = xmf3FirePosition;
 		m_pTransform->SetPosition(xmf3FirePosition);
@@ -26,46 +31,44 @@ public:
 
 	virtual void Update(float fElapsedTime) {
 
-		//m_fElapsedTimeAfterFire += fElapsedTime;
+		m_fElapsedTimeAfterFire += fElapsedTime;
 
-		//float fDistance = m_fMovingSpeed * fElapsedTime;
+		float fDistance = m_fMovingSpeed * fElapsedTime;
 
 
-		//if ((m_fElapsedTimeAfterFire > m_fLockingDelayTime) && m_pLockedObject) {
-		//	XMFLOAT3 xmf3Position = m_pTransform->GetPosition();
-		//	XMVECTOR xmvPosition = XMLoadFloat3(&xmf3Position);
+		if ((m_fElapsedTimeAfterFire > m_fLockingDelayTime) && m_pLockedObject) {
+			XMFLOAT3 xmf3Position = m_pTransform->GetPosition();
+			XMVECTOR xmvPosition = XMLoadFloat3(&xmf3Position);
 
-		//	XMFLOAT3 xmf3LockedObjectPosition = m_pLockedObject->GetTransform()->GetPosition();
-		//	XMVECTOR xmvLockedObjectPosition = XMLoadFloat3(&xmf3LockedObjectPosition);
-		//	XMVECTOR xmvToLockedObject = XMVectorSubtract(xmvLockedObjectPosition, xmvPosition);
-		//	xmvToLockedObject = XMVector3Normalize(xmvToLockedObject);
+			XMFLOAT3 xmf3LockedObjectPosition = m_pLockedObject->GetTransform()->GetPosition();
+			XMVECTOR xmvLockedObjectPosition = XMLoadFloat3(&xmf3LockedObjectPosition);
+			XMVECTOR xmvToLockedObject = XMVectorSubtract(xmvLockedObjectPosition, xmvPosition);
+			xmvToLockedObject = XMVector3Normalize(xmvToLockedObject);
 
-		//	XMVECTOR xmvMovingDirection = XMLoadFloat3(&m_xmf3MovingDirection);
-		//	xmvMovingDirection = XMVector3Normalize(XMVectorLerp(xmvMovingDirection, xmvToLockedObject, 0.25f));
-		//	XMStoreFloat3(&m_xmf3MovingDirection, xmvMovingDirection);
-		//}
+			XMVECTOR xmvMovingDirection = XMLoadFloat3(&m_xmf3MovingDirection);
+			xmvMovingDirection = XMVector3Normalize(XMVectorLerp(xmvMovingDirection, xmvToLockedObject, 0.25f));
+			XMStoreFloat3(&m_xmf3MovingDirection, xmvMovingDirection);
+		}
 
-		//XMFLOAT3 xmf3Position = m_pTransform->GetPosition();
+		XMFLOAT3 xmf3Position = m_pTransform->GetPosition();
 
-		//m_fRotationAngle += m_fRotationSpeed * fElapsedTime;
-		//if (m_fRotationAngle > 360.0f) m_fRotationAngle = m_fRotationAngle - 360.0f;
+		m_fRotationAngle += m_fRotationSpeed * fElapsedTime;
+		if (m_fRotationAngle > 360.0f) m_fRotationAngle = m_fRotationAngle - 360.0f;
 
-		//XMFLOAT4X4 mtxRotate1 = Matrix4x4::RotationYawPitchRoll(0.0f, m_fRotationAngle, 0.0f);
+		m_pTransform->SetRotationEuler(0.0f, XMConvertToDegrees(m_fRotationAngle), 0.0f);
 
-		//XMFLOAT3 xmf3RotationAxis = Vector3::CrossProduct(m_xmf3RotationAxis, m_xmf3MovingDirection, TRUE);
-		//float fDotProduct = Vector3::DotProduct(m_xmf3RotationAxis, m_xmf3MovingDirection);
-		//float fRotationAngle = ::IsEqual(fDotProduct, 1.0f) ? 0.0f : (float)XMConvertToDegrees(acos(fDotProduct));
-		//XMFLOAT4X4 mtxRotate2 = Matrix4x4::RotationAxis(xmf3RotationAxis, fRotationAngle);
+		XMFLOAT3 xmf3RotationAxis = Vector3::CrossProduct(m_xmf3RotationAxis, m_xmf3MovingDirection, TRUE);
+		float fDotProduct = Vector3::DotProduct(m_xmf3RotationAxis, m_xmf3MovingDirection);
+		float fRotationAngle = ::IsEqual(fDotProduct, 1.0f) ? 0.0f : (float)XMConvertToDegrees(acos(fDotProduct));
+		m_pTransform->SetRotationAxisAngle(xmf3RotationAxis, XMConvertToDegrees(fRotationAngle));
 
-		//m_xmf4x4World = Matrix4x4::Multiply(mtxRotate1, mtxRotate2);
+		XMFLOAT3 xmf3Movement = Vector3::ScalarProduct(m_xmf3MovingDirection, fDistance, FALSE);
+		xmf3Position = Vector3::Add(xmf3Position, xmf3Movement);
+		m_pTransform->SetPosition(xmf3Position);
 
-		//XMFLOAT3 xmf3Movement = Vector3::ScalarProduct(m_xmf3MovingDirection, fDistance, FALSE);
-		//xmf3Position = Vector3::Add(xmf3Position, xmf3Movement);
-		//m_pTransform->SetPosition(xmf3Position);
+		GameObject::Update(fElapsedTime);
 
-		//UpdateBoundingBox();
-
-		//if ((m_fMovingDistance > m_fBulletEffectiveRange) || (m_fElapsedTimeAfterFire > m_fLockingTime)) Reset();
+		if ((m_fMovingDistance > m_fBulletEffectiveRange) || (m_fElapsedTimeAfterFire > m_fLockingTime)) Reset();
 
 	}
 

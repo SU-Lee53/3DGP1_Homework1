@@ -31,7 +31,7 @@ void GameObject::UpdateBoundingBox()
 
 void GameObject::Render(HDC hDCFrameBuffer, XMFLOAT4X4& pxmf4x4World, std::shared_ptr<Mesh> pMesh) const
 {
-	if (pMesh) {
+	if (pMesh && m_bActive) {
 		GraphicsPipeline::SetWorldTransform(pxmf4x4World);
 
 		HPEN hPen = ::CreatePen(PS_SOLID, 0, m_Color);
@@ -48,8 +48,11 @@ void GameObject::Initialize()
 
 void GameObject::Update(float fElapsedTime)
 {
-	m_pTransform->Update();
-	UpdateBoundingBox();
+	if (m_bActive) {
+		m_pTransform->Update();
+		UpdateBoundingBox();
+	}
+
 }
 
 void GameObject::Render(HDC hDCFrameBuffer, std::shared_ptr<class Camera> pCamera)

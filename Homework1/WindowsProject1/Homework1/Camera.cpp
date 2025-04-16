@@ -61,6 +61,20 @@ BOOL Camera::SetPosition(float fXPos, float fYPos, float fZPos)
 	return SetPosition(XMVectorSet(fXPos, fYPos, fZPos, 0.f));
 }
 
+void Camera::SetLookAt(const XMFLOAT3& xmf3Position, const XMFLOAT3& xmf3LookAt, const XMFLOAT3& xmf3Up)
+{
+	m_xmf3Position = xmf3Position;
+	m_xmf4x4View = Matrix4x4::LookAtLH(m_xmf3Position, xmf3LookAt, xmf3Up);
+	m_xmf3Right = Vector3::Normalize(XMFLOAT3(m_xmf4x4View._11, m_xmf4x4View._21, m_xmf4x4View._31));
+	m_xmf3Up = Vector3::Normalize(XMFLOAT3(m_xmf4x4View._12, m_xmf4x4View._22, m_xmf4x4View._32));
+	m_xmf3Look = Vector3::Normalize(XMFLOAT3(m_xmf4x4View._13, m_xmf4x4View._23, m_xmf4x4View._33));
+}
+
+void Camera::SetLookAt(const XMFLOAT3& xmf3LookAt, const XMFLOAT3& xmf3Up)
+{
+	XMFLOAT4X4 xmf4x4View = Matrix4x4::LookAtLH(m_xmf3Position, xmf3LookAt, xmf3Up);
+}
+
 BOOL Camera::Rotate(const XMFLOAT3& xmf3NewRotation)
 {
 	return Rotate(xmf3NewRotation.x, xmf3NewRotation.y, xmf3NewRotation.z);
@@ -121,7 +135,7 @@ void Camera::Initialize(shared_ptr<Player> pOwnerPlayer)
 	m_wpOwner = pOwnerPlayer;
 }
 
-void Camera::Update()
+void Camera::Update(float fElapsedTime)
 {
 	if (!m_wpOwner.expired()) { // If camera owned by someone(Player)
 		if (m_bProjectionUpdated) {

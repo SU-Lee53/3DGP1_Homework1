@@ -63,6 +63,7 @@ inline bool IsEqual(float fA, float fB) { return (::IsZero(fA - fB)); }
 #include "RandomGenerator.h"
 #include "XMMathHelper.h"
 #include "MeshHelper.h"
+#include "GraphicsPipeline.h"
 
 // Game Framework
 #include "GameFramework.h"

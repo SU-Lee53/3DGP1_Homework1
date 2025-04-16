@@ -27,32 +27,32 @@ void MenuScene::BuildObjects()
 	m_pObjects[0]->SetColor(RandomGenerator::GenerateRandomColor());
 	m_pObjects[0]->SetMesh(pTutorialMesh);
 	m_pObjects[0]->GetTransform()->SetPosition(0.f, 20.f, 70.f);
-	m_pObjects[0]->GetTransform()->SetRotation(90.f, 0.f, 0.f);
+	m_pObjects[0]->GetTransform()->SetRotationEuler(90.f, 0.f, 0.f);
 
 	m_pObjects[1] = make_shared<ExplosiveObject>();
 	m_pObjects[1]->SetColor(RandomGenerator::GenerateRandomColor());
 	m_pObjects[1]->SetMesh(pLevel1Mesh);
 	m_pObjects[1]->GetTransform()->SetPosition(0.f, 10.f, 70.f);
-	m_pObjects[1]->GetTransform()->SetRotation(90.f, 0.f, 0.f);
+	m_pObjects[1]->GetTransform()->SetRotationEuler(90.f, 0.f, 0.f);
 	
 	m_pObjects[2] = make_shared<ExplosiveObject>();
 	m_pObjects[2]->SetColor(RandomGenerator::GenerateRandomColor());
 	m_pObjects[2]->SetMesh(pLevel2Mesh);
 	m_pObjects[2]->GetTransform()->SetPosition(0.f, 0.f, 70.f);
-	m_pObjects[2]->GetTransform()->SetRotation(90.f, 0.f, 0.f);
+	m_pObjects[2]->GetTransform()->SetRotationEuler(90.f, 0.f, 0.f);
 	
 	m_pObjects[3] = make_shared<ExplosiveObject>();
 	m_pObjects[3]->SetColor(RandomGenerator::GenerateRandomColor());
 	m_pObjects[3]->SetMesh(pStartMesh);
 	m_pObjects[3]->GetTransform()->SetPosition(-20.f, -15.f, 70.f);
-	m_pObjects[3]->GetTransform()->SetRotation(90.f, 0.f, 0.f);
+	m_pObjects[3]->GetTransform()->SetRotationEuler(90.f, 0.f, 0.f);
 	m_pObjects[3]->SetName("Start_Text");
 	
 	m_pObjects[4] = make_shared<ExplosiveObject>();
 	m_pObjects[4]->SetColor(RandomGenerator::GenerateRandomColor());
 	m_pObjects[4]->SetMesh(pEndMesh);
 	m_pObjects[4]->GetTransform()->SetPosition(20.f, -15.f, 70.f);
-	m_pObjects[4]->GetTransform()->SetRotation(90.f, 0.f, 0.f);
+	m_pObjects[4]->GetTransform()->SetRotationEuler(90.f, 0.f, 0.f);
 
 	m_pPlayer = make_shared<FirstPersonPlayer>();
 	m_pPlayer->Initialize();
@@ -76,11 +76,10 @@ void MenuScene::Update(float fTimeElapsed)
 	}
 
 	for (auto& pObj : m_pObjects) {
-		if (pObj->GetObjectType() != TAG_GAMEOBJECT_TYPE_EXPLOSIVE) {
-			continue;
-		}
-		if (static_pointer_cast<ExplosiveObject>(pObj)->IsExploded()) {
-			static_pointer_cast<ExplosiveObject>(pObj)->Reset();
+		if (auto p = dynamic_pointer_cast<ExplosiveObject>(pObj)) {
+			if (p->IsExploded()) {
+				p->Reset();
+			}
 		}
 	}
 

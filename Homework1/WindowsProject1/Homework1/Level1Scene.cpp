@@ -104,19 +104,19 @@ void Level1Scene::ProcessKeyboardInput()
 
 
 	if (INPUT.GetButtonPressed(VK_UP)) {
-		m_pObjects[1]->GetTransform()->AddRotation(-1.5f, 0.f, 0.f);
+		m_pObjects[1]->GetTransform()->AddRotationEuler(-1.5f, 0.f, 0.f);
 	}
 
 	if (INPUT.GetButtonPressed(VK_DOWN)) {
-		m_pObjects[1]->GetTransform()->AddRotation(1.5f, 0.f, 0.f);
+		m_pObjects[1]->GetTransform()->AddRotationEuler(1.5f, 0.f, 0.f);
 	}
 
 	if (INPUT.GetButtonPressed(VK_RIGHT)) {
-		m_pObjects[1]->GetTransform()->AddRotation(0.0f, 1.5f, 0.f);
+		m_pObjects[1]->GetTransform()->AddRotationEuler(0.0f, 1.5f, 0.f);
 	}
 
 	if (INPUT.GetButtonPressed(VK_LEFT)) {
-		m_pObjects[1]->GetTransform()->AddRotation(0.0f, -1.5f, 0.f);
+		m_pObjects[1]->GetTransform()->AddRotationEuler(0.0f, -1.5f, 0.f);
 	}
 }
 
@@ -151,6 +151,9 @@ void Level1Scene::ResetPlayerRide()
 {
 	m_nCurrentRoute = 1;
 	m_fInterpolationFactor = 0.f;
-	m_pPlayer->GetTransform()->SetPosition(0.f, 0.f, 0.f);
-	m_pPlayer->GetTransform()->SetRotation(0.f, 0.f, 0.f);
+	if (auto p = dynamic_pointer_cast<FirstPersonPlayer>(m_pPlayer)) {
+		p->GetTransform()->SetPosition(0.f, 0.f, 0.f);
+		p->GetTransform()->SetRotationEuler(0.f, 0.f, 0.f);
+		static_pointer_cast<FirstPersonCamera>(p->GetCamera())->SetRotation(0, 0, 0);
+	}
 }

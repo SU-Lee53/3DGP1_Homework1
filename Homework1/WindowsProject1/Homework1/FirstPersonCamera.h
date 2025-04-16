@@ -23,7 +23,7 @@ public:
 
 public:
 	virtual void Initialize(std::shared_ptr<Player> pOwnerPlayer) override;
-	virtual void Update() override;
+	virtual void Update(float fElapsedTime) override;
 
 private:
 	XMFLOAT3 m_xmf3RotationEuler = {};
