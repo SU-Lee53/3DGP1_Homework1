@@ -14,7 +14,7 @@ public:
 	BOOL SetRotation(const XMVECTOR& xmvNewRotation);
 	BOOL SetRotation(float fPitch, float fYaw, float fRoll);
 
-	XMFLOAT3& GetRotation() {
+	XMFLOAT3& GetRotationEuler() {
 		return m_xmf3RotationEuler;
 	}
 

@@ -23,6 +23,9 @@ public:
 public:
 	void FireBullet(std::shared_ptr<GameObject> pLockedObject);
 
+	std::array<std::shared_ptr<class BulletObject>, BULLET_COUNT>&
+		GetBullets() { return m_pBullets; }
+
 private:
 	virtual void UpdatePlayerCamera(float fTimeElapsed) override;
 
@@ -30,6 +33,8 @@ private:
 private:
 	float m_fSpeed = 8.f;
 	float m_fBulletEffectiveRange = 150.f;
+
+	BOOL m_bAutoFire = TRUE;
 
 	std::array<std::shared_ptr<class BulletObject>, BULLET_COUNT> m_pBullets = {};
 };

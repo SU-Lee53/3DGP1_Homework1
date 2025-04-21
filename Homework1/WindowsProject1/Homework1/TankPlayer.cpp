@@ -30,7 +30,7 @@ void TankPlayer::Initialize()
 	SetMeshDefaultOrientation(XMFLOAT3{ -90.f, 180.f, 0.f });
 
 	shared_ptr<Mesh> pBulletMesh = make_shared<Mesh>();
-	MeshHelper::CreateCubeMesh(pBulletMesh);
+	MeshHelper::CreateCubeMesh(pBulletMesh, 1.f, 1.f, 1.f);
 	std::generate_n(m_pBullets.begin(), BULLET_COUNT, [this, &pBulletMesh]()->std::shared_ptr<BulletObject> {
 		shared_ptr<BulletObject> pBullet = make_shared<BulletObject>(m_fBulletEffectiveRange);
 		pBullet->SetMesh(pBulletMesh);
@@ -45,11 +45,17 @@ void TankPlayer::Initialize()
 void TankPlayer::Update(float fTimeElapsed)
 {
 	Player::Update(fTimeElapsed);
+	std::for_each(m_pBullets.begin(), m_pBullets.end(), [&fTimeElapsed](std::shared_ptr<BulletObject>& p) {
+		if (p->IsActive()) p->Update(fTimeElapsed);
+	});
 }
 
 void TankPlayer::Render(HDC hDCFrameBuffer, std::shared_ptr<Camera> pCamera)
 {
 	Player::Render(hDCFrameBuffer, pCamera);
+	std::for_each(m_pBullets.begin(), m_pBullets.end(), [&hDCFrameBuffer, &pCamera](std::shared_ptr<BulletObject>& p) {
+		if (p->IsActive()) p->Render(hDCFrameBuffer, pCamera);
+	});
 }
 
 void TankPlayer::ProcessKeyboardInput(float fTimeElapsed)
@@ -102,6 +108,36 @@ void TankPlayer::Rotate(float fPitch, float fYaw, float fRoll)
 {
 	m_pTransform->AddRotationEuler(0.f, fYaw, 0.f);
 	m_pCamera->Rotate(fPitch, fYaw, fRoll);
+}
+
+void TankPlayer::FireBullet(std::shared_ptr<GameObject> pLockedObject)
+{
+	std::shared_ptr<BulletObject> pBulletObject = nullptr;
+
+	auto it = std::find_if(m_pBullets.begin(), m_pBullets.end(), [](std::shared_ptr<BulletObject> p) { return !(p->IsActive()); });
+	if (it != m_pBullets.end()) {
+		pBulletObject = *it;
+	}
+
+	if (pBulletObject) {
+		XMFLOAT3 xmf3Position = m_pTransform->GetPosition();
+		XMFLOAT3 xmf3Direction = m_pTransform->GetLook();
+		XMFLOAT3 xmf3FirePosition = Vector3::Add(xmf3Position, Vector3::ScalarProduct(xmf3Direction, 6.0f, FALSE));
+
+		pBulletObject->GetTransform()->SetPosition(m_pTransform->GetPosition());
+		pBulletObject->GetTransform()->SetRotationEuler(m_pTransform->GetRotationEuler());
+		pBulletObject->GetTransform()->SetRotationAxisAngle(m_pTransform->GetRotationAxisAngle());
+
+		pBulletObject->SetFirePosition(xmf3FirePosition);
+		pBulletObject->SetMovingDirection(xmf3Direction);
+		pBulletObject->SetColor(RGB(255, 0, 0));
+		pBulletObject->SetActive(TRUE);
+
+		if (pLockedObject) {
+			pBulletObject->SetLockedObject(pLockedObject);
+			pBulletObject->SetColor(RGB(0, 0, 255));
+		}
+	}
 }
 
 void TankPlayer::UpdatePlayerCamera(float fTimeElapsed)

@@ -47,13 +47,13 @@ void Scene::Render(HDC hDCFrameBuffer)
 
 void Scene::CheckObjectByObjectCollisions()
 {
-	std::for_each(m_pObjects.begin(), m_pObjects.end(), [](std::shared_ptr<GameObject>& p) { p->SetCollidedObject(nullptr); });
+	//std::for_each(m_pObjects.begin(), m_pObjects.end(), [](std::shared_ptr<GameObject>& p) { p->SetCollidedObject(nullptr); });
 
 	for (int i = 0; i < m_pObjects.size(); ++i) {
 		for (int j = i + 1; j < m_pObjects.size(); ++j) {
 			if (m_pObjects[i]->GetOBB().Intersects(m_pObjects[j]->GetOBB())) {
-				m_pObjects[i]->SetCollidedObject(m_pObjects[j]);
-				m_pObjects[j]->SetCollidedObject(m_pObjects[i]);
+				m_pObjects[i]->OnCollision(m_pObjects[j]);
+				m_pObjects[j]->OnCollision(m_pObjects[i]);
 			}
 		}
 	}

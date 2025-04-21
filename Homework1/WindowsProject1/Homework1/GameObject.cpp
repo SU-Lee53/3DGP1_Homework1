@@ -13,6 +13,8 @@ void GameObject::SetMesh(const std::shared_ptr<Mesh>& pMesh)
 {
 	m_pMesh = pMesh;
 
+	m_xmOBB = m_pMesh->GetOBB();
+
 #ifdef _DEBUG_COLLISION
 	m_pMeshOBBMesh = std::make_shared<Mesh>();
 	XMFLOAT3 xmf3OBBExtents = pMesh->GetOBB().Extents;
@@ -21,21 +23,6 @@ void GameObject::SetMesh(const std::shared_ptr<Mesh>& pMesh)
 	m_pObjectOBBMesh = std::make_shared<Mesh>();
 	xmf3OBBExtents = m_xmOBB.Extents;
 	MeshHelper::CreateCubeMesh(m_pObjectOBBMesh, xmf3OBBExtents.x * 2, xmf3OBBExtents.y * 2, xmf3OBBExtents.z * 2);
-#endif
-}
-
-void GameObject::SetMesh(std::shared_ptr<Mesh>&& pMesh)
-{
-	m_pMesh = std::move(pMesh);
-
-#ifdef _DEBUG_COLLISION
-	m_pMeshOBBMesh = std::make_shared<Mesh>();
-	XMFLOAT3 xmf3OBBExtents = pMesh->GetOBB().Extents;
-	MeshHelper::CreateCubeMesh(m_pMeshOBBMesh, xmf3OBBExtents.x, xmf3OBBExtents.y, xmf3OBBExtents.z);
-
-	m_pObjectOBBMesh = std::make_shared<Mesh>();
-	xmf3OBBExtents = m_xmOBB.Extents;
-	MeshHelper::CreateCubeMesh(m_pObjectOBBMesh, xmf3OBBExtents.x, xmf3OBBExtents.y, xmf3OBBExtents.z);
 #endif
 }
 
@@ -90,18 +77,25 @@ void GameObject::Render(HDC hDCFrameBuffer, XMFLOAT4X4& xmf4x4World, std::shared
 		HPEN hOldPen = (HPEN)::SelectObject(hDCFrameBuffer, hPen);
 		pMesh->Render(hDCFrameBuffer);
 
-#ifdef _DEBUG_COLLISION
-		if (m_pMeshOBBMesh) {
-			m_pMeshOBBMesh->Render(hDCFrameBuffer);
-		}
-		if (m_pObjectOBBMesh) {
-			m_pObjectOBBMesh->Render(hDCFrameBuffer);
-		}
-#endif
-
 
 		::SelectObject(hDCFrameBuffer, hOldPen);
 		::DeleteObject(hPen);
+
+#ifdef _DEBUG_COLLISION
+		hPen = ::CreatePen(PS_SOLID, 0, RGB(255,0,0));
+		hOldPen = (HPEN)::SelectObject(hDCFrameBuffer, hPen);
+
+		//if (m_pMeshOBBMesh) {
+		//	m_pMeshOBBMesh->Render(hDCFrameBuffer);
+		//}
+		if (m_pObjectOBBMesh) {
+			m_pObjectOBBMesh->Render(hDCFrameBuffer);
+		}
+
+		::SelectObject(hDCFrameBuffer, hOldPen);
+		::DeleteObject(hPen);
+#endif
+
 	}
 }
 

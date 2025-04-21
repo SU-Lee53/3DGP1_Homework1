@@ -108,6 +108,11 @@ BOOL Transform::SetRotationAxisAngle(const XMVECTOR& xmvAxis, float fAngle)
 	return bResult;
 }
 
+BOOL Transform::SetRotationAxisAngle(const AxisAngle& AxisAngle)
+{
+	return SetRotationAxisAngle(AxisAngle.m_xmf3Axis, AxisAngle.m_fAngle);
+}
+
 BOOL Transform::AddRotationEuler(const XMFLOAT3& xmf3AddRotation)
 {
 	return AddRotationEuler(XMLoadFloat3(&xmf3AddRotation));

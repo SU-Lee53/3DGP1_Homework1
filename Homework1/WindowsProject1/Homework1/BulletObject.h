@@ -8,6 +8,7 @@ public:
 
 public:
 	void SetRotationAxis(const XMFLOAT3& xmf3RotationAxis) { m_xmf3RotationAxis = xmf3RotationAxis; }
+	void SetMovingDirection(const XMFLOAT3& xmf3MovingDirection) { m_xmf3MovingDirection = xmf3MovingDirection; }
 	void SetRotationSpeed(float fSpeed) { m_fRotationSpeed = fSpeed; }
 	void SetMovingSpeed(float fSpeed) { m_fMovingSpeed = fSpeed; }
 
@@ -46,7 +47,7 @@ public:
 			xmvToLockedObject = XMVector3Normalize(xmvToLockedObject);
 
 			XMVECTOR xmvMovingDirection = XMLoadFloat3(&m_xmf3MovingDirection);
-			xmvMovingDirection = XMVector3Normalize(XMVectorLerp(xmvMovingDirection, xmvToLockedObject, 0.25f));
+			xmvMovingDirection = XMVector3Normalize(XMVectorLerp(xmvMovingDirection, xmvToLockedObject, 0.5f));
 			XMStoreFloat3(&m_xmf3MovingDirection, xmvMovingDirection);
 		}
 
@@ -71,6 +72,9 @@ public:
 		if ((m_fMovingDistance > m_fBulletEffectiveRange) || (m_fElapsedTimeAfterFire > m_fLockingTime)) Reset();
 
 	}
+
+public:
+	void OnCollision(std::shared_ptr<GameObject> pOther);
 
 private:
 	float		m_fBulletEffectiveRange = 50.0f;

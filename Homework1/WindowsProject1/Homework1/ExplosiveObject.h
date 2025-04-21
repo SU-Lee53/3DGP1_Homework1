@@ -22,6 +22,7 @@ public:
 	virtual void Update(float fTimeElapsed) override;
 	virtual void Render(HDC hDCFrameBuffer, std::shared_ptr<Camera> pCamera);
 	virtual void OnPicked() override;
+	virtual	void OnCollision(std::shared_ptr<GameObject> pOther) override;
 
 public:
 	static void PrepareExplosion();

@@ -20,18 +20,11 @@ public:
 public:
 	void SetActive(BOOL bActive) { m_bActive = bActive; }
 	void SetMesh(const std::shared_ptr<Mesh>& pMesh); 
-	void SetMesh(std::shared_ptr<Mesh>&& pMesh); 
-	
-	void SetColor(COLORREF color) { m_Color = color; }
 
-	void SetCollidedObject(const std::shared_ptr<GameObject>& pObjectCollided) { m_pObjectCollided = pObjectCollided; }
-	void SetCollidedObject(nullptr_t) { m_pObjectCollided.reset(); }
-	
+	void SetColor(COLORREF color) { m_Color = color; }
 	void SetName(std::string_view svName) { m_strObjectName = svName; }
 
 	void SetMeshDefaultOrientation(const XMFLOAT3& xmf3Orientation) { m_xmf3DefaultOrientation = xmf3Orientation; }
-
-	std::shared_ptr<GameObject>& GetCollidedObject() { return m_pObjectCollided; }
 
 	BoundingOrientedBox& GetOBB() { return m_xmOBB; }
 
@@ -52,6 +45,8 @@ public:
 	virtual void Render(HDC hDCFrameBuffer, std::shared_ptr<class Camera> pCamera);
 
 	virtual void OnPicked() { }
+	virtual void OnCollision(std::shared_ptr<GameObject> pOther) {}
+
 
 	void GenerateRayForPicking(XMVECTOR& xmvPickPosition, const XMMATRIX& xmmtxView, XMVECTOR& xmvPickRayOrigin, XMVECTOR& xmvPickRayDirection) const;
 	int PickObjectByRayIntersection(XMVECTOR& xmvPickPosition, const XMMATRIX& xmmtxView, float& fHitDistance) const;
@@ -66,7 +61,6 @@ protected:
 
 	BoundingOrientedBox				m_xmOBB = BoundingOrientedBox{};
 
-	std::shared_ptr<GameObject>		m_pObjectCollided = nullptr;
 	COLORREF						m_Color = RGB(255, 0, 0);
 
 	TAG_GAMEOBJECT_TYPE				m_eObjectType = TAG_GAMEOBJECT_TYPE_DEFAULT;

@@ -20,5 +20,7 @@ public:
 	virtual void ProcessMouseInput(float fTimeElapsed) override;
 	virtual void ProcessKeyboardInput(float fTimeElapsed) override;
 
+public:
+	virtual void CheckObjectByBulletCollisions();
 };
 

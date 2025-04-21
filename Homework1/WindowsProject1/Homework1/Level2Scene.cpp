@@ -2,6 +2,7 @@
 #include "Level2Scene.h"
 #include "TankPlayer.h"
 #include "ExplosiveObject.h"
+#include "BulletObject.h"
 
 using namespace std;
 
@@ -68,6 +69,10 @@ void Level2Scene::Update(float fTimeElapsed)
 	if (!m_pObjects.empty()) {
 		std::for_each(m_pObjects.begin(), m_pObjects.end(), [fTimeElapsed](std::shared_ptr<GameObject>& p) { p->Update(fTimeElapsed); });
 	}
+	
+	CheckObjectByObjectCollisions();
+	CheckObjectByBulletCollisions();
+
 
 }
 
@@ -85,8 +90,9 @@ void Level2Scene::ProcessMouseInput(float fTimeElapsed)
 		POINT ptCursorPos = INPUT.GetCurrentCursorPos();
 		std::shared_ptr<GameObject> pPickedObj = PickObjectPointedByCursor(ptCursorPos.x, ptCursorPos.y, m_pPlayer->GetCamera());
 		if (auto p = dynamic_pointer_cast<ExplosiveObject>(pPickedObj)) {
-			pPickedObj->OnPicked();
-			m_pPickedObject = pPickedObj;
+			//pPickedObj->OnPicked();
+			//m_pPickedObject = pPickedObj;
+			static_pointer_cast<TankPlayer>(m_pPlayer)->FireBullet(p);
 		}
 	}
 
@@ -96,4 +102,21 @@ void Level2Scene::ProcessMouseInput(float fTimeElapsed)
 void Level2Scene::ProcessKeyboardInput(float fTimeElapsed)
 {
 	m_pPlayer->ProcessKeyboardInput(fTimeElapsed);
+}
+
+void Level2Scene::CheckObjectByBulletCollisions()
+{
+	auto pBullets = static_pointer_cast<TankPlayer>(m_pPlayer)->GetBullets();
+
+	for (auto& pObj : m_pObjects) {
+		for (auto& pBullet : pBullets) {
+			if (pBullet->IsActive() && pObj->GetOBB().Intersects(pBullet->GetOBB())) {
+				if (auto pExplisive = dynamic_pointer_cast<ExplosiveObject>(pObj)) {
+					pExplisive->OnPicked();
+					pBullet->Reset();
+
+				}
+			}
+		}
+	}
 }

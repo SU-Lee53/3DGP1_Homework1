@@ -30,6 +30,7 @@ public:
 	BOOL SetRotationEuler(float fPitch/* x */, float fYaw/* y */, float fRoll/* z */);
 	BOOL SetRotationAxisAngle(const XMFLOAT3& xmf3Axis, float fAngle);
 	BOOL SetRotationAxisAngle(const XMVECTOR& xmvAxis, float fAngle);
+	BOOL SetRotationAxisAngle(const AxisAngle& AxisAngle);
 
 	BOOL AddRotationEuler(const XMFLOAT3& xmf3AddRotation);
 	BOOL AddRotationEuler(const XMVECTOR& xmvAddRotation);
@@ -37,7 +38,8 @@ public:
 
 	// Getter
 	XMFLOAT3& GetPosition() { return m_xmf3Position; }
-	XMFLOAT3& GetRotation() { return m_xmf3RotationEuler; }
+	XMFLOAT3& GetRotationEuler() { return m_xmf3RotationEuler; }
+	AxisAngle& GetRotationAxisAngle() { return m_AxisAngle; }
 
 	XMFLOAT4X4& GetWorldMatrix() { return m_xmf4x4World; }
 

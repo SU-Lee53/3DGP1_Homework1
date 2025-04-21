@@ -71,6 +71,10 @@ void ExplosiveObject::OnPicked()
 	m_bBlowingUp = TRUE;
 }
 
+void ExplosiveObject::OnCollision(std::shared_ptr<GameObject> pOther)
+{
+}
+
 void ExplosiveObject::PrepareExplosion()
 {
 	for (XMFLOAT3& vec : m_xmf3SphereVectors) {
