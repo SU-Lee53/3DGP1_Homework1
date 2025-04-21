@@ -31,11 +31,11 @@ public:
 	virtual void Update(float fElapsedTime);
 	virtual void Render(HDC hDCFrameBuffer);
 	
-	virtual void ProcessMouseInput() { }
-	virtual void ProcessKeyboardInput() { }
+	virtual void ProcessMouseInput(float fTimeElapsed) { }
+	virtual void ProcessKeyboardInput(float fTimeElapsed) { }
 
 	void CheckObjectByObjectCollisions();
-	std::shared_ptr<GameObject>& PickObjectPointedByCursor(int xClient, int yClient, std::shared_ptr<Camera> pCamera);
+	std::shared_ptr<GameObject> PickObjectPointedByCursor(int xClient, int yClient, std::shared_ptr<Camera> pCamera);
 
 	std::shared_ptr<GameObject> FindObjectInScene(std::string_view svName);
 

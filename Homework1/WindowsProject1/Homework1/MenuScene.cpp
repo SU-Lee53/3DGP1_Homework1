@@ -34,12 +34,14 @@ void MenuScene::BuildObjects()
 	m_pObjects[1]->SetMesh(pLevel1Mesh);
 	m_pObjects[1]->GetTransform()->SetPosition(0.f, 10.f, 70.f);
 	m_pObjects[1]->GetTransform()->SetRotationEuler(90.f, 0.f, 0.f);
+	static_pointer_cast<ExplosiveObject>(m_pObjects[1])->SetAutoReset(TRUE);
 	
 	m_pObjects[2] = make_shared<ExplosiveObject>();
 	m_pObjects[2]->SetColor(RandomGenerator::GenerateRandomColor());
 	m_pObjects[2]->SetMesh(pLevel2Mesh);
 	m_pObjects[2]->GetTransform()->SetPosition(0.f, 0.f, 70.f);
 	m_pObjects[2]->GetTransform()->SetRotationEuler(90.f, 0.f, 0.f);
+	static_pointer_cast<ExplosiveObject>(m_pObjects[2])->SetAutoReset(TRUE);
 	
 	m_pObjects[3] = make_shared<ExplosiveObject>();
 	m_pObjects[3]->SetColor(RandomGenerator::GenerateRandomColor());
@@ -47,12 +49,14 @@ void MenuScene::BuildObjects()
 	m_pObjects[3]->GetTransform()->SetPosition(-20.f, -15.f, 70.f);
 	m_pObjects[3]->GetTransform()->SetRotationEuler(90.f, 0.f, 0.f);
 	m_pObjects[3]->SetName("Start_Text");
+	static_pointer_cast<ExplosiveObject>(m_pObjects[3])->SetAutoReset(FALSE);
 	
 	m_pObjects[4] = make_shared<ExplosiveObject>();
 	m_pObjects[4]->SetColor(RandomGenerator::GenerateRandomColor());
 	m_pObjects[4]->SetMesh(pEndMesh);
 	m_pObjects[4]->GetTransform()->SetPosition(20.f, -15.f, 70.f);
 	m_pObjects[4]->GetTransform()->SetRotationEuler(90.f, 0.f, 0.f);
+	static_pointer_cast<ExplosiveObject>(m_pObjects[4])->SetAutoReset(TRUE);
 
 	m_pPlayer = make_shared<FirstPersonPlayer>();
 	m_pPlayer->Initialize();
@@ -75,17 +79,8 @@ void MenuScene::Update(float fTimeElapsed)
 		}
 	}
 
-	for (auto& pObj : m_pObjects) {
-		if (auto p = dynamic_pointer_cast<ExplosiveObject>(pObj)) {
-			if (p->IsExploded()) {
-				p->Reset();
-			}
-		}
-	}
-
-
-	ProcessMouseInput();
-	ProcessKeyboardInput();
+	ProcessMouseInput(fTimeElapsed);
+	ProcessKeyboardInput(fTimeElapsed);
 
 	if (m_pPlayer)
 		m_pPlayer->Update(fTimeElapsed);
@@ -103,7 +98,7 @@ void MenuScene::Render(HDC hDCFrameBuffer)
 	Scene::Render(hDCFrameBuffer);
 }
 
-void MenuScene::ProcessMouseInput()
+void MenuScene::ProcessMouseInput(float fTimeElapsed)
 {
 	if (INPUT.GetButtonDown(VK_LBUTTON)) {
 		POINT ptCursorPos = INPUT.GetCurrentCursorPos();
@@ -115,7 +110,7 @@ void MenuScene::ProcessMouseInput()
 	}
 }
 
-void MenuScene::ProcessKeyboardInput()
+void MenuScene::ProcessKeyboardInput(float fTimeElapsed)
 {
 //	m_pPlayer->ProcessKeyboardInput();
 }

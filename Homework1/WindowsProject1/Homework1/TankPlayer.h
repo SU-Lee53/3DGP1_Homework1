@@ -14,8 +14,8 @@ public:
 	virtual void Render(HDC hDCFrameBuffer, std::shared_ptr<Camera> pCamera);
 
 public:
-	virtual void ProcessKeyboardInput() override;
-	virtual void ProcessMouseInput() override;
+	virtual void ProcessKeyboardInput(float fTimeElapsed) override;
+	virtual void ProcessMouseInput(float fTimeElapsed) override;
 
 public:
 	virtual void Rotate(float fPitch = 0.0f, float fYaw = 0.0f, float fRoll = 0.0f) override;
@@ -28,7 +28,7 @@ private:
 
 
 private:
-	XMFLOAT3 m_xmf3DefaultRotation = XMFLOAT3{ -90.f, 180.f, 0.f };
+	float m_fSpeed = 8.f;
 	float m_fBulletEffectiveRange = 150.f;
 
 	std::array<std::shared_ptr<class BulletObject>, BULLET_COUNT> m_pBullets = {};

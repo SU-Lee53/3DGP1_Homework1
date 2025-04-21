@@ -21,11 +21,13 @@ void TankPlayer::Initialize()
 	m_pCamera->SetFOVAngle(60.0f);
 	m_pCamera->SetNearZ(1.01f);
 	m_pCamera->SetFarZ(500.0f);
-	SetCameraOffset(XMFLOAT3{ 0.f, 5.0f, -8.0f });
+	SetCameraOffset(XMFLOAT3{ 0.f, 3.0f, -10.0f });
 
 
 	m_pMesh = make_shared<Mesh>();
 	MeshHelper::CreateMeshFromOBJFiles(m_pMesh, L"../Tank.obj");
+	SetColor(RGB(255, 0, 0));
+	SetMeshDefaultOrientation(XMFLOAT3{ -90.f, 180.f, 0.f });
 
 	shared_ptr<Mesh> pBulletMesh = make_shared<Mesh>();
 	MeshHelper::CreateCubeMesh(pBulletMesh);
@@ -42,63 +44,36 @@ void TankPlayer::Initialize()
 
 void TankPlayer::Update(float fTimeElapsed)
 {
-//	m_pTransform->SetRotationEuler(m_xmf3DefaultRotation);
 	Player::Update(fTimeElapsed);
 }
 
 void TankPlayer::Render(HDC hDCFrameBuffer, std::shared_ptr<Camera> pCamera)
 {
-	if (m_pMesh && m_bActive) {
-		XMMATRIX xmmtxCurrentWorld = XMLoadFloat4x4(&m_pTransform->GetWorldMatrix());
-		XMMATRIX xmmtxAdditionalRotation = XMMatrixRotationRollPitchYaw(
-			XMConvertToRadians(m_xmf3DefaultRotation.x),
-			XMConvertToRadians(m_xmf3DefaultRotation.y),
-			XMConvertToRadians(m_xmf3DefaultRotation.z)
-		);
-		
-		XMFLOAT4X4 xmf4x4FinalWorld;
-		XMStoreFloat4x4(&xmf4x4FinalWorld, XMMatrixMultiply(xmmtxAdditionalRotation, xmmtxCurrentWorld));
-
-		GraphicsPipeline::SetWorldTransform(xmf4x4FinalWorld);
-
-		HPEN hPen = ::CreatePen(PS_SOLID, 0, m_Color);
-		HPEN hOldPen = (HPEN)::SelectObject(hDCFrameBuffer, hPen);
-		m_pMesh->Render(hDCFrameBuffer);
-		::SelectObject(hDCFrameBuffer, hOldPen);
-		::DeleteObject(hPen);
-	}
+	Player::Render(hDCFrameBuffer, pCamera);
 }
 
-void TankPlayer::ProcessKeyboardInput()
+void TankPlayer::ProcessKeyboardInput(float fTimeElapsed)
 {
 	if (INPUT.GetButtonPressed('W')) {
-		Player::Move(m_pTransform->GetLook(), 0.5f);
+		Player::Move(m_pTransform->GetLook(), m_fSpeed * fTimeElapsed);
 	}
 
 	if (INPUT.GetButtonPressed('S')) {
-		Player::Move(m_pTransform->GetLook(), -0.5f);
+		Player::Move(m_pTransform->GetLook(), -m_fSpeed * fTimeElapsed);
 	}
 
 	if (INPUT.GetButtonPressed('D')) {
-		Player::Move(m_pTransform->GetRight(), 0.5f);
+		Player::Move(m_pTransform->GetRight(), m_fSpeed * fTimeElapsed);
 	}
 
 	if (INPUT.GetButtonPressed('A')) {
-		Player::Move(m_pTransform->GetRight(), -0.5f);
-	}
-
-	if (INPUT.GetButtonPressed('E')) {
-		Player::Move(m_pTransform->GetUp(), 0.5f);
-	}
-
-	if (INPUT.GetButtonPressed('Q')) {
-		Player::Move(m_pTransform->GetUp(), -0.5f);
+		Player::Move(m_pTransform->GetRight(), -m_fSpeed * fTimeElapsed);
 	}
 }
 
-void TankPlayer::ProcessMouseInput()
+void TankPlayer::ProcessMouseInput(float fTimeElapsed)
 {
-	if (INPUT.GetButtonPressed(VK_LBUTTON)) {
+	if (INPUT.GetButtonPressed(VK_RBUTTON)) {
 		HWND hWnd = ::GetActiveWindow();
 
 		::SetCursor(NULL);

@@ -6,12 +6,16 @@ public:
 	virtual ~ExplosiveObject();
 
 public:
+	void SetAutoReset(BOOL bAutoReset) { m_bAutoReset = bAutoReset; }
 	BOOL IsBlowingUp() const { return m_bBlowingUp; }
 	BOOL IsExploded() const { return m_bExplosionCompleted; }
 	void Reset() {
 		m_bBlowingUp = FALSE;
 		m_bExplosionCompleted = FALSE;
+		m_fElapsedTimes = 0.0f;
 	}
+
+	
 
 public:
 	virtual void Initialize() override;
@@ -25,6 +29,7 @@ public:
 private:
 	BOOL										m_bBlowingUp = FALSE;
 	BOOL										m_bExplosionCompleted = FALSE;
+	BOOL										m_bAutoReset = TRUE;
 	std::array<XMFLOAT4X4, EXPLOSION_DEBRISES>	m_xmf4x4Transforms = {};
 
 	float m_fElapsedTimes = 0.f;

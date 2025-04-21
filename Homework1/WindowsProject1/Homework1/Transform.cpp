@@ -153,7 +153,7 @@ void Transform::Update()
 		float fRoll = XMConvertToRadians(m_xmf3RotationEuler.z);
 
 		XMMATRIX xmmtxRotate1 = XMMatrixRotationRollPitchYaw(fPitch, fYaw, fRoll);
-		XMMATRIX xmmtxRotate2 = XMMatrixRotationAxis(XMLoadFloat3(&m_AxisAngle.m_xmf3Axis), XMConvertToRadians(m_AxisAngle.m_fAngle));
+		XMMATRIX xmmtxRotate2 = m_AxisAngle.GenerateRotationMatrix();
 		XMStoreFloat4x4(&m_xmf4x4World, XMMatrixMultiply(xmmtxRotate1, xmmtxRotate2));
 
 		m_xmf4x4World._41 = m_xmf3Position.x;

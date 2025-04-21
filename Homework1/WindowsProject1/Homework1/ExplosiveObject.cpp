@@ -37,9 +37,14 @@ void ExplosiveObject::Update(float fTimeElapsed)
 			}
 		}
 		else {
-			m_bBlowingUp = FALSE;
-			m_bExplosionCompleted = TRUE;
-			m_fElapsedTimes = 0.0f;
+			if (m_bAutoReset) {
+				Reset();
+			}
+			else {
+				m_bBlowingUp = FALSE;
+				m_bExplosionCompleted = TRUE;
+				m_fElapsedTimes = 0.0f;
+			}
 		}
 	}
 	else {

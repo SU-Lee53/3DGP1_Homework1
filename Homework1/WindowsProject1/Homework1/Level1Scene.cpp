@@ -14,11 +14,7 @@ void Level1Scene::BuildObjects()
 	shared_ptr<Mesh> pCubeMesh = make_shared<Mesh>();
 	MeshHelper::CreateCubeMesh(pCubeMesh);
 	
-	shared_ptr<Mesh> pCarMesh = make_shared<Mesh>();
-	MeshHelper::CreateCubeMesh(pCarMesh, 12.0f, 5.0f, 15.0f);
-	
 	shared_ptr<Mesh> pAxis = make_shared<AxisMesh>();
-	MeshHelper::CreateCubeMesh(pCarMesh, 12.0f, 5.0f, 15.0f);
 
 	m_pObjects.resize(2);
 	m_pObjects[0] = make_shared<GameObject>();
@@ -34,7 +30,6 @@ void Level1Scene::BuildObjects()
 	m_pPlayer = make_shared<FirstPersonPlayer>();
 	m_pPlayer->Initialize();
 	m_pPlayer->GetTransform()->SetPosition(0.f, 0.f, 0.f);
-
 }
 
 void Level1Scene::ReleaseObjects()
@@ -44,8 +39,8 @@ void Level1Scene::ReleaseObjects()
 
 void Level1Scene::Update(float fTimeElapsed)
 {
-	ProcessMouseInput();
-	ProcessKeyboardInput();
+	ProcessMouseInput(fTimeElapsed);
+	ProcessKeyboardInput(fTimeElapsed);
 
 	if (m_bPlayerRide) UpdatePlayerRide(fTimeElapsed);
 	if (m_bRollercoasterEnd) {
@@ -82,12 +77,12 @@ void Level1Scene::Render(HDC hDCFrameBuffer)
 	Scene::Render(hDCFrameBuffer);
 }
 
-void Level1Scene::ProcessMouseInput()
+void Level1Scene::ProcessMouseInput(float fTimeElapsed)
 {
-	m_pPlayer->ProcessMouseInput();
+	m_pPlayer->ProcessMouseInput(fTimeElapsed);
 }
 
-void Level1Scene::ProcessKeyboardInput()
+void Level1Scene::ProcessKeyboardInput(float fTimeElapsed)
 {
 	if (INPUT.GetButtonDown('R')) {
 		m_bPlayerRide = !m_bPlayerRide;
@@ -99,7 +94,7 @@ void Level1Scene::ProcessKeyboardInput()
 	}
 
 	if (!m_bPlayerRide) {
-		m_pPlayer->ProcessKeyboardInput();
+		m_pPlayer->ProcessKeyboardInput(fTimeElapsed);
 	}
 
 

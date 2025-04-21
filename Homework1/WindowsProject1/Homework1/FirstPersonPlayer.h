@@ -12,8 +12,8 @@ public:
 	virtual void Update(float fTimeElapsed) override;
 
 public:
-	virtual void ProcessKeyboardInput() override;
-	virtual void ProcessMouseInput() override;
+	virtual void ProcessKeyboardInput(float fTimeElapsed) override;
+	virtual void ProcessMouseInput(float fTimeElapsed) override;
 
 public:
 	virtual void Rotate(float fPitch = 0.0f, float fYaw = 0.0f, float fRoll = 0.0f) override;

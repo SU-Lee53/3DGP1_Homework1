@@ -25,6 +25,7 @@ void TitleScene::BuildObjects()
 	m_pObjects[1]->SetMesh(pNameMesh);
 	m_pObjects[1]->GetTransform()->SetPosition(0.f, -15.f, 70.f);
 	m_pObjects[1]->GetTransform()->SetRotationEuler(90.f, 0.f, 0.f);
+	static_pointer_cast<ExplosiveObject>(m_pObjects[1])->SetAutoReset(FALSE);
 	
 	m_pPlayer = make_shared<FirstPersonPlayer>();
 	m_pPlayer->Initialize();
@@ -48,8 +49,8 @@ void TitleScene::Update(float fTimeElapsed)
 	m_fRunningTime += fTimeElapsed;
 	m_pObjects[1]->GetTransform()->AddRotationEuler(0.f, XMConvertToRadians(m_fRotationSpeed * fTimeElapsed), 0.0f);
 
-	ProcessMouseInput();
-	ProcessKeyboardInput();
+	ProcessMouseInput(fTimeElapsed);
+	ProcessKeyboardInput(fTimeElapsed);
 
 	if (m_pPlayer)
 		m_pPlayer->Update(fTimeElapsed);
@@ -67,7 +68,7 @@ void TitleScene::Render(HDC hDCFrameBuffer)
 	Scene::Render(hDCFrameBuffer);
 }
 
-void TitleScene::ProcessMouseInput()
+void TitleScene::ProcessMouseInput(float fTimeElapsed)
 {
 	if (INPUT.GetButtonDown(VK_LBUTTON)) {
 		POINT ptCursorPos = INPUT.GetCurrentCursorPos();
@@ -80,7 +81,7 @@ void TitleScene::ProcessMouseInput()
 //	m_pPlayer->ProcessMouseInput();
 }
 
-void TitleScene::ProcessKeyboardInput()
+void TitleScene::ProcessKeyboardInput(float fTimeElapsed)
 {
-	m_pPlayer->ProcessKeyboardInput();
+//	m_pPlayer->ProcessKeyboardInput();
 }

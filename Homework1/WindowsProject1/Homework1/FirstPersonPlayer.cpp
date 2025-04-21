@@ -26,7 +26,7 @@ void FirstPersonPlayer::Update(float fTimeElapsed)
 	Player::Update(fTimeElapsed);
 }
 
-void FirstPersonPlayer::ProcessKeyboardInput()
+void FirstPersonPlayer::ProcessKeyboardInput(float fTimeElapsed)
 {
 	if (INPUT.GetButtonPressed('W')) {
 		Player::Move(m_pTransform->GetLook(), 0.5f);
@@ -51,26 +51,10 @@ void FirstPersonPlayer::ProcessKeyboardInput()
 	if (INPUT.GetButtonPressed('Q')) {
 		Player::Move(m_pTransform->GetUp(), -0.5f);
 	}
-	
-	if (INPUT.GetButtonPressed(VK_UP)) {
-		Rotate(-0.5f, 0.f, 0.f);
-	}
-	
-	if (INPUT.GetButtonPressed(VK_DOWN)) {
-		Rotate(0.5f, 0.f, 0.f);
-	}
-	
-	if (INPUT.GetButtonPressed(VK_RIGHT)) {
-		Rotate(0.0f, 0.5f, 0.f);
-	}
-	
-	if (INPUT.GetButtonPressed(VK_LEFT)) {
-		Rotate(0.0f, -0.5f, 0.f);
-	}
 
 }
 
-void FirstPersonPlayer::ProcessMouseInput()
+void FirstPersonPlayer::ProcessMouseInput(float fTimeElapsed)
 {
 	if (INPUT.GetButtonPressed(VK_LBUTTON)) {
 		HWND hWnd = ::GetActiveWindow();

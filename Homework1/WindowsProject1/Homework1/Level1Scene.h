@@ -17,8 +17,8 @@ public:
 	virtual void Render(HDC hDCFrameBuffer) override;
 
 public:
-	virtual void ProcessMouseInput() override;
-	virtual void ProcessKeyboardInput() override;
+	virtual void ProcessMouseInput(float fTimeElapsed) override;
+	virtual void ProcessKeyboardInput(float fTimeElapsed) override;
 
 public:
 	void UpdatePlayerRide(float fTimeElapsed);

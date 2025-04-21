@@ -19,8 +19,8 @@ public:
 
 public:
 	void SetActive(BOOL bActive) { m_bActive = bActive; }
-	void SetMesh(const std::shared_ptr<Mesh>& pMesh) { m_pMesh = pMesh; }
-	void SetMesh(std::shared_ptr<Mesh>&& pMesh) { m_pMesh = std::move(pMesh); }
+	void SetMesh(const std::shared_ptr<Mesh>& pMesh); 
+	void SetMesh(std::shared_ptr<Mesh>&& pMesh); 
 	
 	void SetColor(COLORREF color) { m_Color = color; }
 
@@ -28,6 +28,8 @@ public:
 	void SetCollidedObject(nullptr_t) { m_pObjectCollided.reset(); }
 	
 	void SetName(std::string_view svName) { m_strObjectName = svName; }
+
+	void SetMeshDefaultOrientation(const XMFLOAT3& xmf3Orientation) { m_xmf3DefaultOrientation = xmf3Orientation; }
 
 	std::shared_ptr<GameObject>& GetCollidedObject() { return m_pObjectCollided; }
 
@@ -69,5 +71,16 @@ protected:
 
 	TAG_GAMEOBJECT_TYPE				m_eObjectType = TAG_GAMEOBJECT_TYPE_DEFAULT;
 	std::string						m_strObjectName = "";
+
+	XMFLOAT3						m_xmf3DefaultOrientation = {};
+
+//#define _DEBUG_COLLISION
+
+#ifdef _DEBUG_COLLISION
+	std::shared_ptr<class Mesh> m_pObjectOBBMesh;
+	std::shared_ptr<class Mesh> m_pMeshOBBMesh;
+#endif
+
+
 };
 

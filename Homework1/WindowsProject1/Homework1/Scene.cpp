@@ -59,7 +59,7 @@ void Scene::CheckObjectByObjectCollisions()
 	}
 }
 
-std::shared_ptr<GameObject>& Scene::PickObjectPointedByCursor(int xClient, int yClient, std::shared_ptr<Camera> pCamera)
+std::shared_ptr<GameObject> Scene::PickObjectPointedByCursor(int xClient, int yClient, std::shared_ptr<Camera> pCamera)
 {
 	XMFLOAT3 xmf3PickPosition;
 	xmf3PickPosition.x = (((2.0f * xClient) / (float)pCamera->GetViewport().m_nWidth) - 1) / pCamera->GetPerspectiveProjectMatrix()._11;

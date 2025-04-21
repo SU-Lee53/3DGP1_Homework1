@@ -329,8 +329,28 @@ BOOL MeshHelper::CreateMeshFromOBJFiles(shared_ptr<Mesh> pMesh, wstring_view wst
 	}
 
 
+	// TODO : 현재 Center 를 구하고 중심을 0,0,0 으로 옮기는 작업이 필요한듯 함
+	auto [itMinX, itMaxX] = std::minmax_element(LoadedVertices.begin(), LoadedVertices.end(), [](const XMFLOAT3& xmf3_1, const XMFLOAT3& xmf3_2) { return xmf3_1.x < xmf3_2.x; });
+	auto [itMinY, itMaxY] = std::minmax_element(LoadedVertices.begin(), LoadedVertices.end(), [](const XMFLOAT3& xmf3_1, const XMFLOAT3& xmf3_2) { return xmf3_1.y < xmf3_2.y; });
+	auto [itMinZ, itMaxZ] = std::minmax_element(LoadedVertices.begin(), LoadedVertices.end(), [](const XMFLOAT3& xmf3_1, const XMFLOAT3& xmf3_2) { return xmf3_1.z < xmf3_2.z; });
+
+	XMFLOAT3 xmf3Center = { (itMaxX->x + itMinX->x) / 2, (itMaxY->y + itMinY->y) / 2, (itMaxZ->z + itMinZ->z) / 2 };
+
+	std::for_each(LoadedVertices.begin(), LoadedVertices.end(), [&xmf3Center](XMFLOAT3& xmf3Vertex) -> void {
+		xmf3Vertex.x -= xmf3Center.x;
+		xmf3Vertex.y -= xmf3Center.y;
+		xmf3Vertex.z -= xmf3Center.z;
+	});
+
+	// 다시 구해서 테스트
+	auto [itNewMinX, itNewMaxX] = std::minmax_element(LoadedVertices.begin(), LoadedVertices.end(), [](const XMFLOAT3& xmf3_1, const XMFLOAT3& xmf3_2) { return xmf3_1.x < xmf3_2.x; });
+	auto [itNewMinY, itNewMaxY] = std::minmax_element(LoadedVertices.begin(), LoadedVertices.end(), [](const XMFLOAT3& xmf3_1, const XMFLOAT3& xmf3_2) { return xmf3_1.y < xmf3_2.y; });
+	auto [itNewMinZ, itNewMaxZ] = std::minmax_element(LoadedVertices.begin(), LoadedVertices.end(), [](const XMFLOAT3& xmf3_1, const XMFLOAT3& xmf3_2) { return xmf3_1.z < xmf3_2.z; });
+
+	XMFLOAT3 xmf3NewCenter = { (itNewMaxX->x + itNewMinX->x) / 2, (itNewMaxY->y + itNewMinY->y) / 2, (itNewMaxZ->z + itNewMinZ->z) / 2 };
+
 	pMesh->m_pPolygons.resize(LoadedIndices.size());
-	for (const auto& [index, xmi3Indices]: std::views::enumerate(LoadedIndices)) {
+	for (const auto& [index, xmi3Indices] : std::views::enumerate(LoadedIndices)) {
 		shared_ptr<struct Polygon> pPolygon = make_shared<struct Polygon>(3);
 		pPolygon->SetVertex(0, Vertex{ LoadedVertices[xmi3Indices.x - 1] });
 		pPolygon->SetVertex(1, Vertex{ LoadedVertices[xmi3Indices.y - 1] });
@@ -339,16 +359,9 @@ BOOL MeshHelper::CreateMeshFromOBJFiles(shared_ptr<Mesh> pMesh, wstring_view wst
 	}
 
 	// TODO : Initialize BoundingBox
+	XMFLOAT3 xmf3ObbExtent = Vector3::Subtract(XMFLOAT3{ itNewMaxX->x, itNewMaxY->y, itNewMaxZ->z }, xmf3NewCenter);
 
-	auto [itMinX, itMaxX] = std::minmax_element(LoadedVertices.begin(), LoadedVertices.end(), [](const XMFLOAT3& xmf3_1, const XMFLOAT3& xmf3_2) { return xmf3_1.x < xmf3_2.x; });
-	auto [itMinY, itMaxY] = std::minmax_element(LoadedVertices.begin(), LoadedVertices.end(), [](const XMFLOAT3& xmf3_1, const XMFLOAT3& xmf3_2) { return xmf3_1.y < xmf3_2.y; });
-	auto [itMinZ, itMaxZ] = std::minmax_element(LoadedVertices.begin(), LoadedVertices.end(), [](const XMFLOAT3& xmf3_1, const XMFLOAT3& xmf3_2) { return xmf3_1.z < xmf3_2.z; });
-
-
-	XMFLOAT3 xmf3ObbCenter = { (itMaxX->x + itMinX->x) / 2, (itMaxY->y + itMinY->y) / 2, (itMaxZ->z + itMinZ->z) / 2 };
-	XMFLOAT3 xmf3ObbExtent = Vector3::Subtract(XMFLOAT3{ itMaxX->x, itMaxY->y, itMaxZ->z }, xmf3ObbCenter);
-
-	pMesh->m_xmOBB = BoundingOrientedBox(xmf3ObbCenter, xmf3ObbExtent, XMFLOAT4{0.f, 0.f, 0.f, 1.f});
+	pMesh->m_xmOBB = BoundingOrientedBox(xmf3NewCenter, xmf3ObbExtent, XMFLOAT4{ 0.f, 0.f, 0.f, 1.f });
 }
 
 void GenerateRollercoasterPillarPolygon(shared_ptr<Mesh> pMesh, XMFLOAT3 xmf3TopPosition, float fWidth, float fDepth)
