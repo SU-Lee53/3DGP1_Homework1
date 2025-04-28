@@ -4,7 +4,7 @@
 class Level2Scene : public Scene {
 public:
 	Level2Scene() {
-		m_eSceneTag = TAG_SCENE_TITLE;
+		m_eSceneTag = TAG_SCENE_LEVEL2;
 	}
 
 	virtual ~Level2Scene() {}
@@ -22,5 +22,8 @@ public:
 
 public:
 	virtual void CheckObjectByBulletCollisions();
+
+private:
+	std::shared_ptr<class WallsObject>	m_pWallsObject = nullptr;
 };
 

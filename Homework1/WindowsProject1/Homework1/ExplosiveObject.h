@@ -13,6 +13,9 @@ public:
 		m_bBlowingUp = FALSE;
 		m_bExplosionCompleted = FALSE;
 		m_fElapsedTimes = 0.0f;
+		std::for_each(m_xmf4x4Transforms.begin(), m_xmf4x4Transforms.end(), [](XMFLOAT4X4& xmf4x4Transform) {
+			xmf4x4Transform = Matrix4x4::Identity();
+		});
 	}
 
 	

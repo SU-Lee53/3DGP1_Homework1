@@ -4,7 +4,7 @@
 class Level1Scene : public Scene {
 public:
 	Level1Scene() {
-		m_eSceneTag = TAG_SCENE_TITLE;
+		m_eSceneTag = TAG_SCENE_LEVEL1;
 	}
 
 	virtual ~Level1Scene() {}

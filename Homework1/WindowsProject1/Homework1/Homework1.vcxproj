@@ -159,6 +159,7 @@
     <ClInclude Include="ThirdPersonCamera.h" />
     <ClInclude Include="TitleScene.h" />
     <ClInclude Include="Transform.h" />
+    <ClInclude Include="WallsObject.h" />
     <ClInclude Include="XMMathHelper.h" />
   </ItemGroup>
   <ItemGroup>
@@ -189,6 +190,7 @@
     <ClCompile Include="ThirdPersonCamera.cpp" />
     <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="WallsObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Homework1.rc" />

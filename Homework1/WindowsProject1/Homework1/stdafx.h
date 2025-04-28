@@ -35,7 +35,6 @@ using tstring = std::basic_string<_TCHAR>;
 #include <DirectXPackedVector.h>
 #include <DirectXColors.h>
 #include <DirectXCollision.h>
-
 using namespace DirectX;
 using namespace DirectX::PackedVector;
 

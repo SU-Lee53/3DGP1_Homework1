@@ -3,6 +3,7 @@
 #include "TankPlayer.h"
 #include "ExplosiveObject.h"
 #include "BulletObject.h"
+#include "WallsObject.h"
 
 using namespace std;
 
@@ -15,6 +16,25 @@ void Level2Scene::BuildObjects()
 
 	shared_ptr<Mesh> pCubeMesh = make_shared<Mesh>();
 	MeshHelper::CreateCubeMesh(pCubeMesh, pTankMesh->GetOBB().Extents.x * 2, pTankMesh->GetOBB().Extents.y * 2, pTankMesh->GetOBB().Extents.z * 2);
+
+	// WallsObject
+	{
+		float fHalfWidth = 45.0f, fHalfHeight = 45.0f, fHalfDepth = 200.0f;
+		shared_ptr<Mesh> pWallMesh = make_shared<Mesh>();
+		MeshHelper::CreateWallMesh(pWallMesh, fHalfWidth * 2.0f, fHalfHeight * 2.0f, fHalfDepth * 2.0f, 30);
+
+		m_pWallsObject = make_shared<WallsObject>();
+		m_pWallsObject->GetTransform()->SetPosition(0.0f, 0.0f, 0.0f);
+		m_pWallsObject->SetMesh(std::move(pWallMesh));
+		m_pWallsObject->SetColor(RGB(0, 0, 0));
+		m_pWallsObject->SetWallPlane(0, XMFLOAT4{ +1.0f, 0.0f, 0.0f, fHalfWidth });
+		m_pWallsObject->SetWallPlane(1, XMFLOAT4{ -1.0f, 0.0f, 0.0f, fHalfWidth });
+		m_pWallsObject->SetWallPlane(2, XMFLOAT4{ 0.0f, +1.0f, 0.0f, fHalfHeight });
+		m_pWallsObject->SetWallPlane(3, XMFLOAT4{ 0.0f, -1.0f, 0.0f, fHalfHeight });
+		m_pWallsObject->SetWallPlane(4, XMFLOAT4{ 0.0f, 0.0f, +1.0f, fHalfDepth });
+		m_pWallsObject->SetWallPlane(5, XMFLOAT4{ 0.0f, 0.0f, -1.0f, fHalfDepth });
+		m_pWallsObject->SetOBB(BoundingOrientedBox{ XMFLOAT3{0.f, 0.f, 0.f}, XMFLOAT3{fHalfWidth, fHalfHeight, fHalfDepth * 0.05f}, XMFLOAT4{0.f, 0.f, 0.f, 1.f} });
+	}
 
 	m_pObjects.resize(5);
 	m_pObjects[0] = make_shared<ExplosiveObject>();
@@ -81,6 +101,7 @@ void Level2Scene::Render(HDC hDCFrameBuffer)
 	std::wstring wstrOutText{ L"Level2Scene" };
 	::TextOut(hDCFrameBuffer, 0, 0, wstrOutText.c_str(), wstrOutText.length());
 
+	m_pWallsObject->Render(hDCFrameBuffer, m_pPlayer->GetCamera());
 	Scene::Render(hDCFrameBuffer);
 }
 
