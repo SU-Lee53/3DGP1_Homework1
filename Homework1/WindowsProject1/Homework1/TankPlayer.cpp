@@ -24,8 +24,9 @@ void TankPlayer::Initialize()
 	SetCameraOffset(XMFLOAT3{ 0.f, 3.0f, -10.0f });
 
 
-	m_pMesh = make_shared<Mesh>();
-	MeshHelper::CreateMeshFromOBJFiles(m_pMesh, L"../Tank.obj");
+	shared_ptr<Mesh> pTankMesh = make_shared<Mesh>();
+	MeshHelper::CreateMeshFromOBJFiles(pTankMesh, L"../Tank.obj");
+	SetMesh(pTankMesh);
 	SetColor(RGB(255, 0, 0));
 	SetMeshDefaultOrientation(XMFLOAT3{ -90.f, 180.f, 0.f });
 

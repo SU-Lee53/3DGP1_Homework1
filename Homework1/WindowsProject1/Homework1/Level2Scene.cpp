@@ -42,7 +42,7 @@ void Level2Scene::BuildObjects()
 	m_pObjects[0]->SetMesh(pTankMesh);
 	m_pObjects[0]->GetTransform()->SetPosition(0.f, 0.f, 15.f);
 	m_pObjects[0]->SetMeshDefaultOrientation(XMFLOAT3{ -90.f, 180.f, 0.f });
-	
+
 	m_pObjects[1] = make_shared<ExplosiveObject>();
 	m_pObjects[1]->SetColor(RGB(0, 150, 0));
 	m_pObjects[1]->SetMesh(pTankMesh);

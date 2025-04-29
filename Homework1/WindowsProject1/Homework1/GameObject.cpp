@@ -12,7 +12,6 @@ GameObject::GameObject()
 void GameObject::SetMesh(const std::shared_ptr<Mesh>& pMesh)
 {
 	m_pMesh = pMesh;
-
 	m_xmOBB = m_pMesh->GetOBB();
 
 #ifdef _DEBUG_COLLISION
