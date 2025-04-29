@@ -29,27 +29,27 @@ void FirstPersonPlayer::Update(float fTimeElapsed)
 void FirstPersonPlayer::ProcessKeyboardInput(float fTimeElapsed)
 {
 	if (INPUT.GetButtonPressed('W')) {
-		Player::Move(m_pTransform->GetLook(), 0.5f);
+		Player::Move(m_pTransform->GetLook(), 13.5f * fTimeElapsed);
 	}
 
 	if (INPUT.GetButtonPressed('S')) {
-		Player::Move(m_pTransform->GetLook(), -0.5f);
+		Player::Move(m_pTransform->GetLook(), -13.5f * fTimeElapsed);
 	}
 
 	if (INPUT.GetButtonPressed('D')) {
-		Player::Move(m_pTransform->GetRight(), 0.5f);
+		Player::Move(m_pTransform->GetRight(), 13.5f * fTimeElapsed);
 	}
 
 	if (INPUT.GetButtonPressed('A')) {
-		Player::Move(m_pTransform->GetRight(), -0.5f);
+		Player::Move(m_pTransform->GetRight(), -13.5f * fTimeElapsed);
 	}
 	
 	if (INPUT.GetButtonPressed('E')) {
-		Player::Move(m_pTransform->GetUp(), 0.5f);
+		Player::Move(m_pTransform->GetUp(), 13.5f * fTimeElapsed);
 	}
 	
 	if (INPUT.GetButtonPressed('Q')) {
-		Player::Move(m_pTransform->GetUp(), -0.5f);
+		Player::Move(m_pTransform->GetUp(), -13.5f * fTimeElapsed);
 	}
 
 }

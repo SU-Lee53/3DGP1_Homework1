@@ -6,7 +6,8 @@ public:
 	WallsObject();
 	virtual ~WallsObject();
 
-	virtual void Render(HDC hDCFrameBuffer, std::shared_ptr<Camera> pCamera);
+	virtual void Update(float fTimeElapsed) override;
+	virtual void Render(HDC hDCFrameBuffer, std::shared_ptr<Camera> pCamera) override;
 
 	void SetWallPlane(int nIndex, const XMFLOAT4& xmf4Plane) {
 		m_xmf4WallPlanes[nIndex] = xmf4Plane;

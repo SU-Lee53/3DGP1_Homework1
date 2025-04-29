@@ -60,7 +60,7 @@ void MeshHelper::CreateCubeMesh(shared_ptr<Mesh> pMesh, float fWidth, float fHei
 
 void MeshHelper::CreateWallMesh(shared_ptr<Mesh> pMesh, float fWidth, float fHeight, float fDepth, int nSubRects)
 {
-	pMesh->m_pPolygons.resize((4 * nSubRects * nSubRects) + 2);
+	pMesh->m_pPolygons.resize((6 * nSubRects * nSubRects));
 
 	float fHalfWidth = fWidth * 0.5f;
 	float fHalfHeight = fHeight * 0.5f;
@@ -71,74 +71,96 @@ void MeshHelper::CreateWallMesh(shared_ptr<Mesh> pMesh, float fWidth, float fHei
 
 	int k = 0;
 	shared_ptr<struct Polygon> pLeftFace;
-	for (int i = 0; i < nSubRects; i++)
-	{
-		for (int j = 0; j < nSubRects; j++)
-		{
+	for (int i = 0; i < nSubRects; i++){
+		for (int j = 0; j < nSubRects; j++){
 			pLeftFace = make_shared<struct Polygon>(4);
-			pLeftFace->SetVertex(0, Vertex(-fHalfWidth, -fHalfHeight + (i * fCellHeight), -fHalfDepth + (j * fCellDepth)));
-			pLeftFace->SetVertex(1, Vertex(-fHalfWidth, -fHalfHeight + ((i + 1) * fCellHeight), -fHalfDepth + (j * fCellDepth)));
-			pLeftFace->SetVertex(2, Vertex(-fHalfWidth, -fHalfHeight + ((i + 1) * fCellHeight), -fHalfDepth + ((j + 1) * fCellDepth)));
-			pLeftFace->SetVertex(3, Vertex(-fHalfWidth, -fHalfHeight + (i * fCellHeight), -fHalfDepth + ((j + 1) * fCellDepth)));
+			pLeftFace->SetVertex(0, Vertex(-fHalfWidth, -fHalfHeight + (i * fCellHeight),			-fHalfDepth + (j * fCellDepth)));
+			pLeftFace->SetVertex(1, Vertex(-fHalfWidth, -fHalfHeight + ((i + 1) * fCellHeight),		-fHalfDepth + (j * fCellDepth)));
+			pLeftFace->SetVertex(2, Vertex(-fHalfWidth, -fHalfHeight + ((i + 1) * fCellHeight),		-fHalfDepth + ((j + 1) * fCellDepth)));
+			pLeftFace->SetVertex(3, Vertex(-fHalfWidth, -fHalfHeight + (i * fCellHeight),			-fHalfDepth + ((j + 1) * fCellDepth)));
 			pMesh->SetPolygon(k++, pLeftFace);
+			pLeftFace.reset();
 		}
 	}
 
 	shared_ptr<struct Polygon> pRightFace;
-	for (int i = 0; i < nSubRects; i++)
-	{
-		for (int j = 0; j < nSubRects; j++)
-		{
+	for (int i = 0; i < nSubRects; i++){
+		for (int j = 0; j < nSubRects; j++){
 			pRightFace = make_shared<struct Polygon>(4);
-			pRightFace->SetVertex(0, Vertex(+fHalfWidth, -fHalfHeight + (i * fCellHeight), -fHalfDepth + (j * fCellDepth)));
-			pRightFace->SetVertex(1, Vertex(+fHalfWidth, -fHalfHeight + ((i + 1) * fCellHeight), -fHalfDepth + (j * fCellDepth)));
-			pRightFace->SetVertex(2, Vertex(+fHalfWidth, -fHalfHeight + ((i + 1) * fCellHeight), -fHalfDepth + ((j + 1) * fCellDepth)));
-			pRightFace->SetVertex(3, Vertex(+fHalfWidth, -fHalfHeight + (i * fCellHeight), -fHalfDepth + ((j + 1) * fCellDepth)));
+			pRightFace->SetVertex(0, Vertex(+fHalfWidth, -fHalfHeight + (i * fCellHeight),			-fHalfDepth + (j * fCellDepth)));
+			pRightFace->SetVertex(1, Vertex(+fHalfWidth, -fHalfHeight + ((i + 1) * fCellHeight),	-fHalfDepth + (j * fCellDepth)));
+			pRightFace->SetVertex(2, Vertex(+fHalfWidth, -fHalfHeight + ((i + 1) * fCellHeight),	-fHalfDepth + ((j + 1) * fCellDepth)));
+			pRightFace->SetVertex(3, Vertex(+fHalfWidth, -fHalfHeight + (i * fCellHeight),			-fHalfDepth + ((j + 1) * fCellDepth)));
 			pMesh->SetPolygon(k++, pRightFace);
+			pRightFace.reset();
 		}
 	}
 
 	shared_ptr<struct Polygon> pTopFace;
-	for (int i = 0; i < nSubRects; i++)
-	{
-		for (int j = 0; j < nSubRects; j++)
-		{
+	for (int i = 0; i < nSubRects; i++){
+		for (int j = 0; j < nSubRects; j++){
 			pTopFace = make_shared<struct Polygon>(4);
-			pTopFace->SetVertex(0, Vertex(-fHalfWidth + (i * fCellWidth), +fHalfHeight, -fHalfDepth + (j * fCellDepth)));
-			pTopFace->SetVertex(1, Vertex(-fHalfWidth + ((i + 1) * fCellWidth), +fHalfHeight, -fHalfDepth + (j * fCellDepth)));
-			pTopFace->SetVertex(2, Vertex(-fHalfWidth + ((i + 1) * fCellWidth), +fHalfHeight, -fHalfDepth + ((j + 1) * fCellDepth)));
-			pTopFace->SetVertex(3, Vertex(-fHalfWidth + (i * fCellWidth), +fHalfHeight, -fHalfDepth + ((j + 1) * fCellDepth)));
+			pTopFace->SetVertex(0, Vertex(-fHalfWidth + (i * fCellWidth),			+fHalfHeight,	-fHalfDepth + (j * fCellDepth)));
+			pTopFace->SetVertex(1, Vertex(-fHalfWidth + ((i + 1) * fCellWidth),		+fHalfHeight,	-fHalfDepth + (j * fCellDepth)));
+			pTopFace->SetVertex(2, Vertex(-fHalfWidth + ((i + 1) * fCellWidth),		+fHalfHeight,	-fHalfDepth + ((j + 1) * fCellDepth)));
+			pTopFace->SetVertex(3, Vertex(-fHalfWidth + (i * fCellWidth),			+fHalfHeight,	-fHalfDepth + ((j + 1) * fCellDepth)));
 			pMesh->SetPolygon(k++, pTopFace);
+			pTopFace.reset();
 		}
 	}
 
 	shared_ptr<struct Polygon> pBottomFace;
-	for (int i = 0; i < nSubRects; i++)
-	{
-		for (int j = 0; j < nSubRects; j++)
-		{
+	for (int i = 0; i < nSubRects; i++){
+		for (int j = 0; j < nSubRects; j++){
 			pBottomFace = make_shared<struct Polygon>(4);
-			pBottomFace->SetVertex(0, Vertex(-fHalfWidth + (i * fCellWidth), -fHalfHeight, -fHalfDepth + (j * fCellDepth)));
-			pBottomFace->SetVertex(1, Vertex(-fHalfWidth + ((i + 1) * fCellWidth), -fHalfHeight, -fHalfDepth + (j * fCellDepth)));
-			pBottomFace->SetVertex(2, Vertex(-fHalfWidth + ((i + 1) * fCellWidth), -fHalfHeight, -fHalfDepth + ((j + 1) * fCellDepth)));
-			pBottomFace->SetVertex(3, Vertex(-fHalfWidth + (i * fCellWidth), -fHalfHeight, -fHalfDepth + ((j + 1) * fCellDepth)));
+			pBottomFace->SetVertex(0, Vertex(-fHalfWidth + (i * fCellWidth),		-fHalfHeight,	-fHalfDepth + (j * fCellDepth)));
+			pBottomFace->SetVertex(1, Vertex(-fHalfWidth + ((i + 1) * fCellWidth),	-fHalfHeight,	-fHalfDepth + (j * fCellDepth)));
+			pBottomFace->SetVertex(2, Vertex(-fHalfWidth + ((i + 1) * fCellWidth),	-fHalfHeight,	-fHalfDepth + ((j + 1) * fCellDepth)));
+			pBottomFace->SetVertex(3, Vertex(-fHalfWidth + (i * fCellWidth),		-fHalfHeight,	-fHalfDepth + ((j + 1) * fCellDepth)));
 			pMesh->SetPolygon(k++, pBottomFace);
+			pBottomFace.reset();
 		}
 	}
 
-	shared_ptr<struct Polygon> pFrontFace = make_shared<struct Polygon>(4);
+	shared_ptr<struct Polygon> pFrontFace;
+	/*
 	pFrontFace->SetVertex(0, Vertex(-fHalfWidth, +fHalfHeight, -fHalfDepth));
 	pFrontFace->SetVertex(1, Vertex(+fHalfWidth, +fHalfHeight, -fHalfDepth));
 	pFrontFace->SetVertex(2, Vertex(+fHalfWidth, -fHalfHeight, -fHalfDepth));
 	pFrontFace->SetVertex(3, Vertex(-fHalfWidth, -fHalfHeight, -fHalfDepth));
-	pMesh->SetPolygon(k++, pFrontFace);
+	*/
+	for (int i = 0; i < nSubRects; i++) {
+		for (int j = 0; j < nSubRects; j++) {
+			pFrontFace = make_shared<struct Polygon>(4);
+			pFrontFace->SetVertex(0, Vertex(-fHalfWidth + (i * fCellWidth),			-fHalfHeight + (j * fCellHeight),		+fHalfDepth));
+			pFrontFace->SetVertex(1, Vertex(-fHalfWidth + ((i + 1) * fCellWidth),	-fHalfHeight + (j * fCellHeight),		+fHalfDepth));
+			pFrontFace->SetVertex(2, Vertex(-fHalfWidth + ((i + 1) * fCellWidth),	-fHalfHeight + ((j + 1) * fCellHeight), +fHalfDepth));
+			pFrontFace->SetVertex(3, Vertex(-fHalfWidth + (i * fCellWidth),			-fHalfHeight + ((j + 1) * fCellHeight), +fHalfDepth));
+			pMesh->SetPolygon(k++, pFrontFace);
+			pFrontFace.reset();
+		}
+	}
+	//pMesh->SetPolygon(k++, pFrontFace);
 
-	shared_ptr<struct Polygon> pBackFace = make_shared<struct Polygon>(4);
+	shared_ptr<struct Polygon> pBackFace;
+	/*
 	pBackFace->SetVertex(0, Vertex(-fHalfWidth, -fHalfHeight, +fHalfDepth));
 	pBackFace->SetVertex(1, Vertex(+fHalfWidth, -fHalfHeight, +fHalfDepth));
 	pBackFace->SetVertex(2, Vertex(+fHalfWidth, +fHalfHeight, +fHalfDepth));
 	pBackFace->SetVertex(3, Vertex(-fHalfWidth, +fHalfHeight, +fHalfDepth));
-	pMesh->SetPolygon(k++, pBackFace);
+	*/
+	for (int i = 0; i < nSubRects; i++) {
+		for (int j = 0; j < nSubRects; j++) {
+			pBackFace = make_shared<struct Polygon>(4);
+			pBackFace->SetVertex(0, Vertex(-fHalfWidth + (i * fCellWidth),			-fHalfHeight + (j * fCellHeight),		-fHalfDepth));
+			pBackFace->SetVertex(1, Vertex(-fHalfWidth + ((i + 1) * fCellWidth),	-fHalfHeight + (j * fCellHeight),		-fHalfDepth));
+			pBackFace->SetVertex(2, Vertex(-fHalfWidth + ((i + 1) * fCellWidth),	-fHalfHeight + ((j + 1) * fCellHeight),	-fHalfDepth));
+			pBackFace->SetVertex(3, Vertex(-fHalfWidth + (i * fCellWidth),			-fHalfHeight + ((j + 1) * fCellHeight),	-fHalfDepth));
+			pMesh->SetPolygon(k++, pBackFace);
+			pBackFace.reset();
+		}
+	}
+	//pMesh->SetPolygon(k++, pBackFace);
 
 	pMesh->m_xmOBB = BoundingOrientedBox(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(fHalfWidth, fHalfHeight, fHalfDepth), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
 }

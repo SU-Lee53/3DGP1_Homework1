@@ -19,12 +19,12 @@ void Level2Scene::BuildObjects()
 
 	// WallsObject
 	{
-		float fHalfWidth = 45.0f, fHalfHeight = 45.0f, fHalfDepth = 200.0f;
+		float fHalfWidth = 45.0f, fHalfHeight = 45.0f, fHalfDepth = 45.0f;
 		shared_ptr<Mesh> pWallMesh = make_shared<Mesh>();
 		MeshHelper::CreateWallMesh(pWallMesh, fHalfWidth * 2.0f, fHalfHeight * 2.0f, fHalfDepth * 2.0f, 30);
 
 		m_pWallsObject = make_shared<WallsObject>();
-		m_pWallsObject->GetTransform()->SetPosition(0.0f, 0.0f, 0.0f);
+		m_pWallsObject->GetTransform()->SetPosition(0.0f, fHalfHeight, 0.0f);
 		m_pWallsObject->SetMesh(std::move(pWallMesh));
 		m_pWallsObject->SetColor(RGB(0, 0, 0));
 		m_pWallsObject->SetWallPlane(0, XMFLOAT4{ +1.0f, 0.0f, 0.0f, fHalfWidth });
@@ -90,6 +90,8 @@ void Level2Scene::Update(float fTimeElapsed)
 		std::for_each(m_pObjects.begin(), m_pObjects.end(), [fTimeElapsed](std::shared_ptr<GameObject>& p) { p->Update(fTimeElapsed); });
 	}
 	
+	m_pWallsObject->Update(fTimeElapsed);
+
 	CheckObjectByObjectCollisions();
 	CheckObjectByBulletCollisions();
 
