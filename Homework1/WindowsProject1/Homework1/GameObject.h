@@ -68,7 +68,7 @@ protected:
 
 	XMFLOAT3						m_xmf3DefaultOrientation = {};
 
-#define _DEBUG_COLLISION
+//#define _DEBUG_COLLISION
 
 #ifdef _DEBUG_COLLISION
 	std::shared_ptr<class Mesh> m_pObjectOBBMesh;

@@ -2,6 +2,9 @@
 #include "TankPlayer.h"
 #include "ThirdPersonCamera.h"
 #include "BulletObject.h"
+#include "TankObject.h"
+#include "WallsObject.h"
+#include "ObstacleObject.h"
 
 using namespace std;
 
@@ -80,7 +83,7 @@ void TankPlayer::ProcessKeyboardInput(float fTimeElapsed)
 
 void TankPlayer::ProcessMouseInput(float fTimeElapsed)
 {
-	if (INPUT.GetButtonPressed(VK_RBUTTON)) {
+	if (INPUT.GetButtonPressed(VK_LBUTTON)) {
 		HWND hWnd = ::GetActiveWindow();
 
 		::SetCursor(NULL);
@@ -109,6 +112,25 @@ void TankPlayer::Rotate(float fPitch, float fYaw, float fRoll)
 {
 	m_pTransform->AddRotationEuler(0.f, fYaw, 0.f);
 	m_pCamera->Rotate(fPitch, fYaw, fRoll);
+}
+
+void TankPlayer::OnCollision(std::shared_ptr<GameObject> pOther)
+{
+	if (auto p = dynamic_pointer_cast<TankPlayer>(pOther)) {
+
+	}
+	else if (auto p = dynamic_pointer_cast<TankObject>(pOther)) {
+		m_pTransform->InvalidateMovement();
+	}
+	else if (auto p = dynamic_pointer_cast<BulletObject>(pOther)) {
+
+	}
+	else if (auto p = dynamic_pointer_cast<WallsObject>(pOther)) {
+		m_pTransform->SetPosition(0.f, 0.f, 0.f);
+	}
+	else if (auto p = dynamic_pointer_cast<ObstacleObject>(pOther)) {
+		m_pTransform->InvalidateMovement();
+	}
 }
 
 void TankPlayer::FireBullet(std::shared_ptr<GameObject> pLockedObject)

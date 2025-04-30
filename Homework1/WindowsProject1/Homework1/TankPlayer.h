@@ -21,6 +21,9 @@ public:
 	virtual void Rotate(float fPitch = 0.0f, float fYaw = 0.0f, float fRoll = 0.0f) override;
 
 public:
+	virtual void OnCollision(std::shared_ptr<GameObject> pOther) override;
+
+public:
 	void FireBullet(std::shared_ptr<GameObject> pLockedObject);
 
 	std::array<std::shared_ptr<class BulletObject>, BULLET_COUNT>&

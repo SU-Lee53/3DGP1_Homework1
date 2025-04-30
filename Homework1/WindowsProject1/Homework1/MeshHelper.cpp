@@ -608,5 +608,4 @@ void MeshHelper::CreateRollercoasterRailMesh(shared_ptr<Mesh> pMesh, OUT std::ve
 
 	RollercoasterRoute.assign(SplinePoints.begin(), SplinePoints.end());
 
-
 }

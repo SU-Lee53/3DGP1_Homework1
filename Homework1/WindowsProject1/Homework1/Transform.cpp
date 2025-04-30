@@ -3,40 +3,29 @@
 
 BOOL Transform::SetPosition(const XMFLOAT3& xmf3NewPosition)
 {
-	XMVECTOR xmvPosition = XMLoadFloat3(&m_xmf3Position);
-	XMVECTOR xmvNewPosition = XMLoadFloat3(&xmf3NewPosition);
-
-	if (!XMVector3Equal(xmvPosition, xmvNewPosition)) {
-		XMStoreFloat3(&m_xmf3Position, xmvNewPosition);
-		m_bUpdated = TRUE;
-	}
-
-	return m_bUpdated;
+	return SetPosition(XMLoadFloat3(&xmf3NewPosition));
 }
 
 BOOL Transform::SetPosition(const XMVECTOR& xmvNewPosition)
 {
+	BOOL bResult = FALSE;
 	XMVECTOR xmvPosition = XMLoadFloat3(&m_xmf3Position);
 
 	if (!XMVector3Equal(xmvPosition, xmvNewPosition)) {
 		XMStoreFloat3(&m_xmf3Position, xmvNewPosition);
-		m_bUpdated = TRUE;
+		bResult = TRUE;
 	}
 
-	return m_bUpdated;
+	if (!m_bUpdated) {
+		m_bUpdated = bResult;
+	}
+
+	return bResult;
 }
 
 BOOL Transform::SetPosition(float fXPos, float fYPos, float fZPos)
 {
-	XMVECTOR xmvPosition = XMLoadFloat3(&m_xmf3Position);
-	XMVECTOR xmvNewPosition = XMVectorSet(fXPos, fYPos, fZPos, 1.0f);
-
-	if (!XMVector3Equal(xmvPosition, xmvNewPosition)) {
-		XMStoreFloat3(&m_xmf3Position, xmvNewPosition);
-		m_bUpdated = TRUE;
-	}
-
-	return m_bUpdated;
+	return SetPosition(XMVectorSet(fXPos, fYPos, fZPos, 1.0f));
 }
 
 BOOL Transform::AddPosition(const XMFLOAT3& xmf3AddPosition)
@@ -72,14 +61,18 @@ BOOL Transform::SetRotationEuler(const XMFLOAT3& xmf3NewRotation)
 
 BOOL Transform::SetRotationEuler(const XMVECTOR& xmvNewRotation)
 {
+	BOOL bResult = FALSE;
 	XMVECTOR xmvRotation = XMLoadFloat3(&m_xmf3RotationEuler);
 
 	if (!XMVector3Equal(xmvRotation, xmvNewRotation)) {
 		XMStoreFloat3(&m_xmf3RotationEuler, xmvNewRotation);
-		m_bUpdated = TRUE;
+		bResult = TRUE;
 	}
 
-	return m_bUpdated;
+	if (!m_bUpdated) {
+		m_bUpdated = bResult;
+	}
+	return bResult;
 }
 
 BOOL Transform::SetRotationEuler(float fPitch, float fYaw, float fRoll)
@@ -104,7 +97,10 @@ BOOL Transform::SetRotationAxisAngle(const XMVECTOR& xmvAxis, float fAngle)
 		fAngle = m_AxisAngle.m_fAngle;
 		bResult = TRUE;
 	}
-	
+
+	if (!m_bUpdated) {
+		m_bUpdated = bResult;
+	}
 	return bResult;
 }
 
@@ -152,7 +148,6 @@ XMFLOAT3 Transform::GetRight() const
 void Transform::Update()
 {
 	if (m_bUpdated) {
-
 		float fPitch = XMConvertToRadians(m_xmf3RotationEuler.x);
 		float fYaw = XMConvertToRadians(m_xmf3RotationEuler.y);
 		float fRoll = XMConvertToRadians(m_xmf3RotationEuler.z);
@@ -164,6 +159,8 @@ void Transform::Update()
 		m_xmf4x4World._41 = m_xmf3Position.x;
 		m_xmf4x4World._42 = m_xmf3Position.y;
 		m_xmf4x4World._43 = m_xmf3Position.z;
+
+		m_bUpdated = FALSE;
 	}
 
 }

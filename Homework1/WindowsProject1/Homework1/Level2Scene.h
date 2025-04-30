@@ -22,6 +22,10 @@ public:
 
 public:
 	virtual void CheckObjectByBulletCollisions();
+	void CheckObjectByWallCollisions();
+	void CheckPlayerByWallCollisions();
+	void CheckObjectByObjectCollisions();
+	void CheckPlayerByObjectCollisions();
 
 private:
 	std::shared_ptr<class WallsObject>	m_pWallsObject = nullptr;

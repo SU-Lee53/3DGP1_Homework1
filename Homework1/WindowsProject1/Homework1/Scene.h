@@ -38,6 +38,7 @@ public:
 	std::shared_ptr<GameObject> PickObjectPointedByCursor(int xClient, int yClient, std::shared_ptr<Camera> pCamera);
 
 	std::shared_ptr<GameObject> FindObjectInScene(std::string_view svName);
+	void UpdatePipelineVaribles(std::shared_ptr<class Camera> pCamera);
 
 
 protected:

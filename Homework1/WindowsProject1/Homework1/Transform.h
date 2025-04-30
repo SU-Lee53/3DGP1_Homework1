@@ -47,17 +47,49 @@ public:
 	XMFLOAT3 GetUp() const;
 	XMFLOAT3 GetRight() const;
 
+	void CacheLastFrameMovement() {
+		m_xmf3BeforePosition = m_xmf3Position;
+		m_xmf3BeforeRotationEuler = m_xmf3RotationEuler;
+		m_BeforeAxisAngle = m_AxisAngle;
+	}
+
+	void InvalidateMovement() {
+		m_xmf3Position = m_xmf3BeforePosition;
+		m_xmf3RotationEuler = m_xmf3BeforeRotationEuler;
+		m_BeforeAxisAngle = m_BeforeAxisAngle;
+		m_bUpdated = TRUE;
+
+		Update();
+
+		// TODO : 순서에 문제 있음
+		/*
+			현재 순서
+
+			1. 위치, 회전set
+			2. Transform update -> 여기서 before set됨
+			3. 충돌나면 Invalidate -> 이미 갱신된 위치로 before 가 set 되었으므로 의미 없어짐
+
+			해결방안?
+			1. 이전 프레임 이동을 cache 하는 함수를 파서 모든 업데이트 초반에 삽입
+		
+		
+		*/
+	}
+
 public:
 	void Update();
 
 private:
 	XMFLOAT3	m_xmf3Position = XMFLOAT3{ 0.f, 0.f, 0.f };
-
 	XMFLOAT3	m_xmf3RotationEuler = XMFLOAT3{ 0.f, 0.f, 0.f };
 	AxisAngle	m_AxisAngle = {};
 
-	XMFLOAT4X4	m_xmf4x4World = Matrix4x4::Identity();
+	// Cache for block movement
+	XMFLOAT3	m_xmf3BeforePosition = XMFLOAT3{ 0.f, 0.f, 0.f };
+	XMFLOAT3	m_xmf3BeforeRotationEuler = XMFLOAT3{ 0.f, 0.f, 0.f };
+	AxisAngle	m_BeforeAxisAngle = {};
 
+	XMFLOAT4X4	m_xmf4x4World = Matrix4x4::Identity();
 	BOOL m_bUpdated = TRUE;
 
 };

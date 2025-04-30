@@ -5,7 +5,6 @@
 class Player;
 class GameObject;
 
-
 class GameFramework {
 public:
 	GameFramework() { }
