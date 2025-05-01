@@ -19,6 +19,7 @@ public:
 
 public:
 	void SetActive(BOOL bActive) { m_bActive = bActive; }
+	BOOL IsActive() { return m_bActive; }
 	void SetMesh(const std::shared_ptr<Mesh>& pMesh); 
 
 	void SetColor(COLORREF color) { m_Color = color; }

@@ -11,6 +11,8 @@ using namespace std;
 
 void Level2Scene::BuildObjects()
 {
+	m_bSceneChanged = FALSE;
+
 	shared_ptr<Mesh> pTankMesh = make_shared<Mesh>();
 	MeshHelper::CreateMeshFromOBJFiles(pTankMesh, L"../Tank.obj");
 
@@ -38,68 +40,35 @@ void Level2Scene::BuildObjects()
 		m_pWallsObject->SetOBB(BoundingOrientedBox{ XMFLOAT3{0.f, 0.f, 0.f}, XMFLOAT3{fHalfWidth, fHalfHeight, fHalfDepth * 0.05f}, XMFLOAT4{0.f, 0.f, 0.f, 1.f} });
 	}
 
-	m_pObjects.resize(10);
-
-
 	// Enemy Tank
-	{
-		m_pObjects[0] = make_shared<TankObject>();
-		m_pObjects[0]->SetColor(RGB(0, 150, 0));
-		m_pObjects[0]->SetMesh(pTankMesh);
-		m_pObjects[0]->GetTransform()->SetPosition(0.f, 0.f, 15.f);
-		m_pObjects[0]->SetMeshDefaultOrientation(XMFLOAT3{ -90.f, 180.f, 0.f });
-
-		m_pObjects[1] = make_shared<TankObject>();
-		m_pObjects[1]->SetColor(RGB(0, 150, 0));
-		m_pObjects[1]->SetMesh(pTankMesh);
-		m_pObjects[1]->GetTransform()->SetPosition(15.f, 0.f, 0.f);
-		m_pObjects[1]->SetMeshDefaultOrientation(XMFLOAT3{ -90.f, 180.f, 0.f });
-
-		m_pObjects[2] = make_shared<TankObject>();
-		m_pObjects[2]->SetColor(RGB(0, 150, 0));
-		m_pObjects[2]->SetMesh(pTankMesh);
-		m_pObjects[2]->GetTransform()->SetPosition(0.f, 0.f, -15.f);
-		m_pObjects[2]->SetMeshDefaultOrientation(XMFLOAT3{ -90.f, 180.f, 0.f });
-
-		m_pObjects[3] = make_shared<TankObject>();
-		m_pObjects[3]->SetColor(RGB(0, 150, 0));
-		m_pObjects[3]->SetMesh(pTankMesh);
-		m_pObjects[3]->GetTransform()->SetPosition(-15.f, 0.f, 0.f);
-		m_pObjects[3]->SetMeshDefaultOrientation(XMFLOAT3{ -90.f, 180.f, 0.f });
-
+	for (int i = 0; i < 10; ++i) {
+		std::shared_ptr<TankObject> pTank = make_shared<TankObject>();
+		pTank->SetColor(RGB(255, 0, 0));
+		pTank->Initialize();
+		m_pObjects.push_back(pTank);
 	}
 
 	// Obstacle
-	{
-		m_pObjects[4] = make_shared<ObstacleObject>();
-		m_pObjects[4]->SetColor(RGB(255, 0, 0));
-		m_pObjects[4]->Initialize();
-		
-		m_pObjects[5] = make_shared<ObstacleObject>();
-		m_pObjects[5]->SetColor(RGB(255, 0, 0));
-		m_pObjects[5]->Initialize();
-		
-		m_pObjects[6] = make_shared<ObstacleObject>();
-		m_pObjects[6]->SetColor(RGB(255, 0, 0));
-		m_pObjects[6]->Initialize();
-		
-		m_pObjects[7] = make_shared<ObstacleObject>();
-		m_pObjects[7]->SetColor(RGB(255, 0, 0));
-		m_pObjects[7]->Initialize();
-		
-		m_pObjects[8] = make_shared<ObstacleObject>();
-		m_pObjects[8]->SetColor(RGB(255, 0, 0));
-		m_pObjects[8]->Initialize();
-		
-		m_pObjects[9] = make_shared<ObstacleObject>();
-		m_pObjects[9]->SetColor(RGB(255, 0, 0));
-		m_pObjects[9]->Initialize();
-
+	for (int i = 0; i < 5; ++i) {
+		std::shared_ptr<ObstacleObject> pObstacle = make_shared<ObstacleObject>();
+		pObstacle->SetColor(RGB(255, 0, 0));
+		pObstacle->Initialize();
+		m_pObjects.push_back(pObstacle);
 	}
 
 	m_pPlayer = make_shared<TankPlayer>();
 	m_pPlayer->Initialize();
 	m_pPlayer->GetTransform()->SetPosition(0.f, 0.f, 0.f);
+
+	// You Win!
+	shared_ptr<Mesh> pWinMesh = make_shared<Mesh>();
+	MeshHelper::CreateMeshFromOBJFiles(pWinMesh, L"../Win.obj");
+
+	m_pWinTextObject = make_shared<GameObject>();
+	m_pWinTextObject->SetColor(RGB(0, 0, 255));
+	m_pWinTextObject->SetMesh(pWinMesh);
+	m_pWinTextObject->GetTransform()->SetPosition(XMFLOAT3{ 0.f, 5.f, 0.f });
+	m_pWinTextObject->SetMeshDefaultOrientation(XMFLOAT3{ 90.f, 0.f, 0.f });
 
 	ExplosiveObject::PrepareExplosion();
 }
@@ -107,6 +76,9 @@ void Level2Scene::BuildObjects()
 void Level2Scene::ReleaseObjects()
 {
 	Scene::ReleaseObjects();
+
+	m_pWallsObject.reset();
+	m_pWinTextObject.reset();
 }
 
 void Level2Scene::Update(float fTimeElapsed)
@@ -116,6 +88,11 @@ void Level2Scene::Update(float fTimeElapsed)
 
 	ProcessMouseInput(fTimeElapsed);
 	ProcessKeyboardInput(fTimeElapsed);
+
+	if (m_bSceneChanged) {
+		return;
+	}
+
 
 	if (m_pPlayer)
 		m_pPlayer->Update(fTimeElapsed);
@@ -132,20 +109,62 @@ void Level2Scene::Update(float fTimeElapsed)
 	CheckObjectByBulletCollisions();
 	CheckPlayerByObjectCollisions();
 
+	// Remove destroyed tank
+	auto it = std::find_if(m_pObjects.begin(), m_pObjects.end(), [](std::shared_ptr<GameObject> pObj) { return !pObj->IsActive(); });
+	if (it != m_pObjects.end()) {
+		m_pObjects.erase(it);
+		m_nTankDestroyed++;
+		it = std::find_if(m_pObjects.begin(), m_pObjects.end(), [](std::shared_ptr<GameObject> pObj) { return !pObj->IsActive(); });
+	}
+
+	if (m_nTankDestroyed >= 10) {
+		m_bGameEnded = TRUE;
+	}
+
+	if (m_bGameEnded) {
+		m_pWinTextObject->Update(fTimeElapsed);
+	}
+
 }
 
-void Level2Scene::Render(HDC hDCFrameBuffer)
+void Level2Scene::DrawDebugText(HDC hDCFrameBuffer)
 {
 	std::wstring wstrOutText{ L"Level2Scene" };
 	::TextOut(hDCFrameBuffer, 0, 0, wstrOutText.c_str(), wstrOutText.length());
 
+	std::wstring wstrPlayerAutoFireStatus = L"Player Auto Fire : ";
+	if (static_pointer_cast<TankPlayer>(m_pPlayer)->GetAutoFireMode()) {
+		wstrPlayerAutoFireStatus += L"TRUE";
+	}
+	else {
+		wstrPlayerAutoFireStatus += L"FALSE";
+	}
+	::TextOut(hDCFrameBuffer, 0, 15, wstrPlayerAutoFireStatus.c_str(), wstrPlayerAutoFireStatus.length());
+
+	std::wstring wstrTankLeft = L"Enemy Left: " + std::to_wstring(10 - m_nTankDestroyed);
+	::TextOut(hDCFrameBuffer, 0, 30, wstrTankLeft.c_str(), wstrTankLeft.length());
+
+}
+
+void Level2Scene::Render(HDC hDCFrameBuffer)
+{
+	DrawDebugText(hDCFrameBuffer);
 
 	Scene::UpdatePipelineVaribles(m_pPlayer->GetCamera());
 	m_pWallsObject->Render(hDCFrameBuffer, m_pPlayer->GetCamera());
 	Scene::Render(hDCFrameBuffer);
+
+	if (m_bGameEnded) {
+		m_pWinTextObject->Render(hDCFrameBuffer, m_pPlayer->GetCamera());
+	}
 }
 
 void Level2Scene::ProcessMouseInput(float fTimeElapsed)
+{
+	m_pPlayer->ProcessMouseInput(fTimeElapsed);
+}
+
+void Level2Scene::ProcessKeyboardInput(float fTimeElapsed)
 {
 	if (INPUT.GetButtonDown(VK_RBUTTON)) {
 		POINT ptCursorPos = INPUT.GetCurrentCursorPos();
@@ -157,11 +176,16 @@ void Level2Scene::ProcessMouseInput(float fTimeElapsed)
 		}
 	}
 
-	m_pPlayer->ProcessMouseInput(fTimeElapsed);
-}
+	if (INPUT.GetButtonDown('W')) {
+		m_bGameEnded = TRUE;
+	}
 
-void Level2Scene::ProcessKeyboardInput(float fTimeElapsed)
-{
+	if (INPUT.GetButtonDown(VK_ESCAPE)) {
+		GameFramework::ChangeScene(TAG_SCENE_MENU);
+		m_bSceneChanged = TRUE;
+		return;
+	}
+
 	m_pPlayer->ProcessKeyboardInput(fTimeElapsed);
 }
 

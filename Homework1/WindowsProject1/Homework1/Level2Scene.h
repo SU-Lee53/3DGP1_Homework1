@@ -7,7 +7,7 @@ public:
 		m_eSceneTag = TAG_SCENE_LEVEL2;
 	}
 
-	virtual ~Level2Scene() {}
+	virtual ~Level2Scene() { }
 
 public:
 	virtual void BuildObjects() override;
@@ -15,6 +15,8 @@ public:
 
 	virtual void Update(float fTimeElapsed) override;
 	virtual void Render(HDC hDCFrameBuffer) override;
+
+	void DrawDebugText(HDC hDCFrameBuffer);
 
 public:
 	virtual void ProcessMouseInput(float fTimeElapsed) override;
@@ -29,5 +31,9 @@ public:
 
 private:
 	std::shared_ptr<class WallsObject>	m_pWallsObject = nullptr;
+	std::shared_ptr<GameObject>	m_pWinTextObject = nullptr;
+
+	int m_nTankDestroyed = 0;
+	BOOL m_bGameEnded = FALSE;
 };
 

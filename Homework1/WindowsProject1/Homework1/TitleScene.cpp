@@ -7,6 +7,8 @@ using namespace std;
 
 void TitleScene::BuildObjects()
 {
+	m_bSceneChanged = FALSE;
+
 	shared_ptr<Mesh> p3DGPMesh = make_shared<Mesh>();
 	MeshHelper::CreateMeshFromOBJFiles(p3DGPMesh, L"../3D_Game_Programming.obj");
 
@@ -52,6 +54,10 @@ void TitleScene::Update(float fTimeElapsed)
 	ProcessMouseInput(fTimeElapsed);
 	ProcessKeyboardInput(fTimeElapsed);
 
+	if (m_bSceneChanged) {
+		return;
+	}
+
 	if (m_pPlayer)
 		m_pPlayer->Update(fTimeElapsed);
 
@@ -78,10 +84,8 @@ void TitleScene::ProcessMouseInput(float fTimeElapsed)
 		}
 	}
 
-//	m_pPlayer->ProcessMouseInput();
 }
 
 void TitleScene::ProcessKeyboardInput(float fTimeElapsed)
 {
-//	m_pPlayer->ProcessKeyboardInput();
 }

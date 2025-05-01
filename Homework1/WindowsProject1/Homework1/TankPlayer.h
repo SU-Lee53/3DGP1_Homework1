@@ -18,10 +18,14 @@ public:
 	virtual void ProcessMouseInput(float fTimeElapsed) override;
 
 public:
-	virtual void Rotate(float fPitch = 0.0f, float fYaw = 0.0f, float fRoll = 0.0f) override;
+	virtual void OnCollision(std::shared_ptr<GameObject> pOther) override;
 
 public:
-	virtual void OnCollision(std::shared_ptr<GameObject> pOther) override;
+	BOOL GetAutoFireMode() { return m_bAutoFire; }
+	BOOL IsShieldOn() { return m_bShieldOn; }
+
+public:
+	virtual void Rotate(float fPitch = 0.0f, float fYaw = 0.0f, float fRoll = 0.0f) override;
 
 public:
 	void FireBullet(std::shared_ptr<GameObject> pLockedObject);
@@ -32,12 +36,14 @@ public:
 private:
 	virtual void UpdatePlayerCamera(float fTimeElapsed) override;
 
-
 private:
 	float m_fSpeed = 8.f;
 	float m_fBulletEffectiveRange = 150.f;
 
 	BOOL m_bAutoFire = TRUE;
+
+	std::shared_ptr<Mesh> m_pShieldMesh = nullptr;
+	BOOL m_bShieldOn = FALSE;
 
 	std::array<std::shared_ptr<class BulletObject>, BULLET_COUNT> m_pBullets = {};
 };

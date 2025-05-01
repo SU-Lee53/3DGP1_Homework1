@@ -7,6 +7,8 @@ using namespace std;
 
 void Level1Scene::BuildObjects()
 {
+	m_bSceneChanged = FALSE;
+
 	std::vector<XMFLOAT3> RollercoasterRoutes = {};
 	shared_ptr<Mesh> pRollercoasterMesh = make_shared<Mesh>();
 	MeshHelper::CreateRollercoasterRailMesh(pRollercoasterMesh, m_xmf3MoveRoutes, 10.0f, 150.0f, 30, 5);
@@ -42,9 +44,14 @@ void Level1Scene::Update(float fTimeElapsed)
 	ProcessMouseInput(fTimeElapsed);
 	ProcessKeyboardInput(fTimeElapsed);
 
+	if (m_bSceneChanged) {
+		return;
+	}
+
 	if (m_bPlayerRide) UpdatePlayerRide(fTimeElapsed);
 	if (m_bRollercoasterEnd) {
 		GameFramework::ChangeScene(TAG_SCENE_LEVEL2);
+		m_bSceneChanged = TRUE;
 		return;
 	}
 
@@ -55,21 +62,6 @@ void Level1Scene::Update(float fTimeElapsed)
 		std::for_each(m_pObjects.begin(), m_pObjects.end(), [fTimeElapsed](std::shared_ptr<GameObject>& p) { p->Update(fTimeElapsed); });
 	}
 
-}
-
-void QuaternionToEuler(const XMVECTOR& quat, float& pitch, float& yaw, float& roll)
-{
-	XMFLOAT4 q;
-	XMStoreFloat4(&q, quat);
-
-	// Pitch (X축 회전)
-	pitch = asinf(2.0f * (q.w * q.y - q.x * q.z));
-
-	// Yaw (Y축 회전)
-	yaw = atan2f(2.0f * (q.w * q.z + q.x * q.y), 1.0f - 2.0f * (q.x * q.x + q.y * q.y));
-
-	// Roll (Z축 회전)
-	roll = atan2f(2.0f * (q.w * q.x + q.y * q.z), 1.0f - 2.0f * (q.x * q.x + q.z * q.z));
 }
 
 void Level1Scene::Render(HDC hDCFrameBuffer)
@@ -84,13 +76,15 @@ void Level1Scene::ProcessMouseInput(float fTimeElapsed)
 
 void Level1Scene::ProcessKeyboardInput(float fTimeElapsed)
 {
-	if (INPUT.GetButtonDown('R')) {
+	if (INPUT.GetButtonDown(VK_SPACE)) {
 		m_bPlayerRide = !m_bPlayerRide;
 		if (!m_bPlayerRide) ResetPlayerRide();
 	}
 	
 	if (INPUT.GetButtonDown('N')) {
 		GameFramework::ChangeScene(TAG_SCENE_LEVEL2);
+		m_bSceneChanged = TRUE;
+		return;
 	}
 
 	if (!m_bPlayerRide) {
@@ -112,6 +106,12 @@ void Level1Scene::ProcessKeyboardInput(float fTimeElapsed)
 
 	if (INPUT.GetButtonPressed(VK_LEFT)) {
 		m_pObjects[1]->GetTransform()->AddRotationEuler(0.0f, -1.5f, 0.f);
+	}
+
+
+	if (INPUT.GetButtonDown(VK_ESCAPE)) {
+		GameFramework::ChangeScene(TAG_SCENE_MENU);
+		return;
 	}
 }
 

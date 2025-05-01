@@ -49,4 +49,6 @@ protected:
 
 	TAG_SCENE_NAME								m_eSceneTag = TAG_SCENE_UNDEFINED;
 
+	BOOL m_bSceneChanged = FALSE;
+
 };

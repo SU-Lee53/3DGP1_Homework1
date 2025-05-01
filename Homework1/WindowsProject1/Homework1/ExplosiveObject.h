@@ -30,7 +30,7 @@ public:
 public:
 	static void PrepareExplosion();
 
-private:
+protected:
 	BOOL										m_bBlowingUp = FALSE;
 	BOOL										m_bExplosionCompleted = FALSE;
 	BOOL										m_bAutoReset = TRUE;

@@ -47,6 +47,8 @@ public:
 		}
 	}
 
+	BOOL IsCursorShown() { return m_bShowCursor; }
+
 private:
 	inline KEY_STATE GetState(UCHAR key) { return m_eKeyStates[key]; }
 

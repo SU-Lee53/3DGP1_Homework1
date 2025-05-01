@@ -44,6 +44,7 @@ void ExplosiveObject::Update(float fTimeElapsed)
 				m_bBlowingUp = FALSE;
 				m_bExplosionCompleted = TRUE;
 				m_fElapsedTimes = 0.0f;
+				m_bActive = FALSE;
 			}
 		}
 	}

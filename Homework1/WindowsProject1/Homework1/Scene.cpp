@@ -17,6 +17,8 @@ void Scene::ReleaseObjects()
 	for (auto& pObj : m_pObjects) {
 		pObj.reset();
 	}
+
+	m_pObjects.clear();
 }
 
 void Scene::Update(float fElapsedTime)

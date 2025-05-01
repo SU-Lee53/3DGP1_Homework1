@@ -60,20 +60,6 @@ public:
 		m_bUpdated = TRUE;
 
 		Update();
-
-		// TODO : 순서에 문제 있음
-		/*
-			현재 순서
-
-			1. 위치, 회전set
-			2. Transform update -> 여기서 before set됨
-			3. 충돌나면 Invalidate -> 이미 갱신된 위치로 before 가 set 되었으므로 의미 없어짐
-
-			해결방안?
-			1. 이전 프레임 이동을 cache 하는 함수를 파서 모든 업데이트 초반에 삽입
-		
-		
-		*/
 	}
 
 public:

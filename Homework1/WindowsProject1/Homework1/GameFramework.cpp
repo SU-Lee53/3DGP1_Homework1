@@ -13,6 +13,7 @@ using namespace std;
 
 std::shared_ptr<Scene> GameFramework::m_pCurrentScene = nullptr;
 std::array<std::shared_ptr<Scene>, TAG_SCENE_COUNT> GameFramework::m_pScenes = {};
+TAG_SCENE_NAME GameFramework::m_eCurrentSceneTag = TAG_SCENE_UNDEFINED;
 
 void GameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 {
@@ -40,10 +41,6 @@ void GameFramework::Update()
 	m_GameTimer.Tick(60.0f);
 
 	INPUT.Update();
-
-	if (INPUT.GetButtonDown(VK_ESCAPE)) {
-		PostQuitMessage(0);
-	}
 
 	ProcessInput();
 	AnimateObjects();
@@ -107,7 +104,8 @@ void GameFramework::BuildObjects()
 		m_pScenes[TAG_SCENE_LEVEL1] = make_shared<Level1Scene>();
 		m_pScenes[TAG_SCENE_LEVEL2] = make_shared<Level2Scene>();
 
-		m_pCurrentScene = m_pScenes[TAG_SCENE_LEVEL2];
+		m_eCurrentSceneTag = TAG_SCENE_LEVEL2;
+		m_pCurrentScene = m_pScenes[m_eCurrentSceneTag];
 		m_pCurrentScene->BuildObjects();
 	}
 
@@ -123,19 +121,27 @@ void GameFramework::ReleaseObjects()
 void GameFramework::ProcessInput()
 {
 	if (INPUT.GetButtonDown('1')) {
+		m_eCurrentSceneTag = TAG_SCENE_TITLE;
 		ChangeScene(TAG_SCENE_TITLE);
 	}
 
 	if (INPUT.GetButtonDown('2')) {
+		m_eCurrentSceneTag = TAG_SCENE_MENU;
 		ChangeScene(TAG_SCENE_MENU);
 	}
 	
 	if (INPUT.GetButtonDown('3')) {
+		m_eCurrentSceneTag = TAG_SCENE_LEVEL1;
 		ChangeScene(TAG_SCENE_LEVEL1);
 	}
 	
 	if (INPUT.GetButtonDown('4')) {
+		m_eCurrentSceneTag = TAG_SCENE_LEVEL2;
 		ChangeScene(TAG_SCENE_LEVEL2);
+	}
+	
+	if (INPUT.GetButtonDown('R')) {
+		ResetScene();
 	}
 
 }
@@ -156,10 +162,26 @@ void GameFramework::FrameAdvance()
 
 BOOL GameFramework::ChangeScene(TAG_SCENE_NAME eTargetSceneTag)
 {
+	if (!INPUT.IsCursorShown()) {
+		INPUT.ShowCursor();
+	}
+
 	m_pCurrentScene->ReleaseObjects();
 	m_pCurrentScene.reset();
 
-	m_pCurrentScene = m_pScenes[eTargetSceneTag];
+	m_eCurrentSceneTag = eTargetSceneTag;
+	m_pCurrentScene = m_pScenes[m_eCurrentSceneTag];
+	m_pCurrentScene->BuildObjects();
+
+	return TRUE;
+}
+
+BOOL GameFramework::ResetScene()
+{
+	m_pCurrentScene->ReleaseObjects();
+	m_pCurrentScene.reset();
+
+	m_pCurrentScene = m_pScenes[m_eCurrentSceneTag];
 	m_pCurrentScene->BuildObjects();
 
 	return TRUE;

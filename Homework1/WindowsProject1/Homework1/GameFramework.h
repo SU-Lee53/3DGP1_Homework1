@@ -31,6 +31,7 @@ private:
 
 public:
 	static BOOL ChangeScene(TAG_SCENE_NAME eTargetSceneTag);
+	static BOOL ResetScene();
 
 public:
 	LRESULT CALLBACK OnProcessingWindowMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
@@ -54,10 +55,11 @@ private:
 	_TCHAR		m_pszFrameRate[50] = {};
 
 	std::shared_ptr<GameObject>		m_pLockedObject = nullptr;	// Lock On'd GameObject
-
-
+	
 private:
 	// Manages Scenes
 	static std::shared_ptr<Scene> m_pCurrentScene;
 	static std::array<std::shared_ptr<Scene>, TAG_SCENE_COUNT> m_pScenes;
+	static TAG_SCENE_NAME m_eCurrentSceneTag;
+
 };

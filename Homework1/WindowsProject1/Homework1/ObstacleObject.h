@@ -5,7 +5,6 @@ public:
 	ObstacleObject() {}
 	virtual ~ObstacleObject() {}
 
-
 public:
 	virtual void Initialize();
 	virtual void Update(float fElapsedTime);

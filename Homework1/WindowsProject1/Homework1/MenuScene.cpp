@@ -7,6 +7,8 @@ using namespace std;
 
 void MenuScene::BuildObjects()
 {
+	m_bSceneChanged = FALSE;
+
 	shared_ptr<Mesh> pTutorialMesh = make_shared<Mesh>();
 	MeshHelper::CreateMeshFromOBJFiles(pTutorialMesh, L"../tutorial.obj");
 
@@ -75,12 +77,17 @@ void MenuScene::Update(float fTimeElapsed)
 	if (auto p = FindObjectInScene("Start_Text")) {
 		if (static_pointer_cast<ExplosiveObject>(p)->IsExploded()) {
 			GameFramework::ChangeScene(TAG_SCENE_LEVEL1);
+			m_bSceneChanged = TRUE;
 			return;
 		}
 	}
 
 	ProcessMouseInput(fTimeElapsed);
 	ProcessKeyboardInput(fTimeElapsed);
+
+	if (m_bSceneChanged) {
+		return;
+	}
 
 	if (m_pPlayer)
 		m_pPlayer->Update(fTimeElapsed);
@@ -112,5 +119,4 @@ void MenuScene::ProcessMouseInput(float fTimeElapsed)
 
 void MenuScene::ProcessKeyboardInput(float fTimeElapsed)
 {
-//	m_pPlayer->ProcessKeyboardInput();
 }
