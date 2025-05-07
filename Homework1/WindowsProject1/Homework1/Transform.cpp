@@ -122,6 +122,8 @@ BOOL Transform::AddRotationEuler(const XMVECTOR& xmvAddRotation)
 	XMStoreFloat3(&m_xmf3RotationEuler, xmvRotation);
 	m_bUpdated = TRUE;
 
+	assert(!std::isnan(m_xmf3RotationEuler.y));
+
 	return m_bUpdated;
 }
 
@@ -147,6 +149,8 @@ XMFLOAT3 Transform::GetRight() const
 
 void Transform::Update()
 {
+	if (m_bManualManagement) return;
+
 	if (m_bUpdated) {
 		float fPitch = XMConvertToRadians(m_xmf3RotationEuler.x);
 		float fYaw = XMConvertToRadians(m_xmf3RotationEuler.y);

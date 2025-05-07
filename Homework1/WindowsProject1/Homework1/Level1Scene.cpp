@@ -27,7 +27,7 @@ void Level1Scene::BuildObjects()
 	m_pObjects[1] = make_shared<GameObject>();
 	m_pObjects[1]->SetColor(RGB(255, 0, 0));
 	m_pObjects[1]->SetMesh(pAxis);
-	m_pObjects[1]->GetTransform()->SetPosition(0.f, 0.f, 10.0f);
+	m_pObjects[1]->GetTransform()->SetPosition(0.f, 0.f, 0.0f);
 	
 	m_pPlayer = make_shared<FirstPersonPlayer>();
 	m_pPlayer->Initialize();
@@ -37,6 +37,14 @@ void Level1Scene::BuildObjects()
 void Level1Scene::ReleaseObjects()
 {
 	Scene::ReleaseObjects();
+
+	m_bPlayerRide = FALSE;
+	m_bRollercoasterEnd = FALSE;
+	
+	m_xmf3MoveRoutes.clear();
+	m_nCurrentRoute = 1;
+	m_fInterpolationFactor = 0.f;
+
 }
 
 void Level1Scene::Update(float fTimeElapsed)

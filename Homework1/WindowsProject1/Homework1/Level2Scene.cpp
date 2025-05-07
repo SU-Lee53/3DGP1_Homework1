@@ -13,14 +13,6 @@ void Level2Scene::BuildObjects()
 {
 	m_bSceneChanged = FALSE;
 
-	shared_ptr<Mesh> pTankMesh = make_shared<Mesh>();
-	MeshHelper::CreateMeshFromOBJFiles(pTankMesh, L"../Tank.obj");
-
-	shared_ptr<Mesh> pAxis = make_shared<AxisMesh>();
-
-	shared_ptr<Mesh> pCubeMesh = make_shared<Mesh>();
-	MeshHelper::CreateCubeMesh(pCubeMesh, pTankMesh->GetOBB().Extents.x * 2, pTankMesh->GetOBB().Extents.y * 2, pTankMesh->GetOBB().Extents.z * 2);
-
 	// WallsObject
 	{
 		float fHalfWidth = 45.0f, fHalfHeight = 45.0f, fHalfDepth = 45.0f;
@@ -62,7 +54,7 @@ void Level2Scene::BuildObjects()
 
 	// You Win!
 	shared_ptr<Mesh> pWinMesh = make_shared<Mesh>();
-	MeshHelper::CreateMeshFromOBJFiles(pWinMesh, L"../Win.obj");
+	MeshHelper::CreateMeshFromOBJFiles(pWinMesh, L"../Resources/Win.obj");
 
 	m_pWinTextObject = make_shared<GameObject>();
 	m_pWinTextObject->SetColor(RGB(0, 0, 255));
@@ -79,6 +71,10 @@ void Level2Scene::ReleaseObjects()
 
 	m_pWallsObject.reset();
 	m_pWinTextObject.reset();
+	
+	m_nTankDestroyed = 0;
+	m_bGameEnded = FALSE;
+
 }
 
 void Level2Scene::Update(float fTimeElapsed)
@@ -170,9 +166,10 @@ void Level2Scene::ProcessKeyboardInput(float fTimeElapsed)
 		POINT ptCursorPos = INPUT.GetCurrentCursorPos();
 		std::shared_ptr<GameObject> pPickedObj = PickObjectPointedByCursor(ptCursorPos.x, ptCursorPos.y, m_pPlayer->GetCamera());
 		if (auto p = dynamic_pointer_cast<ExplosiveObject>(pPickedObj)) {
-			//pPickedObj->OnPicked();
-			//m_pPickedObject = pPickedObj;
 			static_pointer_cast<TankPlayer>(m_pPlayer)->FireBullet(p);
+		}
+		else {
+			static_pointer_cast<TankPlayer>(m_pPlayer)->FireBullet(nullptr);
 		}
 	}
 
@@ -196,8 +193,8 @@ void Level2Scene::CheckObjectByBulletCollisions()
 	for (auto& pObj : m_pObjects) {
 		for (auto& pBullet : pBullets) {
 			if (pBullet->IsActive() && pObj->GetOBB().Intersects(pBullet->GetOBB())) {
-				pObj->OnCollision(pBullet);
-				pBullet->OnCollision(pObj);
+				pObj->BeginCollision(pBullet);
+				pBullet->BeginCollision(pObj);
 			}
 		}
 	}
@@ -208,48 +205,62 @@ void Level2Scene::CheckObjectByWallCollisions()
 	for (shared_ptr<GameObject>& pObj : m_pObjects) {
 		if (auto p = dynamic_pointer_cast<TankObject>(pObj))
 		{
+			XMVECTOR xmvOBBOrientation = XMLoadFloat4(&p->GetOBB().Orientation);
+			XMVECTOR xmvOBBNormalizedOrientation = XMQuaternionNormalize(xmvOBBOrientation);
+			XMStoreFloat4(&p->GetOBB().Orientation, xmvOBBNormalizedOrientation);
+
 			switch (m_pWallsObject->GetOBB().Contains(p->GetOBB())) {
 			case DISJOINT:
 			{
-				int nPlaneIndex = -1;
-				for (auto& [idx, xmf4Plane] : std::views::enumerate(m_pWallsObject->GetWallPlanes())) {
-					PlaneIntersectionType intersectType = p->GetOBB().Intersects(XMLoadFloat4(&xmf4Plane));
-					if (intersectType == BACK) {
-						nPlaneIndex = idx;
-						break;
+				if(!p->GetCollisionSet().contains(m_pWallsObject)) {
+					int nPlaneIndex = -1;
+					for (auto& [idx, xmf4Plane] : std::views::enumerate(m_pWallsObject->GetWallPlanes())) {
+						PlaneIntersectionType intersectType = p->GetOBB().Intersects(XMLoadFloat4(&xmf4Plane));
+						if (intersectType == BACK) {
+							nPlaneIndex = idx;
+							break;
+						}
 					}
-				}
-				if (nPlaneIndex != -1) {
-					XMVECTOR xmvNormal = XMVectorSetW(XMLoadFloat4(&m_pWallsObject->GetWallPlanes().at(nPlaneIndex)), 0.0f);
-					XMVECTOR xmvReflect = XMVector3Reflect(XMLoadFloat3(&p->GetMovingDirection()), xmvNormal);
-					XMFLOAT3 xmf3Reflect;
-					XMStoreFloat3(&xmf3Reflect, xmvReflect);
-					p->SetMovingDirection(xmf3Reflect);
+					if (nPlaneIndex != -1) {
+						XMVECTOR xmvNormal = XMVectorSetW(XMLoadFloat4(&m_pWallsObject->GetWallPlanes().at(nPlaneIndex)), 0.0f);
+						XMVECTOR xmvReflect = XMVector3Reflect(XMLoadFloat3(&p->GetMovingDirection()), xmvNormal);
+						XMFLOAT3 xmf3Reflect;
+						XMStoreFloat3(&xmf3Reflect, xmvReflect);
+						p->SetMovingDirection(xmf3Reflect);
+						p->BeginCollision(m_pWallsObject);
+						p->GetCollisionSet().insert(m_pWallsObject);
+					}
 				}
 				break;
 			}
 			case INTERSECTS:
 			{
-				int nPlaneIndex = -1;
-				for (auto& [idx, xmf4Plane] : std::views::enumerate(m_pWallsObject->GetWallPlanes())) {
-					PlaneIntersectionType intersectType = p->GetOBB().Intersects(XMLoadFloat4(&xmf4Plane));
-					if (intersectType == INTERSECTING) {
-						nPlaneIndex = idx;
-						break;
+				if (!p->GetCollisionSet().contains(m_pWallsObject)) {
+					int nPlaneIndex = -1;
+					for (auto& [idx, xmf4Plane] : std::views::enumerate(m_pWallsObject->GetWallPlanes())) {
+						PlaneIntersectionType intersectType = p->GetOBB().Intersects(XMLoadFloat4(&xmf4Plane));
+						if (intersectType == INTERSECTING) {
+							nPlaneIndex = idx;
+							break;
+						}
 					}
-				}
-				if (nPlaneIndex != -1) {
-					XMVECTOR xmvNormal = XMVectorSetW(XMLoadFloat4(&m_pWallsObject->GetWallPlanes().at(nPlaneIndex)), 0.0f);
-					XMVECTOR xmvReflect = XMVector3Reflect(XMLoadFloat3(&p->GetMovingDirection()), xmvNormal);
-					XMFLOAT3 xmf3Reflect;
-					XMStoreFloat3(&xmf3Reflect, xmvReflect);
-					p->SetMovingDirection(xmf3Reflect);
+					if (nPlaneIndex != -1) {
+						XMVECTOR xmvNormal = XMVectorSetW(XMLoadFloat4(&m_pWallsObject->GetWallPlanes().at(nPlaneIndex)), 0.0f);
+						XMVECTOR xmvReflect = XMVector3Reflect(XMLoadFloat3(&p->GetMovingDirection()), xmvNormal);
+						XMFLOAT3 xmf3Reflect;
+						XMStoreFloat3(&xmf3Reflect, xmvReflect);
+						p->SetMovingDirection(xmf3Reflect);
+						p->BeginCollision(m_pWallsObject);
+						p->GetCollisionSet().insert(m_pWallsObject);
+					}
 				}
 				break;
 
-				break;
 			}
 			case CONTAINS:
+				if (p->GetCollisionSet().contains(m_pWallsObject)) {
+					p->GetCollisionSet().erase(m_pWallsObject);
+				}
 				break;
 			}
 		}
@@ -263,7 +274,7 @@ void Level2Scene::CheckPlayerByWallCollisions()
 	XMStoreFloat4(&xmOBBPlayerMoveCheck.Orientation, XMQuaternionNormalize(XMLoadFloat4(&xmOBBPlayerMoveCheck.Orientation)));
 
 	if (!xmOBBPlayerMoveCheck.Intersects(m_pPlayer->GetOBB())) {
-		m_pPlayer->OnCollision(m_pWallsObject);
+		m_pPlayer->BeginCollision(m_pWallsObject);
 	}
 }
 
@@ -271,9 +282,30 @@ void Level2Scene::CheckObjectByObjectCollisions()
 {
 	for (int i = 0; i < m_pObjects.size(); ++i) {
 		for (int j = i + 1; j < m_pObjects.size(); ++j) {
-			if (m_pObjects[i]->GetOBB().Intersects(m_pObjects[j]->GetOBB())) {
-				m_pObjects[i]->OnCollision(m_pObjects[j]);
-				m_pObjects[j]->OnCollision(m_pObjects[i]);
+
+			shared_ptr<GameObject> pSrc = m_pObjects[i];
+			shared_ptr<GameObject> pDest = m_pObjects[j];
+
+			if (pSrc->GetOBB().Intersects(pDest->GetOBB())) {
+				if (!pSrc->GetCollisionSet().contains(pDest)) {
+					pSrc->BeginCollision(pDest);
+					pDest->BeginCollision(pSrc);
+
+					pSrc->GetCollisionSet().insert(pDest);
+					pDest->GetCollisionSet().insert(pSrc);
+				}
+				else {
+					__debugbreak();
+				}
+			}
+			else {
+				if (pSrc->GetCollisionSet().contains(pDest)) {
+					pSrc->EndCollision(pDest);
+					pDest->EndCollision(pSrc);
+
+					pSrc->GetCollisionSet().erase(pDest);
+					pDest->GetCollisionSet().erase(pSrc);
+				}
 			}
 		}
 	}
@@ -283,8 +315,23 @@ void Level2Scene::CheckPlayerByObjectCollisions()
 {
 	for (shared_ptr<GameObject> pObj : m_pObjects) {
 		if (m_pPlayer->GetOBB().Intersects(pObj->GetOBB())) {
-			m_pPlayer->OnCollision(pObj);
-			pObj->OnCollision(m_pPlayer);
+			if (!pObj->GetCollisionSet().contains(m_pPlayer)) {
+				m_pPlayer->BeginCollision(pObj);
+				pObj->BeginCollision(m_pPlayer);
+
+				m_pPlayer->GetCollisionSet().insert(pObj);
+				pObj->GetCollisionSet().insert(m_pPlayer);
+			}
+		}
+		else {
+			if (pObj->GetCollisionSet().contains(m_pPlayer)) {
+				m_pPlayer->EndCollision(pObj);
+				pObj->EndCollision(m_pPlayer);
+
+				m_pPlayer->GetCollisionSet().erase(pObj);
+				pObj->GetCollisionSet().erase(m_pPlayer);
+			}
+
 		}
 	}
 }

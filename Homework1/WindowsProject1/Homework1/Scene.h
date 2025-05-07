@@ -3,8 +3,6 @@
 #include "GameObject.h"
 #include "Camera.h"
 
-//#define _WITH_DRAW_AXIS
-
 enum TAG_SCENE_NAME : UINT8 {
 	TAG_SCENE_TITLE = 0,
 	TAG_SCENE_MENU,

@@ -5,7 +5,7 @@
 #include "WallsObject.h"
 #include "ObstacleObject.h"
 
-void BulletObject::OnCollision(std::shared_ptr<GameObject> pOther)
+void BulletObject::BeginCollision(std::shared_ptr<GameObject> pOther)
 {
 	if (auto p = dynamic_pointer_cast<TankPlayer>(pOther)) {
 

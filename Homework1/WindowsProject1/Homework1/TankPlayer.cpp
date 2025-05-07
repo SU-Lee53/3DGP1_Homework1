@@ -28,7 +28,7 @@ void TankPlayer::Initialize()
 
 
 	shared_ptr<Mesh> pTankMesh = make_shared<Mesh>();
-	MeshHelper::CreateMeshFromOBJFiles(pTankMesh, L"../Tank.obj");
+	MeshHelper::CreateMeshFromOBJFiles(pTankMesh, L"../Resources/Tank.obj");
 	SetMesh(pTankMesh);
 	SetColor(RGB(0, 255, 0));
 	SetMeshDefaultOrientation(XMFLOAT3{ -90.f, 180.f, 0.f });
@@ -51,6 +51,10 @@ void TankPlayer::Initialize()
 	m_pShieldMesh = make_shared<Mesh>();
 	MeshHelper::CreateCubeMesh(m_pShieldMesh, fShieldSize, fShieldSize, fShieldSize);
 
+	m_pShieldObject = make_shared<ShieldObject>();
+	m_pShieldObject->SetOwner(shared_from_this());
+	m_pShieldObject->Initialize();
+
 }
 
 void TankPlayer::Update(float fTimeElapsed)
@@ -59,6 +63,8 @@ void TankPlayer::Update(float fTimeElapsed)
 	std::for_each(m_pBullets.begin(), m_pBullets.end(), [&fTimeElapsed](std::shared_ptr<BulletObject>& p) {
 		if (p->IsActive()) p->Update(fTimeElapsed);
 	});
+
+	m_pShieldObject->Update(fTimeElapsed);
 }
 
 void TankPlayer::Render(HDC hDCFrameBuffer, std::shared_ptr<Camera> pCamera)
@@ -67,11 +73,9 @@ void TankPlayer::Render(HDC hDCFrameBuffer, std::shared_ptr<Camera> pCamera)
 		GameObject::Render(hDCFrameBuffer, m_pTransform->GetWorldMatrix(), m_pMesh);
 
 		if (m_bShieldOn) {
-			m_pShieldMesh->Render(hDCFrameBuffer);
+			m_pShieldObject->Render(hDCFrameBuffer, pCamera);
 		}
 	}
-
-	//Player::Render(hDCFrameBuffer, pCamera);
 
 
 	std::for_each(m_pBullets.begin(), m_pBullets.end(), [&hDCFrameBuffer, &pCamera](std::shared_ptr<BulletObject>& p) {
@@ -137,10 +141,9 @@ void TankPlayer::ProcessMouseInput(float fTimeElapsed)
 void TankPlayer::Rotate(float fPitch, float fYaw, float fRoll)
 {
 	m_pTransform->AddRotationEuler(0.f, fYaw, 0.f);
-	m_pCamera->Rotate(fPitch, fYaw, fRoll);
 }
 
-void TankPlayer::OnCollision(std::shared_ptr<GameObject> pOther)
+void TankPlayer::BeginCollision(std::shared_ptr<GameObject> pOther)
 {
 	if (auto p = dynamic_pointer_cast<TankObject>(pOther)) {
 		if (!p->IsBlowingUp()) {
@@ -160,8 +163,6 @@ void TankPlayer::OnCollision(std::shared_ptr<GameObject> pOther)
 
 void TankPlayer::FireBullet(std::shared_ptr<GameObject> pLockedObject)
 {
-	if (!m_bAutoFire) return;
-
 	std::shared_ptr<BulletObject> pBulletObject = nullptr;
 
 	auto it = std::find_if(m_pBullets.begin(), m_pBullets.end(), [](std::shared_ptr<BulletObject> p) { return !(p->IsActive()); });
@@ -183,7 +184,7 @@ void TankPlayer::FireBullet(std::shared_ptr<GameObject> pLockedObject)
 		pBulletObject->SetColor(RGB(255, 0, 0));
 		pBulletObject->SetActive(TRUE);
 
-		if (pLockedObject) {
+		if (pLockedObject && m_bAutoFire) {
 			pBulletObject->SetLockedObject(pLockedObject);
 			pBulletObject->SetColor(RGB(0, 0, 255));
 		}

@@ -10,23 +10,23 @@ void TitleScene::BuildObjects()
 	m_bSceneChanged = FALSE;
 
 	shared_ptr<Mesh> p3DGPMesh = make_shared<Mesh>();
-	MeshHelper::CreateMeshFromOBJFiles(p3DGPMesh, L"../3D_Game_Programming.obj");
+	MeshHelper::CreateMeshFromOBJFiles(p3DGPMesh, L"../Resources/3D_Game_Programming.obj");
 
 	shared_ptr<Mesh> pNameMesh = make_shared<Mesh>();
-	MeshHelper::CreateMeshFromOBJFiles(pNameMesh, L"../name.obj");
+	MeshHelper::CreateMeshFromOBJFiles(pNameMesh, L"../Resources/name.obj");
 
 	m_pObjects.resize(2);
 	m_pObjects[0] = make_shared<GameObject>();
 	m_pObjects[0]->SetColor(RGB(0, 255, 0));
 	m_pObjects[0]->SetMesh(p3DGPMesh);
 	m_pObjects[0]->GetTransform()->SetPosition(0.f, 10.f, 70.f);
-	m_pObjects[0]->GetTransform()->SetRotationEuler(90.f, 0.f, 0.f);
+	m_pObjects[0]->SetMeshDefaultOrientation(XMFLOAT3{ 90.f, 0.f, 0.f });
 
 	m_pObjects[1] = make_shared<ExplosiveObject>();
 	m_pObjects[1]->SetColor(RGB(255, 0, 0));
 	m_pObjects[1]->SetMesh(pNameMesh);
-	m_pObjects[1]->GetTransform()->SetPosition(0.f, -15.f, 70.f);
-	m_pObjects[1]->GetTransform()->SetRotationEuler(90.f, 0.f, 0.f);
+	m_pObjects[1]->GetTransform()->SetPosition(25.f, -10.f, 70.f);
+	m_pObjects[1]->SetMeshDefaultOrientation(XMFLOAT3{ 90.f, 0.f, 0.f });
 	static_pointer_cast<ExplosiveObject>(m_pObjects[1])->SetAutoReset(FALSE);
 	
 	m_pPlayer = make_shared<FirstPersonPlayer>();
@@ -83,7 +83,6 @@ void TitleScene::ProcessMouseInput(float fTimeElapsed)
 			pPickedObj->OnPicked();
 		}
 	}
-
 }
 
 void TitleScene::ProcessKeyboardInput(float fTimeElapsed)

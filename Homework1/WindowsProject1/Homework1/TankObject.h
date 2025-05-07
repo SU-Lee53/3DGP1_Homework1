@@ -22,13 +22,16 @@ public:
 	virtual void Render(HDC hDCFrameBuffer, std::shared_ptr<class Camera> pCamera);
 
 public:
-	virtual void OnCollision(std::shared_ptr<GameObject> pOther) override;
+	virtual void BeginCollision(std::shared_ptr<GameObject> pOther) override;
 
 private:
 	void InitializeMovingDirection();
 
+	void Move(const XMFLOAT3& xmf3Shift);
 
 private:
+	XMFLOAT4X4	m_xmf4x4World = Matrix4x4::Identity();
+
 	XMFLOAT3	m_xmf3MovingDirection = {};
 	float		m_fMovingSpeed = 0.f;
 

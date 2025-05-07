@@ -58,8 +58,8 @@ void Scene::CheckObjectByObjectCollisions()
 	for (int i = 0; i < m_pObjects.size(); ++i) {
 		for (int j = i + 1; j < m_pObjects.size(); ++j) {
 			if (m_pObjects[i]->GetOBB().Intersects(m_pObjects[j]->GetOBB())) {
-				m_pObjects[i]->OnCollision(m_pObjects[j]);
-				m_pObjects[j]->OnCollision(m_pObjects[i]);
+				m_pObjects[i]->BeginCollision(m_pObjects[j]);
+				m_pObjects[j]->BeginCollision(m_pObjects[i]);
 			}
 		}
 	}

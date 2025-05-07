@@ -14,7 +14,7 @@ public:
 	}
 
 	static COLORREF GenerateRandomColor() {
-		std::uniform_int_distribution<int> uid{ 0x000000, 0xFFFFFF };
+		std::uniform_int_distribution<int> uid{ 0, 255 };
 		return RGB(uid(g_dre), uid(g_dre), uid(g_dre));
 	}
 

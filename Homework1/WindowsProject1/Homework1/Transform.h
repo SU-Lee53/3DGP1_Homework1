@@ -36,6 +36,12 @@ public:
 	BOOL AddRotationEuler(const XMVECTOR& xmvAddRotation);
 	BOOL AddRotationEuler(float fPitch/* x */, float fYaw/* y */, float fRoll/* z */);
 
+	BOOL SetWorldMatrix(const XMFLOAT4X4 xmf4x4World) {
+		m_xmf4x4World = xmf4x4World;
+		m_bManualManagement = TRUE;
+		return TRUE;
+	}
+
 	// Getter
 	XMFLOAT3& GetPosition() { return m_xmf3Position; }
 	XMFLOAT3& GetRotationEuler() { return m_xmf3RotationEuler; }
@@ -77,6 +83,8 @@ private:
 
 	XMFLOAT4X4	m_xmf4x4World = Matrix4x4::Identity();
 	BOOL m_bUpdated = TRUE;
+
+	BOOL m_bManualManagement = FALSE;
 
 };
 

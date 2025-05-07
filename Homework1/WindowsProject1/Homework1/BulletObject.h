@@ -74,7 +74,7 @@ public:
 	}
 
 public:
-	void OnCollision(std::shared_ptr<GameObject> pOther);
+	void BeginCollision(std::shared_ptr<GameObject> pOther);
 
 private:
 	float		m_fBulletEffectiveRange = 50.0f;

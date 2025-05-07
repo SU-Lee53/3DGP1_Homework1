@@ -1,5 +1,6 @@
 #pragma once
 #include "Player.h"
+#include "ShieldObject.h"
 
 constexpr static int BULLET_COUNT = 50;
 
@@ -18,7 +19,7 @@ public:
 	virtual void ProcessMouseInput(float fTimeElapsed) override;
 
 public:
-	virtual void OnCollision(std::shared_ptr<GameObject> pOther) override;
+	virtual void BeginCollision(std::shared_ptr<GameObject> pOther) override;
 
 public:
 	BOOL GetAutoFireMode() { return m_bAutoFire; }
@@ -42,6 +43,7 @@ private:
 
 	BOOL m_bAutoFire = TRUE;
 
+	std::shared_ptr<ShieldObject> m_pShieldObject = nullptr;
 	std::shared_ptr<Mesh> m_pShieldMesh = nullptr;
 	BOOL m_bShieldOn = FALSE;
 

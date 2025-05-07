@@ -50,7 +50,6 @@ void GameFramework::Draw()
 {
 	ClearFrameBuffer(RGB(255, 255, 255));
 
-	//std::shared_ptr<Camera> pCamera = m_pPlayer->GetCamera();
 	if (m_pCurrentScene) {
 		m_pCurrentScene->Render(m_hDCFrameBuffer);
 	}
@@ -104,7 +103,7 @@ void GameFramework::BuildObjects()
 		m_pScenes[TAG_SCENE_LEVEL1] = make_shared<Level1Scene>();
 		m_pScenes[TAG_SCENE_LEVEL2] = make_shared<Level2Scene>();
 
-		m_eCurrentSceneTag = TAG_SCENE_LEVEL2;
+		m_eCurrentSceneTag = TAG_SCENE_TITLE;
 		m_pCurrentScene = m_pScenes[m_eCurrentSceneTag];
 		m_pCurrentScene->BuildObjects();
 	}
@@ -114,12 +113,11 @@ void GameFramework::BuildObjects()
 
 void GameFramework::ReleaseObjects()
 {
-	// Release and reset pScene
-	// reset m_pPlayer
 }
 
 void GameFramework::ProcessInput()
 {
+	/*
 	if (INPUT.GetButtonDown('1')) {
 		m_eCurrentSceneTag = TAG_SCENE_TITLE;
 		ChangeScene(TAG_SCENE_TITLE);
@@ -138,7 +136,8 @@ void GameFramework::ProcessInput()
 	if (INPUT.GetButtonDown('4')) {
 		m_eCurrentSceneTag = TAG_SCENE_LEVEL2;
 		ChangeScene(TAG_SCENE_LEVEL2);
-	}
+	}*/
+	
 	
 	if (INPUT.GetButtonDown('R')) {
 		ResetScene();

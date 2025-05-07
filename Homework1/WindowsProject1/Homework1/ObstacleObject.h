@@ -11,7 +11,7 @@ public:
 	virtual void Render(HDC hDCFrameBuffer, std::shared_ptr<class Camera> pCamera);
 
 public:
-	virtual void OnCollision(std::shared_ptr<GameObject> pOther) override;
+	virtual void BeginCollision(std::shared_ptr<GameObject> pOther) override;
 
 
 private:

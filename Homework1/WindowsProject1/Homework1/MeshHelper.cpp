@@ -79,7 +79,6 @@ void MeshHelper::CreateWallMesh(shared_ptr<Mesh> pMesh, float fWidth, float fHei
 			pLeftFace->SetVertex(2, Vertex(-fHalfWidth, -fHalfHeight + ((i + 1) * fCellHeight),		-fHalfDepth + ((j + 1) * fCellDepth)));
 			pLeftFace->SetVertex(3, Vertex(-fHalfWidth, -fHalfHeight + (i * fCellHeight),			-fHalfDepth + ((j + 1) * fCellDepth)));
 			pMesh->SetPolygon(k++, pLeftFace);
-			pLeftFace.reset();
 		}
 	}
 
@@ -92,7 +91,6 @@ void MeshHelper::CreateWallMesh(shared_ptr<Mesh> pMesh, float fWidth, float fHei
 			pRightFace->SetVertex(2, Vertex(+fHalfWidth, -fHalfHeight + ((i + 1) * fCellHeight),	-fHalfDepth + ((j + 1) * fCellDepth)));
 			pRightFace->SetVertex(3, Vertex(+fHalfWidth, -fHalfHeight + (i * fCellHeight),			-fHalfDepth + ((j + 1) * fCellDepth)));
 			pMesh->SetPolygon(k++, pRightFace);
-			pRightFace.reset();
 		}
 	}
 
@@ -105,7 +103,6 @@ void MeshHelper::CreateWallMesh(shared_ptr<Mesh> pMesh, float fWidth, float fHei
 			pTopFace->SetVertex(2, Vertex(-fHalfWidth + ((i + 1) * fCellWidth),		+fHalfHeight,	-fHalfDepth + ((j + 1) * fCellDepth)));
 			pTopFace->SetVertex(3, Vertex(-fHalfWidth + (i * fCellWidth),			+fHalfHeight,	-fHalfDepth + ((j + 1) * fCellDepth)));
 			pMesh->SetPolygon(k++, pTopFace);
-			pTopFace.reset();
 		}
 	}
 
@@ -118,17 +115,10 @@ void MeshHelper::CreateWallMesh(shared_ptr<Mesh> pMesh, float fWidth, float fHei
 			pBottomFace->SetVertex(2, Vertex(-fHalfWidth + ((i + 1) * fCellWidth),	-fHalfHeight,	-fHalfDepth + ((j + 1) * fCellDepth)));
 			pBottomFace->SetVertex(3, Vertex(-fHalfWidth + (i * fCellWidth),		-fHalfHeight,	-fHalfDepth + ((j + 1) * fCellDepth)));
 			pMesh->SetPolygon(k++, pBottomFace);
-			pBottomFace.reset();
 		}
 	}
 
 	shared_ptr<struct Polygon> pFrontFace;
-	/*
-	pFrontFace->SetVertex(0, Vertex(-fHalfWidth, +fHalfHeight, -fHalfDepth));
-	pFrontFace->SetVertex(1, Vertex(+fHalfWidth, +fHalfHeight, -fHalfDepth));
-	pFrontFace->SetVertex(2, Vertex(+fHalfWidth, -fHalfHeight, -fHalfDepth));
-	pFrontFace->SetVertex(3, Vertex(-fHalfWidth, -fHalfHeight, -fHalfDepth));
-	*/
 	for (int i = 0; i < nSubRects; i++) {
 		for (int j = 0; j < nSubRects; j++) {
 			pFrontFace = make_shared<struct Polygon>(4);
@@ -137,18 +127,10 @@ void MeshHelper::CreateWallMesh(shared_ptr<Mesh> pMesh, float fWidth, float fHei
 			pFrontFace->SetVertex(2, Vertex(-fHalfWidth + ((i + 1) * fCellWidth),	-fHalfHeight + ((j + 1) * fCellHeight), +fHalfDepth));
 			pFrontFace->SetVertex(3, Vertex(-fHalfWidth + (i * fCellWidth),			-fHalfHeight + ((j + 1) * fCellHeight), +fHalfDepth));
 			pMesh->SetPolygon(k++, pFrontFace);
-			pFrontFace.reset();
 		}
 	}
-	//pMesh->SetPolygon(k++, pFrontFace);
 
 	shared_ptr<struct Polygon> pBackFace;
-	/*
-	pBackFace->SetVertex(0, Vertex(-fHalfWidth, -fHalfHeight, +fHalfDepth));
-	pBackFace->SetVertex(1, Vertex(+fHalfWidth, -fHalfHeight, +fHalfDepth));
-	pBackFace->SetVertex(2, Vertex(+fHalfWidth, +fHalfHeight, +fHalfDepth));
-	pBackFace->SetVertex(3, Vertex(-fHalfWidth, +fHalfHeight, +fHalfDepth));
-	*/
 	for (int i = 0; i < nSubRects; i++) {
 		for (int j = 0; j < nSubRects; j++) {
 			pBackFace = make_shared<struct Polygon>(4);
@@ -157,10 +139,8 @@ void MeshHelper::CreateWallMesh(shared_ptr<Mesh> pMesh, float fWidth, float fHei
 			pBackFace->SetVertex(2, Vertex(-fHalfWidth + ((i + 1) * fCellWidth),	-fHalfHeight + ((j + 1) * fCellHeight),	-fHalfDepth));
 			pBackFace->SetVertex(3, Vertex(-fHalfWidth + (i * fCellWidth),			-fHalfHeight + ((j + 1) * fCellHeight),	-fHalfDepth));
 			pMesh->SetPolygon(k++, pBackFace);
-			pBackFace.reset();
 		}
 	}
-	//pMesh->SetPolygon(k++, pBackFace);
 
 	pMesh->m_xmOBB = BoundingOrientedBox(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(fHalfWidth, fHalfHeight, fHalfDepth), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
 }
@@ -333,6 +313,7 @@ BOOL MeshHelper::CreateMeshFromOBJFiles(shared_ptr<Mesh> pMesh, wstring_view wst
 
 	if (!in) return FALSE;
 
+	// 1. 파일에서 읽어옴
 	vector<XMFLOAT3> LoadedVertices;
 	vector<XMINT3> LoadedIndices;
 	std::string strRead{};
@@ -350,21 +331,21 @@ BOOL MeshHelper::CreateMeshFromOBJFiles(shared_ptr<Mesh> pMesh, wstring_view wst
 		}
 	}
 
-
-	// TODO : 현재 Center 를 구하고 중심을 0,0,0 으로 옮기는 작업이 필요한듯 함
+	// 2. 읽어온 메쉬의 중심을 구함
 	auto [itMinX, itMaxX] = std::minmax_element(LoadedVertices.begin(), LoadedVertices.end(), [](const XMFLOAT3& xmf3_1, const XMFLOAT3& xmf3_2) { return xmf3_1.x < xmf3_2.x; });
 	auto [itMinY, itMaxY] = std::minmax_element(LoadedVertices.begin(), LoadedVertices.end(), [](const XMFLOAT3& xmf3_1, const XMFLOAT3& xmf3_2) { return xmf3_1.y < xmf3_2.y; });
 	auto [itMinZ, itMaxZ] = std::minmax_element(LoadedVertices.begin(), LoadedVertices.end(), [](const XMFLOAT3& xmf3_1, const XMFLOAT3& xmf3_2) { return xmf3_1.z < xmf3_2.z; });
 
 	XMFLOAT3 xmf3Center = { (itMaxX->x + itMinX->x) / 2, (itMaxY->y + itMinY->y) / 2, (itMaxZ->z + itMinZ->z) / 2 };
 
+	// 3. 메쉬의 중심을 0,0,0 으로 옮김
 	std::for_each(LoadedVertices.begin(), LoadedVertices.end(), [&xmf3Center](XMFLOAT3& xmf3Vertex) -> void {
 		xmf3Vertex.x -= xmf3Center.x;
 		xmf3Vertex.y -= xmf3Center.y;
 		xmf3Vertex.z -= xmf3Center.z;
 	});
 
-	// 다시 구해서 테스트
+	// 4. 다시 메쉬의 중심을 구함 -> 0,0,0 에서 float 오차 이상 벗어나지 않아야 함
 	auto [itNewMinX, itNewMaxX] = std::minmax_element(LoadedVertices.begin(), LoadedVertices.end(), [](const XMFLOAT3& xmf3_1, const XMFLOAT3& xmf3_2) { return xmf3_1.x < xmf3_2.x; });
 	auto [itNewMinY, itNewMaxY] = std::minmax_element(LoadedVertices.begin(), LoadedVertices.end(), [](const XMFLOAT3& xmf3_1, const XMFLOAT3& xmf3_2) { return xmf3_1.y < xmf3_2.y; });
 	auto [itNewMinZ, itNewMaxZ] = std::minmax_element(LoadedVertices.begin(), LoadedVertices.end(), [](const XMFLOAT3& xmf3_1, const XMFLOAT3& xmf3_2) { return xmf3_1.z < xmf3_2.z; });
@@ -380,9 +361,7 @@ BOOL MeshHelper::CreateMeshFromOBJFiles(shared_ptr<Mesh> pMesh, wstring_view wst
 		pMesh->SetPolygon(index, pPolygon);
 	}
 
-	// TODO : Initialize BoundingBox
 	XMFLOAT3 xmf3ObbExtent = Vector3::Subtract(XMFLOAT3{ itNewMaxX->x, itNewMaxY->y, itNewMaxZ->z }, xmf3NewCenter);
-
 	pMesh->m_xmOBB = BoundingOrientedBox(xmf3NewCenter, xmf3ObbExtent, XMFLOAT4{ 0.f, 0.f, 0.f, 1.f });
 
 }
@@ -447,7 +426,7 @@ void MeshHelper::CreateRollercoasterRailMesh(shared_ptr<Mesh> pMesh, OUT std::ve
 	vector<XMFLOAT3> ControlPoints(nControlPoints);
 	vector<XMFLOAT3> Tangents(nControlPoints);
 	
-	// 1. Generate control points
+	// 1. 컨트롤 포인트 생성
 	auto GenerateControlPoint = [fCourseRadius, nControlPoints](int idx) {
 		XMFLOAT3 v;
 		v.x = fCourseRadius * XMScalarCos(XMConvertToRadians((360.0f / nControlPoints) * idx));
@@ -462,21 +441,20 @@ void MeshHelper::CreateRollercoasterRailMesh(shared_ptr<Mesh> pMesh, OUT std::ve
 	}
 
 
-	// 2. Generate tangent automatically
+	// 2. 접선
 	XMStoreFloat3(&Tangents[0], XMVectorZero());
 	XMStoreFloat3(&Tangents[nControlPoints - 1], XMVectorZero());
 
 	int count = 1;
 	for (auto& [v1, v2, v3] : ControlPoints | views::adjacent<3>) {
-		// Calculate tangent of v2
 		XMVECTOR xmvCP1 = XMLoadFloat3(&v1);
 		XMVECTOR xmvCP3 = XMLoadFloat3(&v3);
 
 		XMStoreFloat3(&Tangents[count++], XMVectorScale(XMVectorSubtract(xmvCP3, xmvCP1), 0.5f));
 	}
 
-	// Tangent of first and last points
-	// First
+	// 시작점과 끝점의 접선
+	// 시작점
 	{
 		XMVECTOR xmvCP1 = XMLoadFloat3(&ControlPoints[nControlPoints - 1]);
 		XMVECTOR xmvCP3 = XMLoadFloat3(&ControlPoints[1]);
@@ -484,7 +462,7 @@ void MeshHelper::CreateRollercoasterRailMesh(shared_ptr<Mesh> pMesh, OUT std::ve
 		XMStoreFloat3(&Tangents[0], XMVectorScale(XMVectorSubtract(xmvCP3, xmvCP1), 0.5f));
 	}
 
-	// Last
+	// 끝점
 	{
 		XMVECTOR xmvCP1 = XMLoadFloat3(&ControlPoints[nControlPoints - 2]);
 		XMVECTOR xmvCP3 = XMLoadFloat3(&ControlPoints[0]);
@@ -492,7 +470,7 @@ void MeshHelper::CreateRollercoasterRailMesh(shared_ptr<Mesh> pMesh, OUT std::ve
 		XMStoreFloat3(&Tangents[nControlPoints - 1], XMVectorScale(XMVectorSubtract(xmvCP3, xmvCP1), 0.5f));
 	}
 
-	// 3. Generate spline points
+	// 3. 스플라인 곡선의 점 구함
 
 	vector<XMFLOAT3> SplinePoints;
 
@@ -511,7 +489,7 @@ void MeshHelper::CreateRollercoasterRailMesh(shared_ptr<Mesh> pMesh, OUT std::ve
 		}
 	}
 
-	// add last ~ first spline 
+	// 마지막과 시작점의 점을 추가
 	{
 		XMVECTOR xmvControlPoint1 = XMLoadFloat3(&ControlPoints.back());
 		XMVECTOR xmvControlPoint2 = XMLoadFloat3(&ControlPoints.front());
@@ -548,29 +526,28 @@ void MeshHelper::CreateRollercoasterRailMesh(shared_ptr<Mesh> pMesh, OUT std::ve
 
 	*/
 		  
-
+	// 4. 레일
 	vector<shared_ptr<struct Polygon>> pPolygons;
-
 	for (int i = 1; i < SplinePoints.size() - 1; ++i) {
 		shared_ptr<struct Polygon> pRail = make_shared<struct Polygon>(4);
 		XMVECTOR xmvCurPoint = XMLoadFloat3(&SplinePoints[i]);
 		XMVECTOR xmvNextPoint = XMLoadFloat3(&SplinePoints[i + 1]);
 		XMVECTOR xmvPrevPoint = XMLoadFloat3(&SplinePoints[i - 1]);
 
-		// Left - Right from current spline point
+		// 현재 점 : 우 -> 좌 
 		XMVECTOR xmvCurRailDirection = XMVectorSubtract(xmvCurPoint, xmvPrevPoint);
 		XMVECTOR xmvCurRailUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
-		XMVECTOR xmvCurRailLeft = XMVector3Normalize(XMVector3Cross(xmvCurRailDirection, xmvCurRailUp));
-		XMVECTOR xmvCurRailRight = XMVector3Normalize(XMVectorScale(xmvCurRailLeft, -1.f));
+		XMVECTOR xmvCurRailRight = XMVector3Normalize(XMVector3Cross(xmvCurRailDirection, xmvCurRailUp));
+		XMVECTOR xmvCurRailLeft = XMVector3Normalize(XMVectorScale(xmvCurRailRight, -1.f));
 
 		XMVECTOR xmvVertex1 = XMVector3TransformCoord(xmvCurPoint, XMMatrixTranslationFromVector(XMVectorScale(xmvCurRailLeft, fWidth / 2)));
 		XMVECTOR xmvVertex2 = XMVector3TransformCoord(xmvCurPoint, XMMatrixTranslationFromVector(XMVectorScale(xmvCurRailRight, fWidth / 2)));
 
-		// Right - Left from next spline point
+		// 다음 점 : 우 -> 좌 
 		XMVECTOR xmvNextRailDirection = XMVectorSubtract(xmvNextPoint, xmvCurPoint);
 		XMVECTOR xmvNextRailUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
-		XMVECTOR xmvNextRailLeft = XMVector3Normalize(XMVector3Cross(xmvNextRailDirection, xmvNextRailUp));
-		XMVECTOR xmvNextRailRight = XMVector3Normalize(XMVectorScale(xmvNextRailLeft, -1.f));
+		XMVECTOR xmvNextRailRight = XMVector3Normalize(XMVector3Cross(xmvNextRailDirection, xmvNextRailUp));
+		XMVECTOR xmvNextRailLeft = XMVector3Normalize(XMVectorScale(xmvNextRailRight, -1.f));
 
 		XMVECTOR xmvVertex3 = XMVector3TransformCoord(xmvNextPoint, XMMatrixTranslationFromVector(XMVectorScale(xmvNextRailRight, fWidth / 2)));
 		XMVECTOR xmvVertex4 = XMVector3TransformCoord(xmvNextPoint, XMMatrixTranslationFromVector(XMVectorScale(xmvNextRailLeft, fWidth / 2)));
@@ -597,7 +574,7 @@ void MeshHelper::CreateRollercoasterRailMesh(shared_ptr<Mesh> pMesh, OUT std::ve
 		pMesh->SetPolygon(index, pPolygon);
 	}
 
-	// Pillar..??
+	// 5. 기둥
 	for (int i = 1; i < nControlPoints; ++i) {
 		int nPillarIndex = i * nInterpolateBias;
 		GenerateRollercoasterPillarPolygon(pMesh, pPolygons[nPillarIndex]->m_Vertices[0], 0.5f, 0.5f);

@@ -32,7 +32,7 @@ void ObstacleObject::Render(HDC hDCFrameBuffer, std::shared_ptr<class Camera> pC
 	GameObject::Render(hDCFrameBuffer, pCamera);
 }
 
-void ObstacleObject::OnCollision(std::shared_ptr<GameObject> pOther)
+void ObstacleObject::BeginCollision(std::shared_ptr<GameObject> pOther)
 {
 	if (auto p = dynamic_pointer_cast<TankPlayer>(pOther)) {
 

@@ -115,18 +115,12 @@ BOOL Camera::Rotate(float fPitch, float fYaw, float fRoll)
 }
 
 XMFLOAT4X4& Camera::GetViewPerspectiveProjectMatrix()
-{/*
-	XMMATRIX xmmtxViewPerspectiveProject =
-		XMMatrixMultiply(XMLoadFloat4x4(&m_xmf4x4View), XMLoadFloat4x4(&m_xmf4x4PerspectiveProject));
-	XMStoreFloat4x4(&m_xmf4x4ViewPerspectiveProject, xmmtxViewPerspectiveProject);*/
+{
 	return m_xmf4x4ViewPerspectiveProject;
 }
 
 XMFLOAT4X4& Camera::GetViewOrthographicProjectMatrix()
-{/*
-	XMMATRIX xmmtxViewOrthographicProject =
-		XMMatrixMultiply(XMLoadFloat4x4(&m_xmf4x4View), XMLoadFloat4x4(&m_xmf4x4OrthographicProject));
-	XMStoreFloat4x4(&m_xmf4x4ViewOrthographicProject, xmmtxViewOrthographicProject);*/
+{
 	return m_xmf4x4ViewOrthographicProject;
 }
 

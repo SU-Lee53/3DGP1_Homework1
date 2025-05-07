@@ -15,7 +15,9 @@ enum TAG_GAMEOBJECT_TYPE : UINT8 {
 class GameObject {
 public:
 	GameObject();
-	virtual ~GameObject() { }
+	virtual ~GameObject() { 
+		m_pCollisionSet.clear();
+	}
 
 public:
 	void SetActive(BOOL bActive) { m_bActive = bActive; }
@@ -46,13 +48,16 @@ public:
 	virtual void Render(HDC hDCFrameBuffer, std::shared_ptr<class Camera> pCamera);
 
 	virtual void OnPicked() { }
-	virtual void OnCollision(std::shared_ptr<GameObject> pOther) {}
+	virtual void BeginCollision(std::shared_ptr<GameObject> pOther) {}
+	virtual void EndCollision(std::shared_ptr<GameObject> pOther) {}
 
 
 	void GenerateRayForPicking(XMVECTOR& xmvPickPosition, const XMMATRIX& xmmtxView, XMVECTOR& xmvPickRayOrigin, XMVECTOR& xmvPickRayDirection) const;
 	int PickObjectByRayIntersection(XMVECTOR& xmvPickPosition, const XMMATRIX& xmmtxView, float& fHitDistance) const;
 
 	std::shared_ptr<Transform>& GetTransform() { return m_pTransform; }
+
+	std::unordered_set<std::shared_ptr<GameObject>> GetCollisionSet() { return m_pCollisionSet; }
 
 protected:
 	BOOL							m_bActive = TRUE;
@@ -68,6 +73,10 @@ protected:
 	std::string						m_strObjectName = "";
 
 	XMFLOAT3						m_xmf3DefaultOrientation = {};
+
+	// Collision
+	std::unordered_set<std::shared_ptr<GameObject>> m_pCollisionSet = {};
+
 
 //#define _DEBUG_COLLISION
 

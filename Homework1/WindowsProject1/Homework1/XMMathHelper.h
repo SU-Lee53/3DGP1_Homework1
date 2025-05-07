@@ -22,7 +22,6 @@ namespace Vector3 {
 		return XMVectorToFloat3(XMVectorAdd(XMLoadFloat3(&xmf3Vector1), XMLoadFloat3(&xmf3Vector2)));
 	}
 
-	// FMADD
 	inline XMFLOAT3 Add(const XMFLOAT3& xmf3Vector1, const XMFLOAT3& xmf3Vector2, float fScalar) {
 		return XMVectorToFloat3(XMVectorAdd(XMLoadFloat3(&xmf3Vector1), XMVectorScale(XMLoadFloat3(&xmf3Vector2), fScalar)));
 	}

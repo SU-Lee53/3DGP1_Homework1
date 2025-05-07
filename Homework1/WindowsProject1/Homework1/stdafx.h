@@ -27,6 +27,7 @@
 #include <ranges>
 #include <type_traits>
 #include <random>
+#include <unordered_set>
 
 using tstring = std::basic_string<_TCHAR>;
 

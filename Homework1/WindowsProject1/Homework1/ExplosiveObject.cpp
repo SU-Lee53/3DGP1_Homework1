@@ -72,7 +72,7 @@ void ExplosiveObject::OnPicked()
 	m_bBlowingUp = TRUE;
 }
 
-void ExplosiveObject::OnCollision(std::shared_ptr<GameObject> pOther)
+void ExplosiveObject::BeginCollision(std::shared_ptr<GameObject> pOther)
 {
 }
 
